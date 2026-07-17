@@ -1,0 +1,15 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Customer authentication profile and logout",
+  "description": "Verify customer login, authenticated account data, profile edit UI, order history state, and logout protection.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navigate directly to /akun without a session." },
+    { "type": "assertion", "description": "Verify the visitor is redirected to /masuk." },
+    { "type": "action", "description": "Log in with rafi.ahmad@example.com and password RafStore#2026." },
+    { "type": "assertion", "description": "Verify /akun shows Rafi Ahmad, the backend email and WhatsApp, member date, and the order-history section." },
+    { "type": "action", "description": "Open Edit profil, verify editable values are populated, cancel without changing seed data, then click Keluar." },
+    { "type": "assertion", "description": "Verify logout returns to /masuk and revisiting /akun requires authentication again." }
+  ]
+}

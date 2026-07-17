@@ -1,0 +1,41 @@
+{
+  "projectId": "fa5a65c7-5a03-485e-a751-87b0ab5ba2a0",
+  "type": "frontend",
+  "name": "Checkout requires payment proof before completion",
+  "description": "Verify checkout cannot reach Ringkasan without a valid payment-proof upload and transfer confirmation, then completes after the backend accepts the proof.",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Clear cookies and local storage. Open the store, add exactly one Classic Ceramic Mug to the cart, sign in as rafi.ahmad@example.com with password RafStore#2026, and open /checkout."
+    },
+    {
+      "type": "action",
+      "description": "Fill shipping with recipient TestSprite Mandatory Proof 2026-07-17, phone 081234567890, address Jalan TestSprite Mandatory Proof Nomor 17 Jakarta, city Jakarta, province DKI Jakarta, postal code 12345, then continue to Pembayaran and continue to Konfirmasi."
+    },
+    {
+      "type": "assertion",
+      "description": "On checkout step 3 Konfirmasi, verify Bukti pembayaran is marked Wajib, the text says it is required to complete checkout, and there is no general Lanjutkan button that can bypass the upload."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the Unggah bukti & selesaikan checkout button is disabled before a file is selected and the Ringkasan step cannot be opened."
+    },
+    {
+      "type": "action",
+      "description": "Generate and select a valid small PNG payment-proof file but leave the transfer confirmation checkbox unchecked."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the upload-and-complete button remains disabled and the page remains on Konfirmasi while transfer confirmation is unchecked."
+    },
+    {
+      "type": "action",
+      "description": "Check the transfer confirmation checkbox, press Unggah bukti & selesaikan checkout, and wait for the upload response."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the checkout advances to Ringkasan only after upload succeeds, displays a real RAF order number, and shows payment status Menunggu verifikasi."
+    }
+  ]
+}

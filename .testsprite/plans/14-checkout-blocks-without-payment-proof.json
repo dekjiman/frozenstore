@@ -1,0 +1,29 @@
+{
+  "projectId": "fa5a65c7-5a03-485e-a751-87b0ab5ba2a0",
+  "type": "frontend",
+  "name": "Checkout blocks completion without required payment proof",
+  "description": "Verify the checkout UI cannot reach Ringkasan when payment proof or transfer confirmation is missing.",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Clear cookies and local storage. Add exactly one Classic Ceramic Mug to the cart, sign in as rafi.ahmad@example.com with password RafStore#2026, and open /checkout."
+    },
+    {
+      "type": "action",
+      "description": "Fill valid shipping details with recipient TestSprite Required Proof Negative 2026, continue through Pembayaran, and arrive at checkout step 3 Konfirmasi."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify Bukti pembayaran is visibly marked Wajib and states Wajib diunggah untuk menyelesaikan checkout."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify Unggah bukti & selesaikan checkout is disabled with no file selected, no general Lanjutkan button exists on step 3, and the Ringkasan step cannot be opened."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the page remains on Konfirmasi and explains Ringkasan terbuka setelah bukti pembayaran berhasil diunggah."
+    }
+  ]
+}

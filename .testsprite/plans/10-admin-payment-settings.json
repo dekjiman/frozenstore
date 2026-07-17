@@ -1,0 +1,19 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Admin payment account and instruction CRUD affect checkout",
+  "description": "Verify admin CRUD for bank accounts and transfer instructions, validation, active visibility, and public checkout configuration.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Log in as admin and open Pengaturan pembayaran." },
+    { "type": "assertion", "description": "Verify two active seed accounts and four active instructions are loaded from backend." },
+    { "type": "action", "description": "Create active bank account TestSprite Bank, number 5555516161, holder TESTSPRITE RAF STORE, order 99." },
+    { "type": "assertion", "description": "Verify the account is persisted and active count increases." },
+    { "type": "action", "description": "Open Instruksi transfer and create active instruction title TestSprite Payment Step, text Gunakan referensi TS-PAYMENT-20260716 saat melakukan transfer, order 99." },
+    { "type": "assertion", "description": "Verify the instruction is persisted and active instruction count increases." },
+    { "type": "action", "description": "Open a public checkout payment step with a cart item and valid shipping details." },
+    { "type": "assertion", "description": "Verify TestSprite Bank and TestSprite Payment Step are visible in live public payment settings." },
+    { "type": "action", "description": "Return as admin and delete TestSprite Bank and TestSprite Payment Step." },
+    { "type": "assertion", "description": "Verify both test records are removed and seed configuration remains." }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Public checkout payment settings API",
+  "description": "Verify checkout can load active bank accounts and transfer instructions from the public backend endpoint.",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate directly to https://learning-catalogs-electrical-somehow.trycloudflare.com/api/payment-settings."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the JSON response has totals.accounts equal to 2, totals.instructions equal to 4, two active accounts, and four active instructions."
+    }
+  ]
+}

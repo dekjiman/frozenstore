@@ -1,0 +1,13 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Invalid external product image falls back without crashing",
+  "description": "Verify a product whose image URL is https://google.com renders the fallback and does not crash either catalog or detail page.",
+  "priority": "p1",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to the home page and search for SKU TEST123." },
+    { "type": "assertion", "description": "Verify the product named test remains visible and displays an accessible image-unavailable fallback instead of a Next.js image hostname error." },
+    { "type": "action", "description": "Open the product named test." },
+    { "type": "assertion", "description": "Verify its detail page renders successfully with the image-unavailable fallback, product data, and no application crash or Next.js error overlay." }
+  ]
+}

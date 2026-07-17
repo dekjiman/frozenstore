@@ -1,0 +1,33 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Admin payment settings are published to checkout",
+  "description": "Verify the authenticated payment settings page and public checkout settings endpoint expose the same live seed configuration.",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate directly to /masuk, fill Email with admin@rafstore.id, fill Password with Admin#Raf2026, and click Masuk."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify Raf Store Admin is visible after login."
+    },
+    {
+      "type": "action",
+      "description": "Navigate directly to /admin/pengaturan-pembayaran."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify Pengaturan pembayaran is visible, Rekening aktif is 2, Langkah panduan is 4, and Metode is Transfer manual."
+    },
+    {
+      "type": "action",
+      "description": "Navigate directly to /api/payment-settings."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the JSON response contains totals with accounts=2 and instructions=4, proving checkout reads the live payment configuration."
+    }
+  ]
+}

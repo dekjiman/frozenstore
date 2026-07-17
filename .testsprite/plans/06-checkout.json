@@ -1,0 +1,16 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Checkout creates order shows payment settings and accepts proof",
+  "description": "Verify the complete customer journey from cart to persisted order, live transfer settings, payment proof upload, account history, cart clearing, and stock deduction.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navigate home, add Classic Ceramic Mug to cart, then log in as rafi.ahmad@example.com with RafStore#2026 and open checkout." },
+    { "type": "action", "description": "Fill shipping with recipient TestSprite Checkout, phone 081234567890, address Jalan TestSprite Checkout Nomor 16 Jakarta, city Jakarta, province DKI Jakarta, postal code 12345, then continue." },
+    { "type": "assertion", "description": "Verify an order is created, total is Rp109.000, live BCA and Bank Mandiri accounts are visible, and the four transfer instructions are shown." },
+    { "type": "action", "description": "Continue to confirmation, upload a generated valid small PNG as payment proof, check the transfer confirmation checkbox, and confirm payment." },
+    { "type": "assertion", "description": "Verify upload succeeds, Ringkasan opens, a real RAF order number is displayed, and status is waiting for verification." },
+    { "type": "action", "description": "Open the customer account page." },
+    { "type": "assertion", "description": "Verify the new order appears in order history and the cart is empty after checkout." }
+  ]
+}

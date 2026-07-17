@@ -1,0 +1,15 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Catalog search and product detail use live backend data",
+  "description": "Verify the public catalog, search, product cards, dynamic detail route, price, stock, and add-to-cart affordance are rendered from backend data.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to the application home page and wait for the catalog to finish loading." },
+    { "type": "assertion", "description": "Verify the page shows 9 products from the live backend, including Everyday Canvas Tote and the TEST123 product named test." },
+    { "type": "action", "description": "Search the catalog for RF-DC-003 using the Cari produk search box." },
+    { "type": "assertion", "description": "Verify only Minimal Desk Lamp remains visible and its Rp329.000 price is shown." },
+    { "type": "action", "description": "Clear the search and open the Minimal Desk Lamp product detail." },
+    { "type": "assertion", "description": "Verify the dynamic detail page displays SKU RF-DC-003, current stock, description, price, and an enabled Tambah ke keranjang button." }
+  ]
+}

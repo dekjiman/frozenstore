@@ -1,0 +1,57 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Admin payment account and instruction CRUD affect checkout",
+  "description": "Verify payment settings CRUD through the exact admin route and confirm active records are published by the public checkout settings API.",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate directly to /masuk. Fill Email with admin@rafstore.id, fill Password with Admin#Raf2026, and click the exact Masuk button."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the URL becomes /admin and the text Raf Store Admin is visible."
+    },
+    {
+      "type": "action",
+      "description": "Navigate directly to /admin/pengaturan-pembayaran. Do not search for an Admin link on the public homepage."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the heading Pengaturan pembayaran, the Rekening bank tab, and the Instruksi transfer tab are visible."
+    },
+    {
+      "type": "action",
+      "description": "Click Tambah rekening. Fill Nama bank=TestSprite Bank, Nomor rekening=5555516161, Nama pemilik rekening=TESTSPRITE RAF STORE, Urutan tampil=99, keep Aktif di checkout checked, and click Simpan rekening."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the success message Rekening TestSprite Bank berhasil ditambahkan and the TestSprite Bank card with account 5555516161 are visible."
+    },
+    {
+      "type": "action",
+      "description": "Click Instruksi transfer, click Tambah langkah, fill Judul langkah=TestSprite Payment Step, Teks instruksi=Gunakan referensi TS-PAYMENT-20260716 saat melakukan transfer, Urutan langkah=99, keep Tampilkan di checkout checked, and click Simpan instruksi."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify TestSprite Payment Step and TS-PAYMENT-20260716 are visible in Langkah transfer."
+    },
+    {
+      "type": "action",
+      "description": "Navigate directly to /api/payment-settings in the same browser."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the JSON page contains TestSprite Bank, 5555516161, TestSprite Payment Step, and TS-PAYMENT-20260716. This is the public endpoint consumed by checkout."
+    },
+    {
+      "type": "action",
+      "description": "Return directly to /admin/pengaturan-pembayaran. Delete TestSprite Bank using Hapus rekening TestSprite Bank then confirm Hapus rekening. Open Instruksi transfer and delete TestSprite Payment Step using Hapus instruksi TestSprite Payment Step."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify both TestSprite records are absent and the original seed payment configuration remains visible."
+    }
+  ]
+}

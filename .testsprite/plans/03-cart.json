@@ -1,0 +1,17 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Persistent cart supports add update and remove",
+  "description": "Verify the anonymous cart is backed by the API and persists through reload while quantities and totals stay correct.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to the home page, wait for products, and add Everyday Canvas Tote to the cart." },
+    { "type": "assertion", "description": "Verify the cart header shows 1 item and a success notification appears." },
+    { "type": "action", "description": "Reload the page and open the cart." },
+    { "type": "assertion", "description": "Verify Everyday Canvas Tote still exists in the cart with quantity 1 and subtotal Rp189.000." },
+    { "type": "action", "description": "Increase quantity to 2." },
+    { "type": "assertion", "description": "Verify quantity is 2, item count is 2, and subtotal is Rp378.000." },
+    { "type": "action", "description": "Remove Everyday Canvas Tote from the cart." },
+    { "type": "assertion", "description": "Verify the empty-cart state is displayed." }
+  ]
+}

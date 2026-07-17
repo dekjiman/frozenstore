@@ -1,0 +1,15 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Admin role protection login and inventory dashboard",
+  "description": "Verify protected admin routing, role-aware login, real inventory summary, navigation, and logout.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navigate directly to /admin without a session." },
+    { "type": "assertion", "description": "Verify the app redirects to /masuk instead of showing admin data." },
+    { "type": "action", "description": "Log in with admin@rafstore.id and password Admin#Raf2026." },
+    { "type": "assertion", "description": "Verify /admin opens with Admin Raf Store identity, live total units/SKU metrics, stock health, and navigation links for products, stock history, orders, and payments." },
+    { "type": "action", "description": "Click Keluar." },
+    { "type": "assertion", "description": "Verify the admin session ends and protected admin content is no longer accessible." }
+  ]
+}

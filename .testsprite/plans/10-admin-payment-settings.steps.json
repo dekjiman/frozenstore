@@ -1,0 +1,52 @@
+{
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate directly to /masuk on the configured project base URL. Enter admin@rafstore.id in the email field, Admin#Raf2026 in the password field, and submit Masuk."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify login succeeds and the Raf Store Admin shell is visible."
+    },
+    {
+      "type": "action",
+      "description": "Navigate directly to /admin/pengaturan-pembayaran and wait for Pengaturan pembayaran to finish loading."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify Rekening aktif is 2 and Langkah panduan is 4."
+    },
+    {
+      "type": "action",
+      "description": "Click Tambah rekening. Fill Nama bank with TestSprite Bank, Nomor rekening with 5555516161, Nama pemilik rekening with TESTSPRITE RAF STORE, Urutan tampil with 99, keep Aktif di checkout checked, and click Simpan rekening."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the status message Rekening TestSprite Bank berhasil ditambahkan is visible, the TestSprite Bank card is visible, and Rekening aktif is 3."
+    },
+    {
+      "type": "action",
+      "description": "Click Instruksi transfer, then Tambah langkah. Fill Judul langkah with TestSprite Payment Step, Teks instruksi with Gunakan referensi TS-PAYMENT-20260716 saat melakukan transfer, Urutan langkah with 99, keep Tampilkan di checkout checked, and click Simpan instruksi."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify TestSprite Payment Step and its instruction text are visible and Langkah panduan is 5."
+    },
+    {
+      "type": "action",
+      "description": "Navigate directly to /api/payment-settings on the configured project base URL."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the JSON response contains TestSprite Bank, account number 5555516161, TestSprite Payment Step, and TS-PAYMENT-20260716, proving the public checkout configuration API exposes both active records."
+    },
+    {
+      "type": "action",
+      "description": "Navigate back to /admin/pengaturan-pembayaran. In Rekening bank click the button whose accessible name is Hapus rekening TestSprite Bank, then confirm with Hapus rekening. Click Instruksi transfer and click the button whose accessible name is Hapus instruksi TestSprite Payment Step."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify TestSprite Bank and TestSprite Payment Step are absent, Rekening aktif is 2, and Langkah panduan is 4."
+    }
+  ]
+}

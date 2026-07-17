@@ -1,0 +1,16 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Admin product create edit search and soft delete",
+  "description": "Verify backend-integrated product management with unique SKU, dynamic image fallback, editing, public visibility, and soft deletion.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Log in as admin@rafstore.id with Admin#Raf2026 and open /admin/produk/baru." },
+    { "type": "action", "description": "Create a product using unique SKU TS-AUTO-20260716, name TestSprite Auto Product, category QA, description Produk otomatis untuk verifikasi TestSprite, price 123456, stock 5, and image URL https://google.com." },
+    { "type": "assertion", "description": "Verify the product is persisted, appears in admin search, shows stock 5, and renders the image-unavailable fallback without crashing." },
+    { "type": "action", "description": "Open edit for TestSprite Auto Product, unlock SKU, change name to TestSprite Auto Product Updated and price to 123457, then save." },
+    { "type": "assertion", "description": "Verify the updated values persist and the product appears in the public catalog." },
+    { "type": "action", "description": "Return to admin products, search for TS-AUTO-20260716, delete the product, and confirm deletion." },
+    { "type": "assertion", "description": "Verify it disappears from admin active products and the public catalog due to soft deletion." }
+  ]
+}

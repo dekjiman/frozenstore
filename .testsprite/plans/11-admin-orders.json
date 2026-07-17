@@ -1,0 +1,15 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Admin verifies and advances a customer order",
+  "description": "Verify a customer-created order appears in admin operations and payment/order statuses can be advanced through the backend.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "As a customer, add Linen Daily Notebook, log in with rafi.ahmad@example.com and RafStore#2026, checkout to recipient TestSprite Admin Order at Jalan TestSprite Admin Order Nomor 16 Jakarta, city Jakarta, province DKI Jakarta, postal 12345, and create the order." },
+    { "type": "assertion", "description": "Verify a new real RAF order number is generated and remember it." },
+    { "type": "action", "description": "Log out, log in as admin@rafstore.id with Admin#Raf2026, and open Pesanan." },
+    { "type": "assertion", "description": "Verify the remembered order appears with recipient TestSprite Admin Order, correct total Rp89.000, waiting payment, and no proof if none was uploaded." },
+    { "type": "action", "description": "Change payment status to Lunas and process status to Diproses, then reload the page." },
+    { "type": "assertion", "description": "Verify both updated statuses persist after reload." }
+  ]
+}

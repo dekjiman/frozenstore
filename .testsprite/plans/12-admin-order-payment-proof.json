@@ -1,0 +1,41 @@
+{
+  "projectId": "fa5a65c7-5a03-485e-a751-87b0ab5ba2a0",
+  "type": "frontend",
+  "name": "Admin proof thumbnail and modal on exact Pesanan route",
+  "description": "Verify the exact /admin/pesanan page shows a transfer-proof thumbnail for an order and opens an accessible enlarged preview.",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Clear cookies and local storage for the site. Open the exact /masuk URL, enter admin@rafstore.id in the Email field and Admin#Raf2026 in the Password field, press the Masuk submit button, and wait until the Raf Store Admin dashboard is visible."
+    },
+    {
+      "type": "action",
+      "description": "Navigate directly by URL to the exact path /admin/pesanan. Do not use any public-store or customer-account Pesanan link."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the current path is exactly /admin/pesanan and the page shows the admin heading Pesanan pelanggan plus the helper text Verifikasi pembayaran dan perbarui proses pengiriman."
+    },
+    {
+      "type": "assertion",
+      "description": "In the admin Pesanan pelanggan table, verify order RAF-TEST-PROOF-2026 for recipient TestSprite Bukti Transfer is visible with a Bukti transfer column and a visible image thumbnail labeled Lihat bukti."
+    },
+    {
+      "type": "action",
+      "description": "Click the transfer-proof control for order RAF-TEST-PROOF-2026."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify a Bukti transfer dialog opens for RAF-TEST-PROOF-2026, displays an enlarged transfer-proof image, shows recipient TestSprite Bukti Transfer, and includes a Buka gambar asli link."
+    },
+    {
+      "type": "action",
+      "description": "Close the transfer-proof dialog using its close button."
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the dialog closes and the Pesanan table remains visible."
+    }
+  ]
+}

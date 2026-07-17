@@ -1,0 +1,15 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Admin incoming stock updates inventory and ledger",
+  "description": "Verify transactional stock-in, dashboard totals, product stock, ledger filtering, and CSV export.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Log in as admin, open Tambah stok masuk, select Minimal Desk Lamp, enter quantity 3, reason Restock TestSprite, reference TS-STOCK-20260716, and submit." },
+    { "type": "assertion", "description": "Verify success shows the correct before and after stock values and the saved product stock increases by exactly 3." },
+    { "type": "action", "description": "Open Riwayat Stok and search for TS-STOCK-20260716." },
+    { "type": "assertion", "description": "Verify exactly the incoming movement is shown with Minimal Desk Lamp, +3, stock before/after, reason, and reference." },
+    { "type": "action", "description": "Use the type and product filters, then click Ekspor." },
+    { "type": "assertion", "description": "Verify filters preserve the matching ledger row and a riwayat-stok.csv download is triggered." }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "projectId": "4daf6fec-09b4-4a68-80f9-a444d641118c",
+  "type": "frontend",
+  "name": "Registration validates input and creates a unique customer",
+  "description": "Verify registration validation and successful backend persistence using a unique timestamp-based email and phone.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to /daftar and submit the empty form." },
+    { "type": "assertion", "description": "Verify validation messages are shown for required identity, contact, password, confirmation, and terms fields." },
+    { "type": "action", "description": "Fill a valid registration using name TestSprite Customer, a unique email testsprite+<current timestamp>@example.com, a unique valid Indonesian phone beginning 0899, password TestSprite#2026, matching confirmation, accept terms, and submit." },
+    { "type": "assertion", "description": "Verify Akun berhasil dibuat is displayed and the submitted customer name is preserved." },
+    { "type": "action", "description": "Navigate to login and sign in using the newly created email and password." },
+    { "type": "assertion", "description": "Verify the authenticated Akun saya page opens with the newly created customer identity." }
+  ]
+}
