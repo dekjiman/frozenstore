@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Check, ShoppingBag } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useCart } from "@/components/cart-provider";
 import { CatalogSearch } from "@/components/catalog-search";
 import { EmptySearchState } from "@/components/empty-search-state";
@@ -18,17 +19,24 @@ const rupiahFormatter = new Intl.NumberFormat("id-ID", {
 
 export function CatalogSection() {
   const { addProduct } = useCart();
-  const [query, setQuery] = useState("");
+  const searchParams = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
 
+  const apiParams: Record<string, string> = {};
+  if (searchParams.get("q")) apiParams.q = searchParams.get("q")!;
+  if (searchParams.get("category")) apiParams.category = searchParams.get("category")!;
+  if (searchParams.get("promo") === "true") apiParams.promo = "true";
+  if (searchParams.get("bestSeller") === "true") apiParams.bestSeller = "true";
+  if (searchParams.get("featured") === "true") apiParams.featured = "true";
+  if (searchParams.get("sort")) apiParams.sort = searchParams.get("sort")!;
+
   useEffect(() => {
     const controller = new AbortController();
-
-    productsApi
-      .list({ signal: controller.signal })
+    productsApi.list({ signal: controller.signal, params: apiParams })
       .then((items) => {
         setProducts(items);
         setLoadError(null);
@@ -86,7 +94,7 @@ export function CatalogSection() {
 
       <div className="mb-8 flex flex-col gap-6 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-orange-700">Katalog Raf Store</p>
+          <p className="text-sm font-medium text-[var(--brand-600)]">Katalog Jasmine Frozen Food</p>
           <h2 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl">Semua produk</h2>
         </div>
         <CatalogSearch value={query} onChange={setQuery} />
@@ -117,7 +125,7 @@ export function CatalogSection() {
             <article key={product.id} className="min-w-0">
               <Link
                 href={`/produk/${product.id}`}
-                className="group block rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-orange-600/25"
+                className="group block rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-[var(--brand-600)]/25"
               >
                 <ProductImage
                   src={product.imageUrl}
@@ -128,13 +136,13 @@ export function CatalogSection() {
                 />
                 <div className="pt-4">
                   <p className="truncate text-xs font-medium text-stone-500">{product.category}</p>
-                  <h3 className="mt-1 truncate text-sm font-semibold tracking-tight text-stone-900 transition group-hover:text-orange-700 sm:text-base">
+                  <h3 className="mt-1 truncate text-sm font-semibold tracking-tight text-stone-900 transition group-hover:text-[var(--brand-600)] sm:text-base">
                     {product.name}
                   </h3>
                 </div>
               </Link>
               <div className="mt-2 flex items-center justify-between gap-2">
-                <p className="min-w-0 truncate text-sm font-medium text-orange-700 sm:text-base">
+                <p className="min-w-0 truncate text-sm font-medium text-[var(--brand-600)] sm:text-base">
                   {rupiahFormatter.format(product.price)}
                 </p>
                 <button
@@ -146,7 +154,7 @@ export function CatalogSection() {
                       ? `${product.name} ditambahkan ke keranjang`
                       : `Tambah ${product.name} ke keranjang`
                   }
-                  className="grid size-9 shrink-0 place-items-center rounded-full bg-stone-900 text-white transition hover:bg-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-600/20 disabled:cursor-not-allowed disabled:bg-stone-300 sm:size-10"
+                  className="grid size-9 shrink-0 place-items-center rounded-full bg-stone-900 text-white transition hover:bg-[var(--brand-700)] focus:outline-none focus:ring-4 focus:ring-[var(--brand-600)]/20 disabled:cursor-not-allowed disabled:bg-stone-300 sm:size-10"
                 >
                   {addedProductId === product.id ? (
                     <Check aria-hidden="true" size={17} />

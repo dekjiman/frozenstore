@@ -1,0 +1,60 @@
+# dependencies
+node_modules
+npm-debug.log*
+
+# next.js
+.next/
+out/
+
+# build
+build
+
+# git
+.git
+.gitignore
+
+# docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# environment
+.env*
+!.env.example
+
+# docs & tests
+testsprite/
+.testsprite/
+docs/
+*.md
+LICENSE
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# local sqlite data (legacy)
+/data/*.db
+/data/*.db-shm
+/data/*.db-wal
+/data/*.db-journal
+sqlite.db
+
+# local dev scratch & logs
+next-err.log
+next-out.log
+scratch-test.ts
+scripts/test-cookies.txt
+
+# upload folder (managed via volume)
+/public/uploads/payment-proofs/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

@@ -43,8 +43,8 @@ export function AdminProductsPage() {
   return (
     <div className="mx-auto max-w-7xl">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-        <div><p className="text-sm font-semibold text-orange-700">Katalog & gudang</p><h1 className="mt-1 font-serif text-4xl tracking-tight">Manajemen produk</h1><p className="mt-2 text-sm text-stone-500">Kelola katalog, SKU, harga, dan stok dalam satu tempat.</p></div>
-        <div className="flex flex-col gap-2 sm:flex-row"><Link href="/admin/stok/masuk" className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-5 text-sm font-semibold text-stone-700 hover:border-emerald-500 hover:text-emerald-700"><PackageCheck size={17} />Stok masuk</Link><Link href="/admin/produk/baru" className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-stone-900 px-5 text-sm font-semibold text-white hover:bg-orange-700"><Plus size={17} />Tambah produk</Link></div>
+        <div><p className="text-sm font-semibold text-[var(--brand-600)]">Katalog & gudang</p><h1 className="mt-1 font-serif text-4xl tracking-tight">Manajemen produk</h1><p className="mt-2 text-sm text-stone-500">Kelola katalog, SKU, harga, dan stok dalam satu tempat.</p></div>
+        <div className="flex flex-col gap-2 sm:flex-row"><Link href="/admin/stok/masuk" className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-5 text-sm font-semibold text-stone-700 hover:border-emerald-500 hover:text-emerald-700"><PackageCheck size={17} />Stok masuk</Link><Link href="/admin/produk/baru" className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-stone-900 px-5 text-sm font-semibold text-white hover:bg-[var(--brand-700)]"><Plus size={17} />Tambah produk</Link></div>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -57,7 +57,7 @@ export function AdminProductsPage() {
       <section className="mt-8 overflow-hidden rounded-3xl border border-stone-200 bg-white">
         <div className="flex flex-col gap-4 border-b border-stone-200 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div><h2 className="font-serif text-2xl">Daftar produk</h2><p className="mt-1 text-xs text-stone-500">{isLoading ? "Memuat..." : `${products.length} dari ${allProducts.length} produk`}</p></div>
-          <label className="relative block w-full sm:max-w-xs"><span className="sr-only">Cari produk admin</span><Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari nama atau SKU..." className="h-11 w-full rounded-full border border-stone-300 pl-10 pr-4 text-sm outline-none focus:border-orange-600 focus:ring-4 focus:ring-orange-600/10" /></label>
+          <label className="relative block w-full sm:max-w-xs"><span className="sr-only">Cari produk admin</span><Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari nama atau SKU..." className="h-11 w-full rounded-full border border-stone-300 pl-10 pr-4 text-sm outline-none focus:border-[var(--brand-600)] focus:ring-4 focus:ring-[var(--brand-600)]/10" /></label>
         </div>
 
         <div className="overflow-x-auto">
@@ -85,6 +85,6 @@ export function AdminProductsPage() {
 }
 
 function Stat({ icon: Icon, label, value, tone }: { icon: typeof Boxes; label: string; value: string; tone: "orange" | "emerald" | "amber" }) {
-  const tones = { orange: "bg-orange-100 text-orange-700", emerald: "bg-emerald-100 text-emerald-700", amber: "bg-amber-100 text-amber-700" };
+  const tones = { orange: "bg-[var(--brand-50)] text-[var(--brand-600)]", emerald: "bg-emerald-100 text-emerald-700", amber: "bg-amber-100 text-amber-700" };
   return <div className="flex items-center gap-4 rounded-2xl border border-stone-200 bg-white p-5"><span className={`grid size-11 place-items-center rounded-xl ${tones[tone]}`}><Icon size={20} /></span><div><p className="text-xs font-medium text-stone-500">{label}</p><p className="mt-1 text-2xl font-bold text-stone-900">{value}</p></div></div>;
 }

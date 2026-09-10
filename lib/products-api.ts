@@ -10,11 +10,20 @@ type ProductResponse = {
 
 type RequestOptions = {
   signal?: AbortSignal;
+  params?: Record<string, string>;
 };
 
+const baseUrl = typeof window !== "undefined" ? "" : "http://localhost:3000";
+
 export const productsApi = {
-  async list({ signal }: RequestOptions = {}): Promise<Product[]> {
-    const response = await fetch("/api/products", {
+  async list({ signal, params }: RequestOptions = {}): Promise<Product[]> {
+    const url = new URL("/api/products", baseUrl);
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        if (value) url.searchParams.set(key, value);
+      }
+    }
+    const response = await fetch(url.toString(), {
       method: "GET",
       headers: { Accept: "application/json" },
       cache: "no-store",

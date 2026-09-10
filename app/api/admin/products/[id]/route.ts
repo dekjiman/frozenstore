@@ -4,6 +4,7 @@ import { db } from "@/db/client";
 import { products } from "@/db/schema";
 import { requireAdmin } from "@/lib/admin-auth";
 import { parseProductInput, toAdminProduct } from "@/lib/admin-product";
+import { revalidateCacheTag, CACHE_TAGS } from "@/lib/cache";
 
 export const runtime = "nodejs";
 
@@ -71,6 +72,8 @@ export async function PATCH(request: Request, { params }: Context) {
 
     const updatedAt = new Date();
     await db.update(products).set({ ...parsed.data, updatedAt }).where(eq(products.id, id));
+    revalidateCacheTag(CACHE_TAGS.PRODUCTS);
+    revalidateCacheTag(CACHE_TAGS.HOMEPAGE);
     return NextResponse.json({
       product: toAdminProduct({ ...existing, ...parsed.data, updatedAt }),
     });
@@ -113,6 +116,8 @@ export async function DELETE(request: Request, { params }: Context) {
         { status: 404 },
       );
     }
+    revalidateCacheTag(CACHE_TAGS.PRODUCTS);
+    revalidateCacheTag(CACHE_TAGS.HOMEPAGE);
     return NextResponse.json({ deleted: true, id, deletedAt });
   } catch (error) {
     console.error("Failed to delete product", error);

@@ -75,7 +75,7 @@ export function ProductDetail({ initialProduct }: ProductDetailProps) {
         ) : null}
 
         <div className="flex flex-wrap items-center gap-3">
-          <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-800">
+          <span className="rounded-full bg-[var(--brand-50)] px-3 py-1 text-xs font-semibold text-[var(--brand-700)]">
             {product.category}
           </span>
           <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700">
@@ -90,7 +90,7 @@ export function ProductDetail({ initialProduct }: ProductDetailProps) {
         >
           {product.name}
         </h1>
-        <p className="mt-4 text-2xl font-semibold tracking-tight text-orange-700">
+        <p className="mt-4 text-2xl font-semibold tracking-tight text-[var(--brand-600)]">
           {rupiahFormatter.format(product.price)}
         </p>
 
@@ -98,7 +98,7 @@ export function ProductDetail({ initialProduct }: ProductDetailProps) {
           type="button"
           onClick={handleAddToCart}
           disabled={product.stock < 1}
-          className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-stone-900 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-600/20 disabled:cursor-not-allowed disabled:bg-stone-300 sm:w-auto"
+          className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-stone-900 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[var(--brand-700)] focus:outline-none focus:ring-4 focus:ring-[var(--brand-600)]/20 disabled:cursor-not-allowed disabled:bg-stone-300 sm:w-auto"
         >
           {justAdded ? <Check aria-hidden="true" size={18} /> : <ShoppingBag aria-hidden="true" size={18} />}
           {justAdded ? "Ditambahkan ke keranjang" : "Tambah ke keranjang"}
@@ -129,15 +129,15 @@ export function ProductDetail({ initialProduct }: ProductDetailProps) {
 
         <ul className="mt-8 grid gap-4 border-t border-stone-200 pt-7 text-sm text-stone-600 sm:grid-cols-3">
           <li className="flex items-center gap-3">
-            <PackageCheck aria-hidden="true" size={20} className="shrink-0 text-orange-700" />
+            <PackageCheck aria-hidden="true" size={20} className="shrink-0 text-[var(--brand-600)]" />
             Stok terpantau
           </li>
           <li className="flex items-center gap-3">
-            <ShieldCheck aria-hidden="true" size={20} className="shrink-0 text-orange-700" />
+            <ShieldCheck aria-hidden="true" size={20} className="shrink-0 text-[var(--brand-600)]" />
             Produk pilihan
           </li>
           <li className="flex items-center gap-3">
-            <Truck aria-hidden="true" size={20} className="shrink-0 text-orange-700" />
+            <Truck aria-hidden="true" size={20} className="shrink-0 text-[var(--brand-600)]" />
             Siap dikirim
           </li>
         </ul>

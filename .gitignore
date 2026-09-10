@@ -19,8 +19,20 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# local sqlite data
+# local sqlite data (legacy)
 /data/*.db
 /data/*.db-shm
 /data/*.db-wal
-/public/uploads/payment-proofs/
+/sqlite.db
+
+# runtime uploads (seeded into Docker volumes, not source)
+/public/uploads/*
+!/public/uploads/products/
+/public/uploads/products/*
+!/public/uploads/products/placeholder.svg
+
+# scratch/debug files
+next-err.log
+next-out.log
+scratch-test.ts
+scripts/test-cookies.txt

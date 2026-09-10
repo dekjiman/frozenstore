@@ -19,7 +19,7 @@ type ShippingFormProps = {
 };
 
 const fieldClass =
-  "mt-2 h-12 w-full rounded-xl border border-stone-300 bg-white px-4 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-orange-600 focus:ring-4 focus:ring-orange-600/10";
+  "mt-2 h-12 w-full rounded-xl border border-stone-300 bg-white px-4 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[var(--brand-600)] focus:ring-4 focus:ring-[var(--brand-600)]/10";
 
 export function ShippingForm({ data, errors, onChange }: ShippingFormProps) {
   return (

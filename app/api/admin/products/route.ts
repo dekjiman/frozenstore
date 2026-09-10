@@ -5,6 +5,7 @@ import { db } from "@/db/client";
 import { products } from "@/db/schema";
 import { requireAdmin } from "@/lib/admin-auth";
 import { parseProductInput, toAdminProduct } from "@/lib/admin-product";
+import { revalidateCacheTag, CACHE_TAGS } from "@/lib/cache";
 
 export const runtime = "nodejs";
 
@@ -26,9 +27,9 @@ export async function GET(request: Request) {
 
     const searchCondition = query
       ? or(
-          sql`instr(lower(${products.name}), lower(${query})) > 0`,
-          sql`instr(lower(${products.category}), lower(${query})) > 0`,
-          sql`instr(lower(${products.sku}), lower(${query})) > 0`,
+          sql`strpos(lower(${products.name}), lower(${query})) > 0`,
+          sql`strpos(lower(${products.category}), lower(${query})) > 0`,
+          sql`strpos(lower(${products.sku}), lower(${query})) > 0`,
         )
       : undefined;
     const rows = await db
@@ -79,8 +80,13 @@ export async function POST(request: Request) {
       deletedAt: null,
       createdAt: now,
       updatedAt: now,
+      ratingAverage: 0,
+      ratingCount: 0,
+      soldCount: 0,
     };
     await db.insert(products).values(product);
+    revalidateCacheTag(CACHE_TAGS.PRODUCTS);
+    revalidateCacheTag(CACHE_TAGS.HOMEPAGE);
     return NextResponse.json({ product: toAdminProduct(product) }, { status: 201 });
   } catch (error) {
     if (error instanceof SyntaxError) {

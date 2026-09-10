@@ -61,8 +61,8 @@ export async function GET(request: Request) {
       to ? lte(stockMovements.createdAt, to) : undefined,
       query
         ? or(
-            sql`instr(lower(${products.name}), lower(${query})) > 0`,
-            sql`instr(lower(${products.sku}), lower(${query})) > 0`,
+            sql`strpos(lower(${products.name}), lower(${query})) > 0`,
+            sql`strpos(lower(${products.sku}), lower(${query})) > 0`,
             sql`instr(lower(${stockMovements.reason}), lower(${query})) > 0`,
             sql`instr(lower(coalesce(${stockMovements.reference}, '')), lower(${query})) > 0`,
           )

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <rect width="800" height="800" fill="#FFF7EB"/>
+  <circle cx="400" cy="330" r="150" fill="#FFF1F0" stroke="#E9DDD3" stroke-width="4"/>
+  <text x="400" y="360" text-anchor="middle" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#C81D25">Jasmine</text>
+  <text x="400" y="420" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#B51217">Frozen Food</text>
+  <text x="400" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#9C8A7A">Foto produk segera hadir</text>
+</svg>

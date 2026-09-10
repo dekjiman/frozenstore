@@ -150,7 +150,7 @@ export function PaymentProofUpload({ orderId, onConfirmed }: PaymentProofUploadP
             className="grid min-h-44 w-full place-items-center text-center"
           >
             <span>
-              <span className="mx-auto grid size-12 place-items-center rounded-full bg-white text-orange-700 shadow-sm">
+              <span className="mx-auto grid size-12 place-items-center rounded-full bg-white text-[var(--brand-600)] shadow-sm">
                 <UploadCloud aria-hidden="true" size={22} />
               </span>
               <span className="mt-4 block text-sm font-semibold text-stone-900">Pilih foto bukti transfer</span>
@@ -188,10 +188,10 @@ export function PaymentProofUpload({ orderId, onConfirmed }: PaymentProofUploadP
           type="checkbox"
           checked={confirmed}
           onChange={(event) => setConfirmed(event.target.checked)}
-          className="mt-0.5 size-4 accent-orange-600"
+          className="mt-0.5 size-4 accent-[var(--brand-600)]"
         />
         <span className="text-sm leading-6 text-stone-600">
-          Saya memastikan telah mentransfer sesuai total pembayaran ke rekening Raf Store yang dipilih.
+          Saya memastikan telah mentransfer sesuai total pembayaran ke rekening Jasmine Frozen Food yang dipilih.
         </span>
       </label>
 
@@ -199,7 +199,7 @@ export function PaymentProofUpload({ orderId, onConfirmed }: PaymentProofUploadP
         type="button"
         onClick={() => void submitProof()}
         disabled={!file || !confirmed || !orderId || isUploading}
-        className="mt-6 w-full rounded-full bg-stone-900 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:bg-stone-300"
+        className="mt-6 w-full rounded-full bg-stone-900 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[var(--brand-700)] disabled:cursor-not-allowed disabled:bg-stone-300"
       >
         {isUploading ? "Mengunggah..." : "Unggah bukti & selesaikan checkout"}
       </button>

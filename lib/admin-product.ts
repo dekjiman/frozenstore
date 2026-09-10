@@ -9,6 +9,22 @@ export type ProductInput = {
   currentStock: number;
   imageUrl: string;
   isActive: boolean;
+  slug: string | null;
+  shortDescription: string;
+  compareAtPrice: number | null;
+  weightValue: number | null;
+  weightUnit: string;
+  piecesMin: number | null;
+  piecesMax: number | null;
+  isFeatured: boolean;
+  isBestSeller: boolean;
+  isNew: boolean;
+  isPromo: boolean;
+  articleId: string | null;
+  storageInstructions: string;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  categoryId: string | null;
 };
 
 type ValidationResult =
@@ -33,6 +49,30 @@ export function parseProductInput(
     : Number(currentStockValue);
   const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim() : existing?.imageUrl ?? "";
   const isActive = typeof body.isActive === "boolean" ? body.isActive : existing?.isActive ?? true;
+  const slug = typeof body.slug === "string" ? body.slug.trim() || null : existing?.slug ?? null;
+  const shortDescription = typeof body.shortDescription === "string" ? body.shortDescription.trim() : existing?.shortDescription ?? "";
+  const compareAtPrice = body.compareAtPrice === undefined || body.compareAtPrice === null || body.compareAtPrice === ""
+    ? existing?.compareAtPrice ?? null
+    : Number(body.compareAtPrice);
+  const weightValue = body.weightValue === undefined || body.weightValue === null || body.weightValue === ""
+    ? existing?.weightValue ?? null
+    : Number(body.weightValue);
+  const weightUnit = typeof body.weightUnit === "string" ? body.weightUnit.trim() || "g" : existing?.weightUnit ?? "g";
+  const piecesMin = body.piecesMin === undefined || body.piecesMin === null || body.piecesMin === ""
+    ? existing?.piecesMin ?? null
+    : Number(body.piecesMin);
+  const piecesMax = body.piecesMax === undefined || body.piecesMax === null || body.piecesMax === ""
+    ? existing?.piecesMax ?? null
+    : Number(body.piecesMax);
+  const isFeatured = typeof body.isFeatured === "boolean" ? body.isFeatured : existing?.isFeatured ?? false;
+  const isBestSeller = typeof body.isBestSeller === "boolean" ? body.isBestSeller : existing?.isBestSeller ?? false;
+  const isNew = typeof body.isNew === "boolean" ? body.isNew : existing?.isNew ?? false;
+  const isPromo = typeof body.isPromo === "boolean" ? body.isPromo : existing?.isPromo ?? false;
+  const articleId = typeof body.articleId === "string" ? body.articleId.trim() || null : existing?.articleId ?? null;
+  const storageInstructions = typeof body.storageInstructions === "string" ? body.storageInstructions.trim() : existing?.storageInstructions ?? "";
+  const seoTitle = typeof body.seoTitle === "string" ? body.seoTitle.trim() || null : existing?.seoTitle ?? null;
+  const seoDescription = typeof body.seoDescription === "string" ? body.seoDescription.trim() || null : existing?.seoDescription ?? null;
+  const categoryId = typeof body.categoryId === "string" ? body.categoryId.trim() || null : existing?.categoryId ?? null;
 
   if (!/^[A-Z0-9][A-Z0-9._-]{1,49}$/.test(sku)) {
     return { error: "SKU harus 2-50 karakter dan hanya boleh berisi huruf, angka, titik, garis bawah, atau tanda hubung" };
@@ -49,7 +89,12 @@ export function parseProductInput(
   }
 
   return {
-    data: { sku, name, category, description, price, currentStock, imageUrl, isActive },
+    data: {
+      sku, name, category, description, price, currentStock, imageUrl, isActive,
+      slug, shortDescription, compareAtPrice, weightValue, weightUnit,
+      piecesMin, piecesMax, isFeatured, isBestSeller, isNew, isPromo,
+      articleId, storageInstructions, seoTitle, seoDescription, categoryId,
+    },
   };
 }
 
@@ -68,5 +113,21 @@ export function toAdminProduct(row: ProductRow) {
     deletedAt: row.deletedAt,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
+    slug: row.slug,
+    shortDescription: row.shortDescription,
+    compareAtPrice: row.compareAtPrice,
+    weightValue: row.weightValue,
+    weightUnit: row.weightUnit,
+    piecesMin: row.piecesMin,
+    piecesMax: row.piecesMax,
+    isFeatured: row.isFeatured,
+    isBestSeller: row.isBestSeller,
+    isNew: row.isNew,
+    isPromo: row.isPromo,
+    articleId: row.articleId,
+    storageInstructions: row.storageInstructions,
+    seoTitle: row.seoTitle,
+    seoDescription: row.seoDescription,
+    categoryId: row.categoryId,
   };
 }

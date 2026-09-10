@@ -1,20 +1,27 @@
-import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "@/db/schema";
 
-const databaseUrl = process.env.DATABASE_URL ?? "./data/raf-store.db";
+const databaseUrl = process.env.DATABASE_URL;
 
-const globalForDatabase = globalThis as unknown as {
-  sqlite: Database.Database | undefined;
-};
-
-const sqlite = globalForDatabase.sqlite ?? new Database(databaseUrl);
-
-if (process.env.NODE_ENV !== "production") {
-  globalForDatabase.sqlite = sqlite;
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL environment variable is required");
 }
 
-sqlite.pragma("journal_mode = WAL");
-sqlite.pragma("foreign_keys = ON");
+const globalForDatabase = globalThis as unknown as {
+  postgres: postgres.Sql | undefined;
+};
 
-export const db = drizzle(sqlite, { schema });
+const client =
+  globalForDatabase.postgres ??
+  postgres(databaseUrl, {
+    max: 10,
+    idle_timeout: 20,
+    connect_timeout: 10,
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForDatabase.postgres = client;
+}
+
+export const db = drizzle(client, { schema });

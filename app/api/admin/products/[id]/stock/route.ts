@@ -40,9 +40,9 @@ export async function POST(request: Request, { params }: Context) {
       );
     }
 
-    const product = db.query.products.findFirst({
+    const product = await db.query.products.findFirst({
       where: and(eq(products.id, id), isNull(products.deletedAt)),
-    }).sync();
+    });
     if (!product) {
       return NextResponse.json(
         { error: { code: "PRODUCT_NOT_FOUND", message: "Produk tidak ditemukan" } },
@@ -78,13 +78,13 @@ export async function POST(request: Request, { params }: Context) {
       createdAt: now,
     };
 
-    db.transaction((transaction) => {
-      transaction
+    await db.transaction(async (transaction) => {
+      await transaction
         .update(products)
         .set({ currentStock: stockAfter, updatedAt: now })
         .where(and(eq(products.id, product.id), eq(products.currentStock, product.currentStock)))
-        .run();
-      transaction.insert(stockMovements).values(movement).run();
+        .execute();
+      await transaction.insert(stockMovements).values(movement).execute();
     });
 
     return NextResponse.json(

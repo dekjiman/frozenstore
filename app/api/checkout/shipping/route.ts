@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db/client";
-import { cartItems, carts, orderItems, orders } from "@/db/schema";
+import { cartItems, carts, orderItems, orders, siteSettings } from "@/db/schema";
 import { getCartPayload } from "@/lib/cart-service";
 import { getCartSession } from "@/lib/cart-session";
 import { createOrderNumber } from "@/lib/order-number";
@@ -82,7 +82,12 @@ export async function POST(request: Request) {
     }
 
     const now = new Date();
-    const shippingAmount = 20_000;
+
+    const settings = await db.query.siteSettings.findFirst({
+      where: eq(siteSettings.id, "default"),
+    });
+    const freeShippingThreshold = settings?.freeShippingThreshold ?? 0;
+    const shippingAmount = cartPayload.subtotal >= freeShippingThreshold ? 0 : 20_000;
     const authenticated = await getAuthenticatedUser(request);
     const order = {
       id: randomUUID(),
@@ -116,15 +121,15 @@ export async function POST(request: Request) {
       createdAt: now,
     }));
 
-    db.transaction((transaction) => {
-      transaction.insert(orders).values(order).run();
-      transaction.insert(orderItems).values(itemRows).run();
-      deductStockForOrder(transaction, {
+    await db.transaction(async (transaction) => {
+      await transaction.insert(orders).values(order).execute();
+      await transaction.insert(orderItems).values(itemRows).execute();
+      await deductStockForOrder(transaction, {
         orderNumber: order.orderNumber,
         items: itemRows,
         createdAt: now,
       });
-      transaction.delete(cartItems).where(eq(cartItems.cartId, cart.id)).run();
+      await transaction.delete(cartItems).where(eq(cartItems.cartId, cart.id)).execute();
     });
 
     return NextResponse.json(

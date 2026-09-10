@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { AdminEditProductForm } from "@/components/admin-edit-product-form";
+import { ProductMediaManager } from "@/components/admin-product-media-manager";
 import { db } from "@/db/client";
 import { products } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
@@ -11,5 +12,13 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   const { id } = await params;
   const row = await db.query.products.findFirst({ where: and(eq(products.id, id), isNull(products.deletedAt)) });
   if (!row) notFound();
-  return <AdminEditProductForm product={toProduct(row)} />;
+  const product = toProduct(row);
+  return (
+    <div className="space-y-8">
+      <AdminEditProductForm product={product} />
+      <div className="mx-auto max-w-4xl">
+        <ProductMediaManager productId={product.id} />
+      </div>
+    </div>
+  );
 }

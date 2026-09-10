@@ -46,11 +46,12 @@ export async function getCartPayload(cartId: string) {
 }
 
 export async function findCartItemForSession(itemId: string, sessionKey: string) {
-  return db
+  const rows = await db
     .select({ item: cartItems, cart: carts, product: products })
     .from(cartItems)
     .innerJoin(carts, eq(cartItems.cartId, carts.id))
     .innerJoin(products, eq(cartItems.productId, products.id))
     .where(and(eq(cartItems.id, itemId), eq(carts.sessionKey, sessionKey)))
-    .get();
+    .limit(1);
+  return rows[0] ?? undefined;
 }

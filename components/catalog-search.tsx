@@ -31,7 +31,7 @@ export function CatalogSearch({ value, onChange }: CatalogSearchProps) {
         placeholder="Cari produk yang kamu butuhkan..."
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-12 w-full rounded-full border border-stone-300 bg-white pl-12 pr-5 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 hover:border-stone-400 focus:border-orange-600 focus:ring-4 focus:ring-orange-600/10"
+        className="h-12 w-full rounded-full border border-stone-300 bg-white pl-12 pr-5 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--brand-600)] focus:ring-4 focus:ring-[var(--brand-600)]/10"
       />
     </form>
   );

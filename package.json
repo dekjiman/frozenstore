@@ -9,20 +9,27 @@
     "lint": "eslint .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
     "db:seed": "node scripts/seed.mjs",
-    "db:studio": "drizzle-kit studio"
+    "db:backfill": "node scripts/backfill.mjs",
+    "db:studio": "drizzle-kit studio",
+    "docker:dev": "docker compose -f docker-compose.dev.yml up",
+    "docker:dev:down": "docker compose -f docker-compose.dev.yml down",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down"
   },
   "dependencies": {
-    "better-sqlite3": "^12.11.1",
     "drizzle-orm": "^0.45.2",
     "lucide-react": "^0.525.0",
     "next": "16.2.10",
+    "postgres": "^3.4.5",
     "react": "19.2.7",
-    "react-dom": "19.2.7"
+    "react-dom": "19.2.7",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.2",
-    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.0.13",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

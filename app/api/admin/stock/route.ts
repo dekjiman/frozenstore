@@ -30,9 +30,9 @@ export async function GET(request: Request) {
 
     const searchCondition = query
       ? or(
-          sql`instr(lower(${products.name}), lower(${query})) > 0`,
-          sql`instr(lower(${products.category}), lower(${query})) > 0`,
-          sql`instr(lower(${products.sku}), lower(${query})) > 0`,
+          sql`strpos(lower(${products.name}), lower(${query})) > 0`,
+          sql`strpos(lower(${products.category}), lower(${query})) > 0`,
+          sql`strpos(lower(${products.sku}), lower(${query})) > 0`,
         )
       : undefined;
     const rows = await db

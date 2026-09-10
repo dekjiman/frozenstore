@@ -32,7 +32,7 @@ export class StockUnavailableError extends Error {
   }
 }
 
-export function deductStockForOrder(
+export async function deductStockForOrder(
   transaction: DatabaseTransaction,
   input: DeductOrderStockInput,
 ) {
@@ -45,21 +45,21 @@ export function deductStockForOrder(
   const movements = [];
 
   for (const [productId, quantity] of quantities) {
-    const existingMovement = transaction.query.stockMovements.findFirst({
+    const existingMovement = await transaction.query.stockMovements.findFirst({
       where: and(
         eq(stockMovements.productId, productId),
         eq(stockMovements.type, "out"),
         eq(stockMovements.reference, input.orderNumber),
       ),
-    }).sync();
+    });
     if (existingMovement) {
       movements.push(existingMovement);
       continue;
     }
 
-    const product = transaction.query.products.findFirst({
+    const product = await transaction.query.products.findFirst({
       where: and(eq(products.id, productId), isNull(products.deletedAt)),
-    }).sync();
+    });
     const available = product?.currentStock ?? 0;
     if (!product || !product.isActive || available < quantity) {
       throw new StockUnavailableError(
@@ -71,7 +71,7 @@ export function deductStockForOrder(
     }
 
     const stockAfter = available - quantity;
-    const updateResult = transaction
+    const updateResult = await transaction
       .update(products)
       .set({ currentStock: stockAfter, updatedAt: createdAt })
       .where(
@@ -82,8 +82,8 @@ export function deductStockForOrder(
           isNull(products.deletedAt),
         ),
       )
-      .run();
-    if (updateResult.changes !== 1) {
+      .execute();
+    if (Number(updateResult.count) !== 1) {
       throw new StockUnavailableError(
         `Stok produk ${product.name} berubah, silakan coba lagi`,
         productId,
@@ -104,7 +104,7 @@ export function deductStockForOrder(
       createdBy: input.createdBy ?? null,
       createdAt,
     };
-    transaction.insert(stockMovements).values(movement).run();
+    await transaction.insert(stockMovements).values(movement).execute();
     movements.push(movement);
   }
 

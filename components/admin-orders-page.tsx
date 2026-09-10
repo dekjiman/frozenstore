@@ -67,7 +67,7 @@ export function AdminOrdersPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <p className="text-sm font-semibold text-orange-700">Operasional pesanan</p>
+      <p className="text-sm font-semibold text-[var(--brand-600)]">Operasional pesanan</p>
       <h1 className="mt-1 font-serif text-4xl">Pesanan pelanggan</h1>
       <p className="mt-2 text-sm text-stone-500">
         Verifikasi pembayaran dan perbarui proses pengiriman.
@@ -106,7 +106,7 @@ export function AdminOrdersPage() {
                       type="button"
                       onClick={() => setSelectedProof(order)}
                       aria-label={`Lihat bukti transfer pesanan ${order.orderNumber}`}
-                      className="group flex items-center gap-3 rounded-xl text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-600 focus-visible:ring-offset-2"
+                      className="group flex items-center gap-3 rounded-xl text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-600)] focus-visible:ring-offset-2"
                     >
                       <span className="relative block h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-stone-200 bg-stone-100">
                         {/* Bukti transfer adalah URL unggahan dinamis, jadi tidak dibatasi host next/image. */}
@@ -118,7 +118,7 @@ export function AdminOrdersPage() {
                         />
                       </span>
                       <span>
-                        <span className="flex items-center gap-1 text-xs font-semibold text-orange-700 group-hover:underline">
+                        <span className="flex items-center gap-1 text-xs font-semibold text-[var(--brand-600)] group-hover:underline">
                           <CheckCircle2 size={14} />
                           Lihat bukti
                         </span>
@@ -190,7 +190,7 @@ export function AdminOrdersPage() {
           <div className="w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl">
             <div className="flex items-start justify-between gap-4 border-b border-stone-200 px-5 py-4">
               <div>
-                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-orange-700">
+                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--brand-600)]">
                   <ImageIcon size={15} />
                   Bukti transfer
                 </p>
@@ -203,7 +203,7 @@ export function AdminOrdersPage() {
                 type="button"
                 onClick={() => setSelectedProof(null)}
                 aria-label="Tutup bukti transfer"
-                className="rounded-full p-2 text-stone-500 hover:bg-stone-100 hover:text-stone-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-600"
+                className="rounded-full p-2 text-stone-500 hover:bg-stone-100 hover:text-stone-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-600)]"
               >
                 <X size={22} />
               </button>
@@ -221,7 +221,7 @@ export function AdminOrdersPage() {
                 href={selectedProof.paymentProofUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+                className="inline-flex items-center gap-2 rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--brand-700)]"
               >
                 Buka gambar asli
                 <ExternalLink size={15} />

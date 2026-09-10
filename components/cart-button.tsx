@@ -11,14 +11,17 @@ export function CartButton() {
     <Link
       href="/keranjang"
       aria-label={`Lihat keranjang, ${itemCount} item`}
-      className="relative grid size-10 place-items-center rounded-full border border-stone-300 bg-white text-stone-800 transition hover:border-stone-400"
+      className="relative flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1.5 text-stone-500 hover:text-[var(--brand-600)] transition-colors"
     >
-      <ShoppingBag aria-hidden="true" size={18} strokeWidth={1.8} />
-      {itemCount > 0 ? (
-        <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-orange-600 px-1 text-[10px] font-bold leading-5 text-white">
-          {itemCount > 99 ? "99+" : itemCount}
-        </span>
-      ) : null}
+      <div className="relative">
+        <ShoppingBag aria-hidden="true" size={20} strokeWidth={1.5} />
+        {itemCount > 0 ? (
+          <span className="absolute -right-1.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-[var(--brand-600)] px-1 text-[9px] font-bold leading-[18px] text-white">
+            {itemCount > 99 ? "99+" : itemCount}
+          </span>
+        ) : null}
+      </div>
+      <span className="text-[10px] font-medium leading-none">Keranjang</span>
     </Link>
   );
 }

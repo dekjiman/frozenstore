@@ -24,7 +24,7 @@ export function EmptySearchState({ query, onClear }: EmptySearchStateProps) {
         <button
           type="button"
           onClick={onClear}
-          className="mt-5 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-600/20"
+          className="mt-5 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--brand-700)] focus:outline-none focus:ring-4 focus:ring-[var(--brand-600)]/20"
         >
           Hapus pencarian
         </button>

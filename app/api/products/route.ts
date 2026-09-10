@@ -1,8 +1,5 @@
-import { and, asc, eq, isNull, or, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { db } from "@/db/client";
-import { products } from "@/db/schema";
-import { toProduct } from "@/lib/product-mapper";
+import { getCatalogProducts, type CatalogParams } from "@/lib/queries/catalog";
 
 export const runtime = "nodejs";
 
@@ -18,34 +15,33 @@ export async function GET(request: Request) {
       );
     }
 
-    const searchCondition = query
-      ? or(
-          sql`instr(lower(${products.name}), lower(${query})) > 0`,
-          sql`instr(lower(${products.category}), lower(${query})) > 0`,
-          sql`instr(lower(${products.sku}), lower(${query})) > 0`,
-        )
-      : undefined;
+    const params: CatalogParams = {
+      q: query || undefined,
+      category: searchParams.get("category") ?? undefined,
+      featured: searchParams.get("featured") === "true",
+      bestSeller: searchParams.get("bestSeller") === "true" || searchParams.get("best-seller") === "true",
+      promo: searchParams.get("promo") === "true",
+      sort: searchParams.get("sort") ?? undefined,
+      minPrice: searchParams.has("minPrice") ? Number(searchParams.get("minPrice")) : undefined,
+      maxPrice: searchParams.has("maxPrice") ? Number(searchParams.get("maxPrice")) : undefined,
+      inStock: searchParams.get("inStock") === "true",
+      page: searchParams.has("page") ? Number(searchParams.get("page")) : undefined,
+      limit: searchParams.has("limit") ? Number(searchParams.get("limit")) : undefined,
+    };
 
-    const rows = await db
-      .select()
-      .from(products)
-      .where(
-        and(
-          eq(products.isActive, true),
-          isNull(products.deletedAt),
-          searchCondition,
-        ),
-      )
-      .orderBy(asc(products.name));
+    const result = await getCatalogProducts(params);
 
     return NextResponse.json({
-      products: rows.map(toProduct),
-      total: rows.length,
-      query: query || null,
+      data: result.products,
+      meta: {
+        total: result.total,
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+      },
     });
   } catch (error) {
     console.error("Failed to list products", error);
-
     return NextResponse.json(
       { error: { code: "PRODUCTS_LIST_FAILED", message: "Gagal memuat daftar produk" } },
       { status: 500 },

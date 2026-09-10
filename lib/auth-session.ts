@@ -51,8 +51,8 @@ export async function getAuthenticatedUser(request: Request) {
     .from(authSessions)
     .innerJoin(users, eq(authSessions.userId, users.id))
     .where(and(eq(authSessions.tokenHash, hashToken(decodeURIComponent(token))), gt(authSessions.expiresAt, new Date())))
-    .get();
-  return result ?? null;
+    .limit(1);
+  return result[0] ?? null;
 }
 
 export async function deleteAuthSession(request: Request) {

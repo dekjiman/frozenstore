@@ -14,9 +14,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Raf Store — Belanja Pilihan, Setiap Hari",
-  description: "Temukan produk pilihan berkualitas untuk kebutuhan sehari-hari.",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: "Jasmine Frozen Food — Frozen Food Berkualitas, Halal & Bergizi",
+    template: "%s | Jasmine Frozen Food",
+  },
+  description:
+    "Temukan frozen food berkualitas dari Jasmine Frozen Food. Ayam katsu, nugget, sosis, dan produk siap masak lainnya. Halal, bergizi, dan harga terjangkau.",
+  keywords: ["frozen food", "ayam katsu", "nugget", "sosis", "halal", "Jasmine"],
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    siteName: "Jasmine Frozen Food",
+  },
 };
 
 export default function RootLayout({

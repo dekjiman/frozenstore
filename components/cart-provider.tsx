@@ -102,7 +102,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       {notification ? (
         <div role="status" aria-live="polite" className="fixed bottom-5 left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-3 rounded-2xl border border-stone-700 bg-stone-950 p-3.5 text-white shadow-2xl sm:bottom-7">
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-emerald-500/15 text-emerald-400"><CheckCircle2 size={19} /></span>
-          <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{notification}</p><Link href="/keranjang" className="mt-0.5 inline-block text-xs text-orange-300">Lihat keranjang</Link></div>
+          <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{notification}</p><Link href="/keranjang" className="mt-0.5 inline-block text-xs text-[var(--brand-200)]">Lihat keranjang</Link></div>
           <button type="button" onClick={() => setNotification(null)} aria-label="Tutup notifikasi" className="grid size-8 place-items-center rounded-full text-stone-400"><X size={16} /></button>
         </div>
       ) : null}

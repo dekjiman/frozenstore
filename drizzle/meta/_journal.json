@@ -1,82 +1,12 @@
 {
   "version": "7",
-  "dialect": "sqlite",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "6",
-      "when": 1784194314248,
-      "tag": "0000_flawless_titania",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1784194546092,
-      "tag": "0001_noisy_shriek",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1784197126298,
-      "tag": "0002_serious_ultimatum",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1784197168740,
-      "tag": "0003_lean_retro_girl",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1784197206290,
-      "tag": "0004_workable_shockwave",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1784197438920,
-      "tag": "0005_goofy_thunderbird",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1784197510099,
-      "tag": "0006_wandering_madripoor",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "6",
-      "when": 1784197662406,
-      "tag": "0007_spotty_nick_fury",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "6",
-      "when": 1784197777365,
-      "tag": "0008_remarkable_professor_monster",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "6",
-      "when": 1784201436917,
-      "tag": "0009_easy_carlie_cooper",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "6",
-      "when": 1784201525444,
-      "tag": "0010_nervous_tony_stark",
+      "version": "7",
+      "when": 1788981536467,
+      "tag": "0000_next_korath",
       "breakpoints": true
     }
   ]
