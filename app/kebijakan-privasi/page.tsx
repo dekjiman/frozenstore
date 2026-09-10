@@ -9,14 +9,14 @@ import { ShieldCheck, Lock, Eye, FileText, UserCheck, HelpCircle } from "lucide-
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Kebijakan Privasi — Jasmine Frozen Food",
+  title: "Kebijakan Privasi — Jasmine Shop Premium Product",
   description:
-    "Kebijakan Privasi Jasmine Frozen Food. Pelajari bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi Anda saat berbelanja produk frozen food kami.",
+    "Kebijakan Privasi Jasmine Shop Premium Product. Pelajari bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi Anda saat berbelanja produk frozen food kami.",
 };
 
 export default async function KebijakanPrivasiPage() {
   const settings = await getSiteSettings();
-  const brand = settings?.brandName || "Jasmine Frozen Food";
+  const brand = settings?.brandName || "Jasmine Shop Premium Product";
   const email = settings?.email || "info@jasminefrozenfood.id";
   const whatsapp = settings?.whatsappNumber || "0812-3456-7890";
 

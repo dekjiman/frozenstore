@@ -8,7 +8,7 @@ import { ShieldCheck, Snowflake, Truck, BadgeCheck, Heart, Users, Award } from "
 export const metadata: Metadata = {
   title: "Tentang Kami",
   description:
-    "Kenali lebih dekat Jasmine Frozen Food — penyedia frozen food premium berkualitas, halal, dan bergizi untuk keluarga Indonesia.",
+    "Kenali lebih dekat Jasmine Shop Premium Product — penyedia frozen food premium berkualitas, halal, dan bergizi untuk keluarga Indonesia.",
 };
 
 const VALUES = [
@@ -35,7 +35,7 @@ const VALUES = [
 ];
 
 const MILESTONES = [
-  { year: "2018", title: "Berdiri", description: "Jasmine Frozen Food didirikan dengan visi menyediakan frozen food berkualitas untuk keluarga Indonesia." },
+  { year: "2018", title: "Berdiri", description: "Jasmine Shop Premium Product didirikan dengan visi menyediakan frozen food berkualitas untuk keluarga Indonesia." },
   { year: "2020", title: "Ekspansi Produksi", description: "Pembangunan pabrik baru dengan kapasitas produksi yang lebih besar." },
   { year: "2022", title: "100+ Produk", description: "Meluncurkan lebih dari 100 varian produk frozen food premium." },
   { year: "2024", title: "500+ Reseller", description: "Jaringan reseller kami telah tersebar di seluruh Indonesia." },
@@ -76,7 +76,7 @@ export default function TentangKamiPage() {
                 </h2>
                 <div className="mt-4 space-y-4 text-[var(--ink-700)] leading-relaxed">
                   <p>
-                    Jasmine Frozen Food bermula dari kepedulian kami terhadap kebutuhan
+                    Jasmine Shop Premium Product bermula dari kepedulian kami terhadap kebutuhan
                     keluarga Indonesia akan makanan yang praktis, bergizi, dan tetap
                     berkualitas tinggi. Didirikan pada tahun 2018, kami berkomitmen
                     untuk menghadirkan produk frozen food terbaik.
@@ -146,7 +146,7 @@ export default function TentangKamiPage() {
                 Perjalanan Kami
               </h2>
               <p className="mt-2 text-sm text-stone-500">
-                Tonggak penting dalam sejarah Jasmine Frozen Food
+                Tonggak penting dalam sejarah Jasmine Shop Premium Product
               </p>
             </div>
 

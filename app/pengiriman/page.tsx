@@ -8,14 +8,14 @@ import { Truck, ShieldCheck, Clock, HelpCircle } from "lucide-react";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Informasi Pengiriman — Jasmine Frozen Food",
+  title: "Informasi Pengiriman — Jasmine Shop Premium Product",
   description:
-    "Jadwal, area jangkauan, dan standar pengemasan rantai dingin pengiriman Jasmine Frozen Food.",
+    "Jadwal, area jangkauan, dan standar pengemasan rantai dingin pengiriman Jasmine Shop Premium Product.",
 };
 
 export default async function PengirimanPage() {
   const settings = await getSiteSettings();
-  const brand = settings?.brandName || "Jasmine Frozen Food";
+  const brand = settings?.brandName || "Jasmine Shop Premium Product";
   const hours = settings?.operatingHours || "Senin - Sabtu, 08:00 - 17:00 WIB";
   const whatsapp = settings?.whatsappNumber || "0812-3456-7890";
 

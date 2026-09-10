@@ -19,17 +19,17 @@ const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Jasmine Frozen Food — Frozen Food Berkualitas, Halal & Bergizi",
-    template: "%s | Jasmine Frozen Food",
+    default: "Jasmine Shop Premium Product — Frozen Food Premium, Halal & Bergizi",
+    template: "%s | Jasmine Shop Premium Product",
   },
   description:
-    "Temukan frozen food berkualitas dari Jasmine Frozen Food. Ayam katsu, nugget, sosis, dan produk siap masak lainnya. Halal, bergizi, dan harga terjangkau.",
+    "Temukan frozen food premium dari Jasmine Shop Premium Product. Ayam katsu, nugget, sosis, dan produk siap masak lainnya. Halal, bergizi, dan harga terjangkau.",
   keywords: ["frozen food", "ayam katsu", "nugget", "sosis", "halal", "Jasmine"],
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     locale: "id_ID",
-    siteName: "Jasmine Frozen Food",
+    siteName: "Jasmine Shop Premium Product",
   },
 };
 

@@ -41,21 +41,21 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const promo = typeof params.promo === "string" && params.promo === "true";
   if (q) {
     return {
-      title: `Hasil pencarian "${q}" — Jasmine Frozen Food`,
-      description: `Hasil pencarian "${q}" di Jasmine Frozen Food. Temukan frozen food berkualitas, halal, dan bergizi.`,
+      title: `Hasil pencarian "${q}" — Jasmine Shop Premium Product`,
+      description: `Hasil pencarian "${q}" di Jasmine Shop Premium Product. Temukan frozen food berkualitas, halal, dan bergizi.`,
     };
   }
   if (promo) {
     return {
-      title: "Produk Promo — Jasmine Frozen Food",
-      description: "Temukan produk-produk promo spesial Jasmine Frozen Food. Harga menarik untuk produk favorit.",
+      title: "Produk Promo — Jasmine Shop Premium Product",
+      description: "Temukan produk-produk promo spesial Jasmine Shop Premium Product. Harga menarik untuk produk favorit.",
     };
   }
 
   return {
-    title: "Semua Produk — Jasmine Frozen Food",
+    title: "Semua Produk — Jasmine Shop Premium Product",
     description:
-      "Jelajahi koleksi frozen food Jasmine Frozen Food. Ayam katsu, nugget, sosis, dan produk siap masak lainnya. Halal, bergizi, harga terjangkau.",
+      "Jelajahi koleksi frozen food Jasmine Shop Premium Product. Ayam katsu, nugget, sosis, dan produk siap masak lainnya. Halal, bergizi, harga terjangkau.",
   };
 }
 

@@ -9,14 +9,14 @@ import { FileCheck2, ShoppingCart, Truck, RefreshCw, HelpCircle } from "lucide-r
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Syarat & Ketentuan — Jasmine Frozen Food",
+  title: "Syarat & Ketentuan — Jasmine Shop Premium Product",
   description:
-    "Syarat & Ketentuan penggunaan layanan dan transaksi pemesanan produk di Jasmine Frozen Food.",
+    "Syarat & Ketentuan penggunaan layanan dan transaksi pemesanan produk di Jasmine Shop Premium Product.",
 };
 
 export default async function SyaratKetentuanPage() {
   const settings = await getSiteSettings();
-  const brand = settings?.brandName || "Jasmine Frozen Food";
+  const brand = settings?.brandName || "Jasmine Shop Premium Product";
   const email = settings?.email || "info@jasminefrozenfood.id";
   const whatsapp = settings?.whatsappNumber || "0812-3456-7890";
 

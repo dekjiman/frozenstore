@@ -11,8 +11,8 @@ import { StoreFooter } from "@/components/storefront/store-footer";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Artikel & Tips Memasak — Jasmine Frozen Food",
-  description: "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Frozen Food.",
+  title: "Artikel & Tips Memasak — Jasmine Shop Premium Product",
+  description: "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Shop Premium Product.",
 };
 
 async function getArticles() {
@@ -40,7 +40,7 @@ export default async function ArticlesPage() {
               Artikel & Resep Pilihan
             </h1>
             <p className="mt-4 text-lg text-stone-600">
-              Jelajahi panduan praktis, resep hidangan lezat, dan ide sajian istimewa menggunakan produk andalan Jasmine Frozen Food.
+              Jelajahi panduan praktis, resep hidangan lezat, dan ide sajian istimewa menggunakan produk andalan Jasmine Shop Premium Product.
             </p>
           </div>
 

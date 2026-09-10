@@ -22,6 +22,7 @@ export function toProduct(row: ProductRow): Product {
     isBestSeller: row.isBestSeller,
     isNew: row.isNew,
     isPromo: row.isPromo,
+    isActive: row.isActive,
     articleId: row.articleId,
     storageInstructions: row.storageInstructions,
     seoTitle: row.seoTitle,

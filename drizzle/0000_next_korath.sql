@@ -216,7 +216,7 @@ CREATE TABLE "promo_banners" (
 --> statement-breakpoint
 CREATE TABLE "site_settings" (
 	"id" text PRIMARY KEY NOT NULL,
-	"brand_name" text DEFAULT 'Jasmine Frozen Food' NOT NULL,
+	"brand_name" text DEFAULT 'Jasmine Shop Premium Product' NOT NULL,
 	"tagline" text DEFAULT '' NOT NULL,
 	"logo_url" text,
 	"whatsapp_number" text,

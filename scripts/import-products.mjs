@@ -115,7 +115,7 @@ async function main() {
         ${price > 0}, ${slug}, ${description}, null, 'g',
         null, null, false, false, false, false,
         0, 0, 0, '',
-        ${`${name} — Jasmine Frozen Food`}, ${description}, ${categoryIdByName.get(category.toLowerCase()) ?? null},
+        ${`${name} — Jasmine Shop Premium Product`}, ${description}, ${categoryIdByName.get(category.toLowerCase()) ?? null},
         ${new Date()}, ${new Date()}
       )
     `;

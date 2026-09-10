@@ -73,13 +73,9 @@ export function StoreFooter({
           {/* Brand + Social */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <div className="grid size-9 place-items-center rounded-xl bg-[var(--brand-600)]">
-                <span className="text-sm font-black text-white">JF</span>
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-serif text-lg font-bold">{settings?.brandName || "Jasmine"}</span>
-                <span className="text-[9px] font-medium uppercase tracking-widest text-[var(--brand-500)]">Frozen Food</span>
-              </div>
+              <span className="inline-flex h-9 w-auto overflow-hidden rounded-xl bg-white">
+                <img src="/images/logo/logo_jusmine.png" alt={settings?.brandName || "Jasmine Shop Premium Product"} className="h-9 w-auto object-contain" />
+              </span>
             </Link>
             <p className="text-xs leading-relaxed text-white/70">
               {settings?.tagline || "Frozen Food Premium dengan kualitas terbaik untuk keluarga Indonesia."}
@@ -217,7 +213,7 @@ export function StoreFooter({
       <div className="border-t border-white/15">
         <Container width="wide" className="py-4">
           <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] text-white/50">
-            <p>&copy; {new Date().getFullYear()} Jasmine Frozen Food. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Jasmine Shop Premium Product. All rights reserved.</p>
             <div className="flex gap-4">
               <Link href="/kebijakan-privasi" className="hover:text-white transition-colors">Kebijakan Privasi</Link>
               <Link href="/syarat-ketentuan" className="hover:text-white transition-colors">Syarat &amp; Ketentuan</Link>

@@ -8,14 +8,14 @@ import { RotateCcw, AlertTriangle, Video, CheckCircle2, HelpCircle } from "lucid
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Kebijakan Pengembalian — Jasmine Frozen Food",
+  title: "Kebijakan Pengembalian — Jasmine Shop Premium Product",
   description:
-    "Ketentuan garansi, klaim produk rusak, dan pengembalian produk Jasmine Frozen Food.",
+    "Ketentuan garansi, klaim produk rusak, dan pengembalian produk Jasmine Shop Premium Product.",
 };
 
 export default async function KebijakanPengembalianPage() {
   const settings = await getSiteSettings();
-  const brand = settings?.brandName || "Jasmine Frozen Food";
+  const brand = settings?.brandName || "Jasmine Shop Premium Product";
   const whatsapp = settings?.whatsappNumber || "0812-3456-7890";
 
   return (

@@ -61,14 +61,8 @@ export function StoreHeader() {
           </button>
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="grid size-10 place-items-center rounded-xl bg-[var(--brand-600)] shadow-md shadow-[var(--brand-600)]/20">
-              <span className="text-base font-black text-white tracking-tight">JF</span>
-            </div>
-            <div className="hidden sm:flex flex-col leading-none">
-              <span className="font-serif text-lg font-bold text-[var(--ink-950)]">Jasmine</span>
-              <span className="text-[10px] font-medium uppercase tracking-widest text-[var(--brand-600)]">Frozen Food</span>
-            </div>
+          <Link href="/" className="flex items-center shrink-0" aria-label="Jasmine Shop Premium Product">
+            <img src="/images/logo/logo_jusmine.png" alt="Jasmine Shop Premium Product" className="h-10 w-auto object-contain" />
           </Link>
 
 

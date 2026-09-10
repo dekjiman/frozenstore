@@ -46,7 +46,7 @@ export function CartContent() {
           </span>
           <h1 className="mt-6 font-serif text-4xl tracking-tight sm:text-5xl">Keranjangmu masih kosong</h1>
           <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[var(--ink-700)]">
-            {error ?? "Temukan produk pilihan Jasmine Frozen Food dan tambahkan barang yang kamu suka."}
+            {error ?? "Temukan produk pilihan Jasmine Shop Premium Product dan tambahkan barang yang kamu suka."}
           </p>
           <Link
             href="/#products"

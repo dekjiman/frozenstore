@@ -346,7 +346,7 @@ export type TransferInstructionRow = typeof transferInstructions.$inferSelect;
 export type NewTransferInstructionRow = typeof transferInstructions.$inferInsert;
 
 // ============================================================
-// NEW TABLES — Jasmine Frozen Food Revamp
+// NEW TABLES — Jasmine Shop Premium Product Revamp
 // ============================================================
 
 export const categories = pgTable(
@@ -577,7 +577,7 @@ export const siteSettings = pgTable(
   "site_settings",
   {
     id: text("id").primaryKey().$defaultFn(() => "default"),
-    brandName: text("brand_name").notNull().default("Jasmine Frozen Food"),
+    brandName: text("brand_name").notNull().default("Jasmine Shop Premium Product"),
     tagline: text("tagline").notNull().default(""),
     logoUrl: text("logo_url"),
     whatsappNumber: text("whatsapp_number"),

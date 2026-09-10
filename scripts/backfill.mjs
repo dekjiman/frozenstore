@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Backfill script for Jasmine Frozen Food revamp.
+ * Backfill script for Jasmine Shop Premium Product revamp.
  *
  * This script backfills data from legacy columns to new tables:
  * 1. Creates categories from unique products.category values

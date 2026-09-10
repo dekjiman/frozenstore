@@ -1964,7 +1964,7 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "'Jasmine Frozen Food'"
+          "default": "'Jasmine Shop Premium Product'"
         },
         "tagline": {
           "name": "tagline",

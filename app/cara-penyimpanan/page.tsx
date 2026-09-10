@@ -8,7 +8,7 @@ import { Snowflake, ThermometerSnowflake, Clock, AlertOctagon, Flame } from "luc
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Cara Penyimpanan — Jasmine Frozen Food",
+  title: "Cara Penyimpanan — Jasmine Shop Premium Product",
   description:
     "Panduan menjaga kesegaran, kehigienisan, dan kelezatan frozen food dengan suhu penyimpanan yang tepat.",
 };

@@ -7,7 +7,7 @@ import { HelpCircle, MessageCircle, Phone, Mail, Clock, ChevronRight, Package, C
 export const metadata: Metadata = {
   title: "Bantuan",
   description:
-    "Pusat bantuan Jasmine Frozen Food — temukan jawaban atas pertanyaan Anda seputar pemesanan, pengiriman, pembayaran, dan lainnya.",
+    "Pusat bantuan Jasmine Shop Premium Product — temukan jawaban atas pertanyaan Anda seputar pemesanan, pengiriman, pembayaran, dan lainnya.",
 };
 
 const FAQ_ITEMS = [

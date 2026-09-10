@@ -94,7 +94,7 @@ export function CatalogSection() {
 
       <div className="mb-8 flex flex-col gap-6 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-[var(--brand-600)]">Katalog Jasmine Frozen Food</p>
+          <p className="text-sm font-medium text-[var(--brand-600)]">Katalog Jasmine Shop Premium Product</p>
           <h2 className="mt-1 font-serif text-3xl tracking-tight sm:text-4xl">Semua produk</h2>
         </div>
         <CatalogSearch value={query} onChange={setQuery} />

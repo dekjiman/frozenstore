@@ -83,8 +83,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const cat = categories.find((c) => c.slug === slug);
   if (!cat) return { title: "Kategori tidak ditemukan" };
   return {
-    title: `${cat.name} — Jasmine Frozen Food`,
-    description: cat.description || `Belanja produk ${cat.name} di Jasmine Frozen Food`,
+    title: `${cat.name} — Jasmine Shop Premium Product`,
+    description: cat.description || `Belanja produk ${cat.name} di Jasmine Shop Premium Product`,
   };
 }
 

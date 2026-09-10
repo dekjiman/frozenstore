@@ -78,6 +78,7 @@ export function AdminEditProductForm({ product }: { product: Product }) {
           isBestSeller: data.isBestSeller,
           isNew: data.isNew,
           isPromo: data.isPromo,
+          isActive: data.isActive,
           articleId: data.articleId || null,
           storageInstructions: data.storageInstructions,
           seoTitle: data.seoTitle,
@@ -181,6 +182,21 @@ export function AdminEditProductForm({ product }: { product: Product }) {
               <input type="number" min="0" step="1" value={data.piecesMax ?? ""} onChange={(e) => update("piecesMax", e.target.value ? Number(e.target.value) : null)} placeholder="Opsional" className={inputClass} />
             </Field>
           </div>
+        </Section>
+
+        <Section title="Status">
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={data.isActive}
+              onChange={(e) => update("isActive", e.target.checked)}
+              className="mt-0.5 accent-[var(--brand-600)]"
+            />
+            <span>
+              <span className="block text-sm font-semibold text-[var(--ink-950)]">Produk aktif</span>
+              <span className="block text-xs leading-5 text-stone-500">Tampilkan produk di toko. Stok masuk hanya dapat dicatat untuk produk aktif dan berharga di atas 0.</span>
+            </span>
+          </label>
         </Section>
 
         <Section title="Penanda">

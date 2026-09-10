@@ -191,7 +191,7 @@ export function PaymentProofUpload({ orderId, onConfirmed }: PaymentProofUploadP
           className="mt-0.5 size-4 accent-[var(--brand-600)]"
         />
         <span className="text-sm leading-6 text-stone-600">
-          Saya memastikan telah mentransfer sesuai total pembayaran ke rekening Jasmine Frozen Food yang dipilih.
+          Saya memastikan telah mentransfer sesuai total pembayaran ke rekening Jasmine Shop Premium Product yang dipilih.
         </span>
       </label>
 

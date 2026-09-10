@@ -171,7 +171,7 @@ export function CheckoutFlow() {
             {currentStep === 1
               ? "Lengkapi informasi penerima dan alamat tujuan pengiriman pesananmu."
               : currentStep === 2
-                ? "Periksa total pesanan dan ikuti panduan transfer ke rekening resmi Jasmine Frozen Food."
+                ? "Periksa total pesanan dan ikuti panduan transfer ke rekening resmi Jasmine Shop Premium Product."
                 : currentStep === 3
                   ? "Unggah bukti transfer agar pembayaran dapat segera diverifikasi oleh admin."
                   : "Simpan nomor pesanan dan pantau proses verifikasi pembayaranmu."}

@@ -17,7 +17,7 @@ function HomeJsonLd() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Jasmine Frozen Food",
+    name: "Jasmine Shop Premium Product",
     url: BASE_URL,
     potentialAction: {
       "@type": "SearchAction",
@@ -26,9 +26,9 @@ function HomeJsonLd() {
     },
     organization: {
       "@type": "Organization",
-      name: "Jasmine Frozen Food",
+      name: "Jasmine Shop Premium Product",
       url: BASE_URL,
-      logo: `${BASE_URL}/logo.png`,
+      logo: `${BASE_URL}/images/logo/logo_jusmine.png`,
     },
   };
 

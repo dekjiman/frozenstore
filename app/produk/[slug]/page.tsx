@@ -94,7 +94,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const product = await getProduct(slug);
   if (!product) return { title: "Produk tidak ditemukan" };
 
-  const title = product.seoTitle ?? `${product.name} — Jasmine Frozen Food`;
+  const title = product.seoTitle ?? `${product.name} — Jasmine Shop Premium Product`;
   const description = product.seoDescription ?? product.shortDescription ?? product.description;
   const url = `${BASE}/produk/${product.slug}`;
 
@@ -140,7 +140,7 @@ function ProductJsonLd({ product }: { product: ProductDetail }) {
     description: product.description || product.shortDescription,
     image: product.imageUrl,
     sku: product.sku,
-    brand: { "@type": "Brand", name: "Jasmine Frozen Food" },
+    brand: { "@type": "Brand", name: "Jasmine Shop Premium Product" },
     offers: {
       "@type": "Offer",
       price: product.price,

@@ -41,13 +41,11 @@ export function LoginForm() {
   return (
     <form onSubmit={submit} noValidate className="rounded-3xl border border-[var(--border)] bg-white p-6 shadow-[0_24px_70px_-45px_rgba(28,25,23,0.45)] sm:p-8">
       <span className="grid size-11 place-items-center rounded-full bg-[var(--brand-50)] text-[var(--brand-600)]"><LogIn size={19} /></span>
-      <h1 className="mt-5 font-serif text-3xl text-[var(--ink-950)]">Masuk ke Jasmine Frozen Food</h1>
+      <h1 className="mt-5 font-serif text-3xl text-[var(--ink-950)]">Masuk ke Jasmine Shop Premium Product</h1>
       <p className="mt-2 text-sm leading-6 text-[var(--ink-700)]">Akses riwayat pesanan dan lanjutkan checkout dengan akun pelangganmu.</p>
 
       <div className="mt-7 rounded-xl bg-[var(--cream-100)] p-4 text-xs leading-5 text-[var(--ink-700)]">
         <p className="font-semibold text-[var(--ink-950)]">Akun demo</p>
-        <p>Email: rafi.ahmad@example.com</p>
-        <p>Password: RafStore#2026</p>
         <p className="mt-2">Admin: admin@jasminefrozenfood.id / Admin#Jasmine2026</p>
       </div>
 

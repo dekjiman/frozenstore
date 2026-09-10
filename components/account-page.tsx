@@ -71,7 +71,7 @@ export function AccountPage() {
 
       <div className="mt-9 grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start lg:gap-12">
         <aside className="rounded-3xl border border-[var(--border)] bg-white p-6 lg:sticky lg:top-8">
-          <div className="flex items-center gap-4"><span className="grid size-14 place-items-center rounded-full bg-[var(--brand-50)] font-serif text-xl font-bold text-[var(--brand-700)]">{initials}</span><div className="min-w-0"><h2 className="truncate text-lg font-semibold">{profile.name}</h2><p className="text-xs text-[var(--ink-700)]">Pelanggan Jasmine Frozen Food</p></div></div>
+          <div className="flex items-center gap-4"><span className="grid size-14 place-items-center rounded-full bg-[var(--brand-50)] font-serif text-xl font-bold text-[var(--brand-700)]">{initials}</span><div className="min-w-0"><h2 className="truncate text-lg font-semibold">{profile.name}</h2><p className="text-xs text-[var(--ink-700)]">Pelanggan Jasmine Shop Premium Product</p></div></div>
           {editing ? (
             <form onSubmit={saveProfile} className="mt-6 space-y-3 border-t border-[var(--border)] pt-6">
               <input aria-label="Nama" value={form.name} onChange={(event) => setForm((value) => ({ ...value, name: event.target.value }))} className="h-11 w-full rounded-xl border border-[var(--border)] px-3 text-sm" />

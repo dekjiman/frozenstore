@@ -9,8 +9,8 @@ import { ShoppingBag, Search, CreditCard, Upload, PackageCheck, ArrowRight } fro
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Cara Order — Jasmine Frozen Food",
-  description: "Panduan langkah mudah berbelanja frozen food berkualitas di Jasmine Frozen Food.",
+  title: "Cara Order — Jasmine Shop Premium Product",
+  description: "Panduan langkah mudah berbelanja frozen food berkualitas di Jasmine Shop Premium Product.",
 };
 
 const STEPS = [

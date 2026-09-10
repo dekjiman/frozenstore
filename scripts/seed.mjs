@@ -110,12 +110,12 @@ const productMedia = [
 const heroes = [
   {
     id: "hero-001",
-    eyebrow: "Jasmine Frozen Food",
+    eyebrow: "Jasmine Shop Premium Product",
     title: "Frozen Food Premium",
     highlightedText: "Praktis Seperti Masakan Restoran",
     description: "Lebih dari 100 produk premium pilihan. Cocok untuk keluarga, reseller, UMKM hingga kebutuhan horeca.",
     imageUrl: "/images/hero/hero-main.jpg",
-    imageAlt: "Jasmine Frozen Food — Frozen Food Premium",
+    imageAlt: "Jasmine Shop Premium Product — Frozen Food Premium",
     primaryCtaLabel: "Lihat Katalog",
     primaryCtaUrl: "/produk",
     secondaryCtaLabel: "Hubungi Kami",
@@ -197,7 +197,7 @@ const instructions = [
 // ============================================================
 // EXECUTE SEED
 // ============================================================
-console.log("Seeding Jasmine Frozen Food...\n");
+console.log("Seeding Jasmine Shop Premium Product...\n");
 
 try {
   await sql.begin(async (tx) => {
@@ -319,8 +319,8 @@ try {
         id, brand_name, tagline, logo_url, whatsapp_number, email, address, operating_hours,
         free_shipping_threshold, instagram_url, tiktok_url, youtube_url, facebook_url, updated_at
       ) VALUES (
-        'default', 'Jasmine Frozen Food', 'Frozen Food Premium untuk keluarga Indonesia.',
-        '/images/logo.svg', '6281234567890', 'info@jasminefrozenfood.id',
+        'default', 'Jasmine Shop Premium Product', 'Frozen Food Premium untuk keluarga Indonesia.',
+        '/images/logo/logo_jusmine.png', '6281234567890', 'info@jasminefrozenfood.id',
         'Jl. Contoh No. 123, Jakarta Selatan', 'Senin–Sabtu 08:00–17:00 WIB',
         50000, 'https://instagram.com/jasminefrozenfood',
         'https://tiktok.com/@jasminefrozenfood', null, null, ${now}

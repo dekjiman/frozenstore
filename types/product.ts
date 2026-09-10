@@ -18,6 +18,7 @@ export type Product = {
   isBestSeller: boolean;
   isNew: boolean;
   isPromo: boolean;
+  isActive: boolean;
   articleId: string | null;
   storageInstructions: string;
   seoTitle: string | null;

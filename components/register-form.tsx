@@ -80,7 +80,7 @@ export function RegisterForm() {
     <form onSubmit={submit} noValidate className="rounded-3xl border border-[var(--border)] bg-white p-6 shadow-[0_24px_70px_-45px_rgba(28,25,23,0.45)] sm:p-8">
       <span className="grid size-11 place-items-center rounded-full bg-[var(--brand-50)] text-[var(--brand-600)]"><UserPlus size={19} /></span>
       <h1 className="mt-5 font-serif text-3xl text-[var(--ink-950)]">Buat akun pelanggan</h1>
-      <p className="mt-2 text-sm leading-6 text-[var(--ink-700)]">Daftar untuk checkout dan memantau semua pesanan Jasmine Frozen Food.</p>
+      <p className="mt-2 text-sm leading-6 text-[var(--ink-700)]">Daftar untuk checkout dan memantau semua pesanan Jasmine Shop Premium Product.</p>
 
       {submitError ? <p role="alert" className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{submitError}</p> : null}
       <div className="mt-7 space-y-5">
@@ -109,7 +109,7 @@ export function RegisterForm() {
         <div>
           <label className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-[var(--ink-700)]">
             <input type="checkbox" checked={data.acceptedTerms} onChange={(event) => update("acceptedTerms", event.target.checked)} className="mt-1 size-4 accent-[var(--brand-600)]" />
-            <span>Saya menyetujui syarat penggunaan dan kebijakan privasi Jasmine Frozen Food.</span>
+            <span>Saya menyetujui syarat penggunaan dan kebijakan privasi Jasmine Shop Premium Product.</span>
           </label>
           {errors.acceptedTerms ? <p className="mt-1.5 text-xs font-medium text-red-600">{errors.acceptedTerms}</p> : null}
         </div>
