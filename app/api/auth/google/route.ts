@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
+import { COOKIE_SECURE } from "@/lib/cookie-security";
 
 export const runtime = "nodejs";
 
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
   response.cookies.set(STATE_COOKIE, state, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: COOKIE_SECURE,
     path: "/",
     maxAge: STATE_MAX_AGE,
   });

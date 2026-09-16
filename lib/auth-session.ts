@@ -3,6 +3,7 @@ import { and, eq, gt } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db/client";
 import { authSessions, users } from "@/db/schema";
+import { COOKIE_SECURE } from "@/lib/cookie-security";
 
 export const AUTH_SESSION_COOKIE = "raf_auth_session";
 const sessionDurationSeconds = 60 * 60 * 24 * 7;
@@ -42,7 +43,7 @@ export function attachAuthCookie(
   response.cookies.set(AUTH_SESSION_COOKIE, session.token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: COOKIE_SECURE,
     expires: session.expiresAt,
     path: "/",
   });

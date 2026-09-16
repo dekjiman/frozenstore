@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db/client";
 import { users } from "@/db/schema";
 import { attachAuthCookie, createAuthSession } from "@/lib/auth-session";
+import { COOKIE_SECURE } from "@/lib/cookie-security";
 
 export const runtime = "nodejs";
 
@@ -32,7 +33,7 @@ export async function GET(request: Request) {
   const state = searchParams.get("state");
 
   const clearState = NextResponse.redirect(new URL("/masuk?error=google_failed", request.url));
-  clearState.cookies.set(STATE_COOKIE, "", { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", expires: new Date(0), path: "/" });
+  clearState.cookies.set(STATE_COOKIE, "", { httpOnly: true, sameSite: "lax", secure: COOKIE_SECURE, expires: new Date(0), path: "/" });
 
   if (!code || !state) return clearState;
 

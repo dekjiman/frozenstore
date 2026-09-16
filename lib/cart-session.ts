@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
+import { COOKIE_SECURE } from "@/lib/cookie-security";
 import {
   CART_SESSION_COOKIE,
   decodeCartSession,
@@ -35,7 +36,7 @@ export function attachCartSession(
     response.cookies.set(CART_SESSION_COOKIE, encodeCartSession(session.key), {
       httpOnly: true,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: COOKIE_SECURE,
       maxAge: 60 * 60 * 24 * 30,
       path: "/",
     });
