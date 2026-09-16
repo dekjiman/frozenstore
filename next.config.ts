@@ -4,6 +4,11 @@ import { fileURLToPath } from "node:url";
 
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
+function isPublicHttps() {
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? process.env.BASE_URL ?? "";
+  return base.startsWith("https://");
+}
+
 const nextConfig: NextConfig = {
   output: "standalone",
   turbopack: {
@@ -55,7 +60,7 @@ const nextConfig: NextConfig = {
       "form-action 'self'",
       "frame-ancestors 'none'",
       `frame-src ${frameSrc.join(" ")}`,
-      ...(isProduction ? ["upgrade-insecure-requests"] : []),
+      ...(isProduction && isPublicHttps() ? ["upgrade-insecure-requests"] : []),
     ];
     return [
       {
@@ -73,7 +78,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: cspDirectives.join("; "),
           },
-          ...(isProduction
+          ...(isProduction && isPublicHttps()
             ? [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }]
             : []),
         ],
