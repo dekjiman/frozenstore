@@ -10,9 +10,8 @@ import Link from "next/link";
 export const revalidate = 300;
 
 const MAPS_LINK =
-  "https://www.google.com/maps/place//@-6.2769792,106.7899634,17z?entry=ttu&g_ep=EgoyMDI2MDkxNC4wIKXMDSoASAFQAw%3D%3D";
-const MAPS_EMBED_SRC =
-  "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3965.8992208135946!2d106.7899634!3d-6.2769792!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1be4b7191a5%3A0xd38f047b953c37d!2sJasmine%20Shop!5e0!3m2!1sen!2sid!4v1789596763441!5m2!1sen!2sid";
+  "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3965.8992208135946!2d106.7899634!3d-6.2769792!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1be4b7191a5%3A0xd38f047b953c37d!2sJasmine%20Shop!5e0!3m2!1sen!2sid!4v1789597587346!5m2!1sen!2sid";
+const MAPS_EMBED_SRC = MAPS_LINK;
 
 export const metadata: Metadata = {
   title: "Hubungi Kami — Jasmine Shop Premium Product",
@@ -127,7 +126,7 @@ export default async function KontakPage() {
                 title={`Peta lokasi ${brand}`}
                 loading="lazy"
                 allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
+                referrerPolicy="strict-origin-when-cross-origin"
                 className="h-72 w-full border-0 sm:h-full sm:min-h-80"
               />
               <div className="flex flex-col justify-center gap-3 p-6 sm:p-8">
