@@ -15,6 +15,10 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV DATABASE_URL=postgresql://frozenstore:frozenstore@db:5432/frozenstore
+ARG NEXT_PUBLIC_BASE_URL=http://localhost:3000
+ARG BASE_URL=http://localhost:3000
+ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+ENV BASE_URL=${BASE_URL}
 RUN npm run build
 
 # 3) Production stage
