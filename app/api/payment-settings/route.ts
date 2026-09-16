@@ -1,13 +1,13 @@
 import { asc, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db/client";
-import { storeBankAccounts, transferInstructions } from "@/db/schema";
+import { qrisSettings, storeBankAccounts, transferInstructions } from "@/db/schema";
 
 export const runtime = "nodejs";
 
 export async function GET() {
   try {
-    const [accountRows, instructionRows] = await Promise.all([
+    const [accountRows, instructionRows, qrisRows] = await Promise.all([
       db
         .select()
         .from(storeBankAccounts)
@@ -18,7 +18,15 @@ export async function GET() {
         .from(transferInstructions)
         .where(eq(transferInstructions.isActive, true))
         .orderBy(asc(transferInstructions.stepOrder)),
+      db
+        .select()
+        .from(qrisSettings)
+        .where(eq(qrisSettings.isActive, true))
+        .orderBy(asc(qrisSettings.updatedAt))
+        .limit(1),
     ]);
+
+    const qris = qrisRows[0] ?? null;
 
     const response = NextResponse.json({
       accounts: accountRows.map((row) => ({
@@ -28,6 +36,16 @@ export async function GET() {
         accountHolder: row.accountHolderName,
         instruction: row.instruction,
       })),
+      qris: qris
+        ? {
+            id: qris.id,
+            label: qris.label,
+            merchantName: qris.merchantName,
+            payId: qris.payId,
+            qrImageUrl: qris.qrImageUrl,
+            instruction: qris.instruction,
+          }
+        : null,
       instructions: instructionRows.map((row) => ({
         id: row.id,
         title: row.title,
@@ -37,6 +55,7 @@ export async function GET() {
       totals: {
         accounts: accountRows.length,
         instructions: instructionRows.length,
+        qris: qris ? 1 : 0,
       },
     });
     response.headers.set("Cache-Control", "no-store");

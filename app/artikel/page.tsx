@@ -7,12 +7,30 @@ import { eq, desc } from "drizzle-orm";
 import { Container } from "@/components/ui/container";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
+import { AdUnit } from "@/components/ads/ad-unit";
+import { SEO_BASE, SITE_NAME, jsonLdScript } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Artikel & Tips Memasak — Jasmine Shop Premium Product",
   description: "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Shop Premium Product.",
+  alternates: {
+    canonical: `${SEO_BASE}/artikel`,
+  },
+  openGraph: {
+    title: "Artikel & Tips Memasak — Jasmine Shop Premium Product",
+    description: "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Shop Premium Product.",
+    type: "website",
+    url: `${SEO_BASE}/artikel`,
+    siteName: SITE_NAME,
+    locale: "id_ID",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Artikel & Tips Memasak — Jasmine Shop Premium Product",
+    description: "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Shop Premium Product.",
+  },
 };
 
 async function getArticles() {
@@ -20,6 +38,42 @@ async function getArticles() {
     where: eq(articles.isPublished, true),
     orderBy: [desc(articles.publishedAt)],
   });
+}
+
+function ArticlesJsonLd({ items }: { items: { title: string; slug: string; excerpt: string }[] }) {
+  const listUrl = `${SEO_BASE}/artikel`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Artikel & Tips Memasak — Jasmine Shop Premium Product",
+    description:
+      "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Shop Premium Product.",
+    url: listUrl,
+    isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SEO_BASE },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Beranda", item: SEO_BASE },
+        { "@type": "ListItem", position: 2, name: "Artikel", item: listUrl },
+      ],
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: items.map((article, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: `${SEO_BASE}/artikel/${article.slug}`,
+        name: article.title,
+        description: article.excerpt,
+      })),
+    },
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
+    />
+  );
 }
 
 export default async function ArticlesPage() {
@@ -45,7 +99,8 @@ export default async function ArticlesPage() {
           </div>
 
           {items.length > 0 ? (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <>
+              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((article) => (
                 <Link
                   key={article.id}
@@ -83,6 +138,11 @@ export default async function ArticlesPage() {
                 </Link>
               ))}
             </div>
+
+            <div className="mt-12">
+              <AdUnit slot={process.env.NEXT_PUBLIC_AD_SLOT_ARTICLE ?? ""} />
+            </div>
+            </>
           ) : (
             <div className="rounded-3xl border border-stone-200 bg-white p-12 text-center">
               <p className="text-stone-500">Belum ada artikel yang diterbitkan saat ini. Nantikan segera!</p>
@@ -92,6 +152,13 @@ export default async function ArticlesPage() {
       </main>
 
       <StoreFooter />
+      <ArticlesJsonLd
+        items={items.map((article) => ({
+          title: article.title,
+          slug: article.slug,
+          excerpt: article.excerpt || "",
+        }))}
+      />
     </div>
   );
 }

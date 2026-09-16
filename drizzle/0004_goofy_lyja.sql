@@ -1,0 +1,2 @@
+ALTER TABLE "shipping_settings" ADD COLUMN "flat_delivery_cost" integer DEFAULT 20000 NOT NULL;--> statement-breakpoint
+ALTER TABLE "shipping_settings" ADD CONSTRAINT "shipping_settings_flat_cost_non_negative" CHECK ("shipping_settings"."flat_delivery_cost" >= 0);

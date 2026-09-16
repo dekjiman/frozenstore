@@ -1,4 +1,6 @@
 import { getHomepageData } from "@/lib/queries/homepage";
+import { jsonLdScript } from "@/lib/seo";
+import { AdUnit } from "@/components/ads/ad-unit";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { HeroCampaign } from "@/components/storefront/hero-campaign";
@@ -35,7 +37,7 @@ function HomeJsonLd() {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
     />
   );
 }
@@ -62,6 +64,10 @@ export default async function HomePage() {
             testimonials={data.testimonials}
           />
         )}
+
+        <div className="px-4 py-10 sm:px-6">
+          <AdUnit slot={process.env.NEXT_PUBLIC_AD_SLOT_HOME ?? ""} />
+        </div>
       </main>
 
       <StoreFooter initialSettings={data.siteSettings} />

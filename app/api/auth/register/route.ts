@@ -3,11 +3,20 @@ import { NextResponse } from "next/server";
 import { db } from "@/db/client";
 import { users } from "@/db/schema";
 import { hashPassword } from "@/lib/password";
+import { clientIp, isRateLimited } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
+    const key = `register:${clientIp(request)}`;
+    if (isRateLimited(key, 3, 60 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: { code: "TOO_MANY_ATTEMPTS", message: "Terlalu banyak registrasi, coba lagi nanti" } },
+        { status: 429 },
+      );
+    }
+
     const body = (await request.json()) as Record<string, unknown>;
     const name = typeof body.name === "string" ? body.name.trim() : "";
     const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";

@@ -13,7 +13,12 @@ export function getCartSession(request: Request) {
     .map((part) => part.trim().split("="))
     .find(([name]) => name === CART_SESSION_COOKIE);
 
-  const encodedValue = sessionCookie?.[1] ? decodeURIComponent(sessionCookie[1]) : undefined;
+  let encodedValue: string | undefined;
+  try {
+    encodedValue = sessionCookie?.[1] ? decodeURIComponent(sessionCookie[1]) : undefined;
+  } catch {
+    encodedValue = undefined;
+  }
   const existingKey = decodeCartSession(encodedValue);
 
   return {

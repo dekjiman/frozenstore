@@ -4,7 +4,8 @@ import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/queries/site-settings";
-import { ShieldCheck, Lock, Eye, FileText, UserCheck, HelpCircle } from "lucide-react";
+import { normalizeWaNumber } from "@/lib/wa";
+import { ShieldCheck, Lock, Eye, FileText, UserCheck, HelpCircle, Cookie } from "lucide-react";
 
 export const revalidate = 300;
 
@@ -39,7 +40,7 @@ export default async function KebijakanPrivasiPage() {
                 Komitmen kami dalam menjaga kerahasiaan dan keamanan data pribadi Anda di {brand}.
               </p>
               <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white/80 px-3.5 py-1 text-xs text-stone-500 shadow-sm backdrop-blur">
-                <span>Terakhir diperbarui: 6 September 2026</span>
+                <span>Terakhir diperbarui: 16 September 2026</span>
               </div>
             </div>
           </Container>
@@ -173,14 +174,54 @@ export default async function KebijakanPrivasiPage() {
               </div>
             </section>
 
-            {/* 6. Hubungi Kami */}
+            {/* 6. Cookie dan Iklan Pihak Ketiga */}
+            <section className="rounded-2xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="grid size-8 place-items-center rounded-lg bg-[var(--brand-50)] text-[var(--brand-600)]">
+                  <Cookie size={18} />
+                </div>
+                <h2 className="font-serif text-xl font-bold text-[var(--ink-950)]">
+                  6. Cookie dan Iklan Pihak Ketiga
+                </h2>
+              </div>
+              <div className="space-y-3 text-sm leading-relaxed text-stone-600">
+                <p>
+                  Untuk mendukung keberlangsungan layanan gratis kepada pengunjung, situs kami
+                  dapat menampilkan iklan dari pihak ketiga (termasuk program <strong>Google AdSense</strong>).
+                  Penyedia iklan tersebut dapat menggunakan cookie untuk menampilkan iklan yang lebih relevan
+                  dan mengukur efektivitas iklan.
+                </p>
+                <p><strong className="text-[var(--ink-950)]">Google dan vendor Google</strong> dapat menggunakan cookie
+                  (seperti cookie <em>DART</em>) untuk menempatkan iklan berdasarkan kunjungan Anda ke situs ini dan
+                  situs lain di internet.</p>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li>
+                    Anda dapat mengelola preferensi iklan atau menolak iklan yang dipersonalisasi melalui
+                    <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className="text-[var(--brand-600)] underline"> Pengaturan Iklan Google</a>.
+                  </li>
+                  <li>
+                    Anda juga dapat mengunjungi <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" className="text-[var(--brand-600)] underline">www.aboutads.info</a> untuk memahami dan mengelola iklan dari jaringan iklan pihak ketiga.
+                  </li>
+                  <li>
+                    Pengunjung dari negara kawasan Eropa akan ditampilkan opsi persetujuan (consent) yang sesuai
+                    dengan kebijakan uni Eropa (GDPR) sebelum iklan yang dipersonalisasi ditampilkan.
+                  </li>
+                </ul>
+                <p>
+                  Kami tidak mengendalikan cookie yang digunakan oleh penyedia iklan pihak ketiga. Silakan tinjau
+                  kebijakan privasi masing-masing penyedia untuk informasi lebih lanjut.
+                </p>
+              </div>
+            </section>
+
+            {/* 7. Hubungi Kami */}
             <section className="rounded-2xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-sm">
               <div className="flex items-center gap-3 mb-4">
                 <div className="grid size-8 place-items-center rounded-lg bg-[var(--brand-50)] text-[var(--brand-600)]">
                   <HelpCircle size={18} />
                 </div>
                 <h2 className="font-serif text-xl font-bold text-[var(--ink-950)]">
-                  6. Hubungi Kami
+                  7. Hubungi Kami
                 </h2>
               </div>
               <p className="text-sm leading-relaxed text-stone-600">
@@ -196,7 +237,7 @@ export default async function KebijakanPrivasiPage() {
                 <div className="rounded-xl border border-stone-200/80 bg-stone-50 p-4">
                   <p className="text-xs text-stone-500">WhatsApp Pelanggan</p>
                   <a
-                    href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
+                    href={`https://wa.me/${normalizeWaNumber(whatsapp)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-semibold text-[var(--brand-600)] hover:underline"

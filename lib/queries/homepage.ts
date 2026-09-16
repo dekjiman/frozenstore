@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull, desc, sql } from "drizzle-orm";
+import { and, asc, eq, gte, isNull, lte, or, desc, sql } from "drizzle-orm";
 import { db } from "@/db/client";
 import {
   products,
@@ -122,8 +122,8 @@ export async function getHomepageData(): Promise<HomepageDTO> {
     db.query.heroCampaigns.findFirst({
       where: and(
         eq(heroCampaigns.isActive, true),
-        isNull(heroCampaigns.startsAt),
-        isNull(heroCampaigns.endsAt),
+        or(isNull(heroCampaigns.startsAt), lte(heroCampaigns.startsAt, new Date())),
+        or(isNull(heroCampaigns.endsAt), gte(heroCampaigns.endsAt, new Date())),
       ),
       orderBy: [asc(heroCampaigns.sortOrder)],
     }),
@@ -136,8 +136,8 @@ export async function getHomepageData(): Promise<HomepageDTO> {
     db.query.promoBanners.findMany({
       where: and(
         eq(promoBanners.isActive, true),
-        isNull(promoBanners.startsAt),
-        isNull(promoBanners.endsAt),
+        or(isNull(promoBanners.startsAt), lte(promoBanners.startsAt, new Date())),
+        or(isNull(promoBanners.endsAt), gte(promoBanners.endsAt, new Date())),
       ),
       orderBy: [asc(promoBanners.sortOrder)],
     }),

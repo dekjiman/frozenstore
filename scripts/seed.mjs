@@ -195,6 +195,19 @@ const instructions = [
 ];
 
 // ============================================================
+// QRIS SETTINGS
+// ============================================================
+const qris = {
+  id: "default",
+  label: "QRIS",
+  merchantName: "JASMINE SHOP PREMIUM PRODUCT",
+  payId: "JA-12345678901",
+  qrImageUrl: "",
+  instruction: "Scan QR lalu bayar sesuai total. Simpan bukti untuk verifikasi.",
+  isActive: true,
+};
+
+// ============================================================
 // EXECUTE SEED
 // ============================================================
 console.log("Seeding Jasmine Shop Premium Product...\n");
@@ -372,6 +385,28 @@ try {
     }
     console.log(`  Transfer instructions: ${instructions.length}`);
 
+    // QRIS settings
+    await tx`
+      INSERT INTO qris_settings (id, label, merchant_name, pay_id, qr_image_url, instruction, is_active, created_at, updated_at)
+      VALUES (${qris.id}, ${qris.label}, ${qris.merchantName}, ${qris.payId}, ${qris.qrImageUrl}, ${qris.instruction}, ${qris.isActive}, ${now}, ${now})
+      ON CONFLICT (id) DO UPDATE SET
+        label = EXCLUDED.label, merchant_name = EXCLUDED.merchant_name, pay_id = EXCLUDED.pay_id,
+        qr_image_url = EXCLUDED.qr_image_url, instruction = EXCLUDED.instruction,
+        is_active = EXCLUDED.is_active, updated_at = EXCLUDED.updated_at
+    `;
+    console.log("  QRIS settings: 1");
+
+    // Shipping settings - created once disabled; reseeding must NOT overwrite admin config
+    await tx`
+      INSERT INTO shipping_settings (
+        id, enable_regular, enable_same_day, enable_instant, default_method, same_day_fixed_cost, flat_delivery_cost, updated_at
+      ) VALUES (
+        'default', true, true, true, 'regular', 25000, 20000, ${now}
+      )
+      ON CONFLICT (id) DO NOTHING
+    `;
+    console.log("  Shipping settings: 1");
+
     // Users
     await tx`
       INSERT INTO users (id, role, name, email, email_verified, phone, password_hash, created_at, updated_at)
@@ -391,25 +426,8 @@ try {
     `;
     console.log(`  Users: 2`);
 
-    // Cleanup: deactivate legacy products not in the Jasmine seed
-    const jasmineProductIds = products.map((p) => p.id);
-    const legacyResult = await tx`
-      UPDATE products SET is_active = false
-      WHERE id != ALL(${jasmineProductIds}) AND is_active = true
-    `;
-    if (legacyResult.count > 0) {
-      console.log(`  Deactivated ${legacyResult.count} legacy products`);
-    }
-
-    // Cleanup: deactivate legacy categories not in the Jasmine seed
-    const jasmineCatIds = categories.map((c) => c.id);
-    const legacyCatResult = await tx`
-      UPDATE categories SET is_active = false
-      WHERE id != ALL(${jasmineCatIds}) AND is_active = true
-    `;
-    if (legacyCatResult.count > 0) {
-      console.log(`  Deactivated ${legacyCatResult.count} legacy categories`);
-    }
+    // NOTE: seed ini TIDAK menonaktifkan produk/kategori di luar daftar seed
+    // (non-destruktif). Katalog upload (/uploads/) milik toko tetap aktif.
   });
 
   console.log("\nSeed selesai!");

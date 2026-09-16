@@ -1,23 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap");
 @import "tailwindcss";
 
-/* ─── Jasmine Red Design Tokens ─────────────────────────────── */
+/* ─── Jasmine Green Design Tokens ───────────────────────────── */
 :root {
-  --brand-900: #7F0808;
-  --brand-800: #9E0B0B;
-  --brand-700: #B51217;
-  --brand-600: #C81D25;
-  --brand-500: #D62828;
-  --brand-50:  #FFF1F0;
+  --brand-900: #041D12;
+  --brand-800: #062816;
+  --brand-700: #11472B;
+  --brand-600: #08331D;
+  --brand-500: #2F6745;
+  --brand-50:  #EFF3EC;
 
-  --accent-500: #F59E0B;
+  --accent-500: #D8C090;
 
-  --cream-50: #FFFDF8;
-  --cream-100: #FFF7EB;
+  --cream-50: #FBF8F1;
+  --cream-100: #F5F2EA;
 
-  --ink-950: #171311;
-  --ink-700: #4C443F;
+  --ink-950: #102A1E;
+  --ink-700: #647068;
 
-  --border: #E9DDD3;
+  --border: #E5E3DC;
 
   --success: #2E7D32;
   --error: #DC2626;
@@ -57,7 +58,7 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.2; font-weight: 700; }
   font-weight: 700;
 }
 
-.font-serif { font-family: Georgia, "Times New Roman", serif; }
+.font-serif { font-family: "Playfair Display", Georgia, "Times New Roman", serif; }
 
 button, a { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
@@ -89,8 +90,8 @@ button { cursor: pointer; }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 29, 37, 0.3); }
-  50% { box-shadow: 0 0 0 6px rgba(200, 29, 37, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(8, 51, 29, 0.35); }
+  50% { box-shadow: 0 0 0 6px rgba(8, 51, 29, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -103,13 +104,13 @@ button { cursor: pointer; }
 
 /* ─── Component Classes ─────────────────────────────────────── */
 .hero-gradient {
-  background: linear-gradient(135deg, var(--cream-100) 0%, var(--cream-50) 50%, #FFF1F0 100%);
+  background: linear-gradient(135deg, var(--cream-100) 0%, var(--cream-50) 55%, #EFF3EC 100%);
 }
 
 .hero-stats-card {
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(233, 221, 211, 0.5);
+  border: 1px solid rgba(229, 227, 220, 0.6);
 }
 
 .category-item {
@@ -136,24 +137,24 @@ button { cursor: pointer; }
 }
 
 .cooking-section {
-  background: linear-gradient(160deg, #7F0808 0%, #9E0B0B 40%, #B51217 100%);
+  background: linear-gradient(160deg, #08331D 0%, #11472B 45%, #2F6745 100%);
 }
 
 .promo-flash-sale {
-  background: linear-gradient(135deg, #B51217 0%, #C81D25 40%, #D62828 100%);
+  background: linear-gradient(135deg, #041D12 0%, #08331D 45%, #11472B 100%);
 }
 .promo-paket-hemat {
-  background: linear-gradient(135deg, #E65100 0%, #F57C00 50%, #FF9800 100%);
+  background: linear-gradient(135deg, #08331D 0%, #2F6745 60%, #7A9279 100%);
 }
 .promo-gratis-ongkir {
-  background: linear-gradient(135deg, #FFF7EB 0%, #FFF1F0 50%, #FFE8E6 100%);
+  background: linear-gradient(135deg, var(--cream-100) 0%, var(--cream-50) 55%, #EFF3EC 100%);
 }
 
 .newsletter-input {
   transition: all 0.2s ease;
 }
 .newsletter-input:focus {
-  box-shadow: 0 0 0 3px rgba(200, 29, 37, 0.15);
+  box-shadow: 0 0 0 3px rgba(8, 51, 29, 0.15);
 }
 
 .category-scroll {

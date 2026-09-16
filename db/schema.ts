@@ -1,6 +1,7 @@
 import {
   boolean,
   check,
+  doublePrecision,
   index,
   integer,
   pgTable,
@@ -219,6 +220,19 @@ export const orders = pgTable(
     shippingProvince: text("shipping_province").notNull(),
     shippingPostalCode: text("shipping_postal_code").notNull(),
     shippingNotes: text("shipping_notes"),
+    shippingMethod: text("shipping_method", { enum: ["regular", "same_day", "instant"] })
+      .notNull()
+      .default("regular"),
+    courierCode: text("courier_code"),
+    courierName: text("courier_name"),
+    courierServiceType: text("courier_service_type"),
+    shippingEtd: text("shipping_etd"),
+    shippingOriginSubdistrictId: text("shipping_origin_subdistrict_id"),
+    shippingOriginSubdistrictName: text("shipping_origin_subdistrict_name"),
+    shippingDestinationSubdistrictId: text("shipping_destination_subdistrict_id"),
+    shippingDestinationSubdistrictName: text("shipping_destination_subdistrict_name"),
+    shippingDestinationLatitude: doublePrecision("shipping_destination_latitude"),
+    shippingDestinationLongitude: doublePrecision("shipping_destination_longitude"),
     subtotalAmount: integer("subtotal_amount").notNull(),
     shippingAmount: integer("shipping_amount").notNull().default(0),
     totalAmount: integer("total_amount").notNull(),
@@ -229,7 +243,7 @@ export const orders = pgTable(
       .notNull()
       .default("pending"),
     orderStatus: text("order_status", {
-      enum: ["waiting_payment", "processing", "shipped", "delivered", "cancelled"],
+      enum: ["waiting_payment", "waiting_shipping_fee", "processing", "shipped", "delivered", "cancelled"],
     })
       .notNull()
       .default("waiting_payment"),
@@ -249,6 +263,7 @@ export const orders = pgTable(
     index("orders_order_status_index").on(table.orderStatus),
     check("orders_subtotal_non_negative", sql`${table.subtotalAmount} >= 0`),
     check("orders_shipping_non_negative", sql`${table.shippingAmount} >= 0`),
+    check("orders_shipping_method_valid", sql`${table.shippingMethod} in ('regular', 'same_day', 'instant')`),
     check("orders_total_non_negative", sql`${table.totalAmount} >= 0`),
     check(
       "orders_payment_status_valid",
@@ -256,7 +271,7 @@ export const orders = pgTable(
     ),
     check(
       "orders_order_status_valid",
-      sql`${table.orderStatus} in ('waiting_payment', 'processing', 'shipped', 'delivered', 'cancelled')`,
+      sql`${table.orderStatus} in ('waiting_payment', 'waiting_shipping_fee', 'processing', 'shipped', 'delivered', 'cancelled')`,
     ),
   ],
 );
@@ -344,6 +359,30 @@ export const transferInstructions = pgTable(
 
 export type TransferInstructionRow = typeof transferInstructions.$inferSelect;
 export type NewTransferInstructionRow = typeof transferInstructions.$inferInsert;
+
+export const qrisSettings = pgTable(
+  "qris_settings",
+  {
+    id: text("id").primaryKey(),
+    label: text("label").notNull().default("QRIS"),
+    merchantName: text("merchant_name").notNull(),
+    payId: text("pay_id").notNull(),
+    qrImageUrl: text("qr_image_url").notNull().default(""),
+    instruction: text("instruction").notNull().default(""),
+    isActive: boolean("is_active").notNull().default(true),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .$defaultFn(() => new Date()),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .$defaultFn(() => new Date())
+      .$onUpdateFn(() => new Date()),
+  },
+  (table) => [index("qris_settings_active_index").on(table.isActive)],
+);
+
+export type QrisSettingRow = typeof qrisSettings.$inferSelect;
+export type NewQrisSettingRow = typeof qrisSettings.$inferInsert;
 
 // ============================================================
 // NEW TABLES — Jasmine Shop Premium Product Revamp
@@ -602,6 +641,36 @@ export const siteSettings = pgTable(
 export type SiteSettingRow = typeof siteSettings.$inferSelect;
 export type NewSiteSettingRow = typeof siteSettings.$inferInsert;
 
+export const shippingSettings = pgTable(
+  "shipping_settings",
+  {
+    id: text("id").primaryKey().$defaultFn(() => "default"),
+    enableRegular: boolean("enable_regular").notNull().default(true),
+    enableSameDay: boolean("enable_same_day").notNull().default(true),
+    enableInstant: boolean("enable_instant").notNull().default(true),
+    defaultMethod: text("default_method", {
+      enum: ["regular", "same_day", "instant"],
+    }).notNull().default("regular"),
+    sameDayFixedCost: integer("same_day_fixed_cost").notNull().default(25000),
+    flatDeliveryCost: integer("flat_delivery_cost").notNull().default(20000),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .$defaultFn(() => new Date())
+      .$onUpdateFn(() => new Date()),
+  },
+  (table) => [
+    check("shipping_settings_same_day_cost_non_negative", sql`${table.sameDayFixedCost} >= 0`),
+    check("shipping_settings_flat_cost_non_negative", sql`${table.flatDeliveryCost} >= 0`),
+    check(
+      "shipping_settings_default_method_valid",
+      sql`${table.defaultMethod} in ('regular', 'same_day', 'instant')`,
+    ),
+  ],
+);
+
+export type ShippingSettingRow = typeof shippingSettings.$inferSelect;
+export type NewShippingSettingRow = typeof shippingSettings.$inferInsert;
+
 export const marketplaceLinks = pgTable(
   "marketplace_links",
   {
@@ -641,3 +710,46 @@ export const newsletterSubscribers = pgTable(
 
 export type NewsletterSubscriberRow = typeof newsletterSubscribers.$inferSelect;
 export type NewNewsletterSubscriberRow = typeof newsletterSubscribers.$inferInsert;
+
+export const resellerPackages = pgTable(
+  "reseller_packages",
+  {
+    id: text("id").primaryKey(),
+    slug: text("slug").notNull(),
+    title: text("title").notNull(),
+    planLabel: text("plan_label").notNull().default(""),
+    description: text("description").notNull().default(""),
+    minOrder: integer("min_order").notNull().default(10),
+    discountMinPercent: integer("discount_min_percent").notNull().default(0),
+    discountMaxPercent: integer("discount_max_percent").notNull().default(0),
+    marginMin: integer("margin_min").notNull().default(0),
+    marginMax: integer("margin_max").notNull().default(0),
+    freeVariantMix: boolean("free_variant_mix").notNull().default(true),
+    isRecommended: boolean("is_recommended").notNull().default(false),
+    simulateDailyPcs: integer("simulate_daily_pcs"),
+    simulateProfitPerPcs: integer("simulate_profit_per_pcs"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    isActive: boolean("is_active").notNull().default(true),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .$defaultFn(() => new Date()),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .$defaultFn(() => new Date())
+      .$onUpdateFn(() => new Date()),
+  },
+  (table) => [
+    uniqueIndex("reseller_packages_slug_unique").on(table.slug),
+    index("reseller_packages_active_sort_index").on(table.isActive, table.sortOrder),
+    check("reseller_packages_min_order_non_negative", sql`${table.minOrder} >= 0`),
+    check("reseller_packages_discount_min_valid", sql`${table.discountMinPercent} >= 0 AND ${table.discountMinPercent} <= 100`),
+    check("reseller_packages_discount_max_valid", sql`${table.discountMaxPercent} >= 0 AND ${table.discountMaxPercent} <= 100`),
+    check("reseller_packages_discount_range_valid", sql`${table.discountMaxPercent} >= ${table.discountMinPercent}`),
+    check("reseller_packages_margin_non_negative", sql`${table.marginMin} >= 0 AND ${table.marginMax} >= 0`),
+    check("reseller_packages_margin_range_valid", sql`${table.marginMax} >= ${table.marginMin}`),
+    check("reseller_packages_sort_non_negative", sql`${table.sortOrder} >= 0`),
+  ],
+);
+
+export type ResellerPackageRow = typeof resellerPackages.$inferSelect;
+export type NewResellerPackageRow = typeof resellerPackages.$inferInsert;

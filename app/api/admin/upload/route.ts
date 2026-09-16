@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
-import { getMediaStorage, isAllowedMimeType, getMaxFileSize, getMediaType } from "@/lib/media-storage";
+import { getMediaStorage, isAllowedMimeType, getMaxFileSize, getMediaType, isFileContentMatchingMimeType, isValidFolder } from "@/lib/media-storage";
 
 export const runtime = "nodejs";
 
@@ -11,7 +11,14 @@ export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get("file");
-    const folder = (formData.get("folder") as string) || "misc";
+    const folder = String(formData.get("folder") || "misc").trim();
+
+    if (!isValidFolder(folder)) {
+      return NextResponse.json(
+        { error: { code: "INVALID_FOLDER", message: "Folder tujuan tidak valid" } },
+        { status: 400 },
+      );
+    }
 
     if (!file || !(file instanceof File)) {
       return NextResponse.json(
@@ -38,6 +45,13 @@ export async function POST(request: Request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+    if (!isFileContentMatchingMimeType(buffer, mimeType)) {
+      return NextResponse.json(
+        { error: { code: "INVALID_TYPE", message: "Isi file tidak sesuai dengan tipe yang dinyatakan" } },
+        { status: 400 },
+      );
+    }
+
     const storage = getMediaStorage();
     const result = await storage.upload({
       buffer,

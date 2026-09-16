@@ -1,0 +1,2 @@
+ALTER TABLE "shipping_settings" ADD COLUMN "same_day_fixed_cost" integer DEFAULT 25000 NOT NULL;--> statement-breakpoint
+ALTER TABLE "shipping_settings" ADD CONSTRAINT "shipping_settings_same_day_cost_non_negative" CHECK ("shipping_settings"."same_day_fixed_cost" >= 0);

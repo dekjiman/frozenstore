@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AlertTriangle, Boxes, Edit3, PackageCheck, Plus, Search, Trash2, X } from "lucide-react";
+import { AlertTriangle, Boxes, ChevronDown, Edit3, PackageCheck, Plus, Search, Trash2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { apiFetch } from "@/lib/client-api";
 import type { Product } from "@/types/product";
@@ -14,11 +14,20 @@ export function AdminProductsPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const categories = useMemo(
+    () => Array.from(new Set(allProducts.map((product) => product.category.trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b, "id")),
+    [allProducts],
+  );
   const products = useMemo(() => {
     const keyword = query.trim().toLowerCase();
-    return keyword ? allProducts.filter((product) => [product.name, product.sku, product.category].some((value) => value.toLowerCase().includes(keyword))) : allProducts;
-  }, [allProducts, query]);
+    return allProducts.filter((product) => {
+      const matchesKeyword = keyword ? [product.name, product.sku, product.category].some((value) => value.toLowerCase().includes(keyword)) : true;
+      const matchesCategory = categoryFilter ? product.category.trim() === categoryFilter : true;
+      return matchesKeyword && matchesCategory;
+    });
+  }, [allProducts, query, categoryFilter]);
   const totalStock = allProducts.reduce((total, product) => total + product.stock, 0);
   const lowStock = allProducts.filter((product) => product.stock <= 10).length;
   const productToDelete = allProducts.find((product) => product.id === deleteId) ?? null;
@@ -57,7 +66,10 @@ export function AdminProductsPage() {
       <section className="mt-8 overflow-hidden rounded-3xl border border-stone-200 bg-white">
         <div className="flex flex-col gap-4 border-b border-stone-200 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div><h2 className="font-serif text-2xl">Daftar produk</h2><p className="mt-1 text-xs text-stone-500">{isLoading ? "Memuat..." : `${products.length} dari ${allProducts.length} produk`}</p></div>
-          <label className="relative block w-full sm:max-w-xs"><span className="sr-only">Cari produk admin</span><Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari nama atau SKU..." className="h-11 w-full rounded-full border border-stone-300 pl-10 pr-4 text-sm outline-none focus:border-[var(--brand-600)] focus:ring-4 focus:ring-[var(--brand-600)]/10" /></label>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <label className="relative block w-full sm:max-w-xs"><span className="sr-only">Cari produk admin</span><Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari nama atau SKU..." className="h-11 w-full rounded-full border border-stone-300 pl-10 pr-4 text-sm outline-none focus:border-[var(--brand-600)] focus:ring-4 focus:ring-[var(--brand-600)]/10" /></label>
+            <label className="relative block w-full sm:w-52"><span className="sr-only">Filter kategori</span><select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)} className="h-11 w-full appearance-none rounded-full border border-stone-300 bg-white pl-4 pr-10 text-sm text-stone-700 outline-none focus:border-[var(--brand-600)] focus:ring-4 focus:ring-[var(--brand-600)]/10"><option value="">Semua kategori</option>{categories.map((category) => <option key={category} value={category}>{category}</option>)}</select><ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400" size={16} /></label>
+          </div>
         </div>
 
         <div className="overflow-x-auto">

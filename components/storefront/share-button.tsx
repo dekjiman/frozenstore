@@ -135,7 +135,7 @@ export function ShareButton({ title, url, image, iconOnly = false }: ShareButton
         aria-label="Bagikan"
         className={
           iconOnly
-            ? "inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-[var(--ink-700)] shadow-sm transition hover:border-[var(--brand-600)] hover:text-[var(--brand-600)]"
+            ? "grid size-10 shrink-0 place-items-center rounded-full border border-[var(--border)] bg-white text-[var(--ink-700)] shadow-sm transition hover:border-[var(--brand-600)] hover:text-[var(--brand-600)]"
             : "inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[var(--ink-700)] transition hover:text-[var(--brand-600)]"
         }
       >

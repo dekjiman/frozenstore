@@ -34,6 +34,37 @@ type ValidationResult =
 const validImageUrl = (value: string) =>
   value.startsWith("/") || /^https?:\/\/[^\s]+$/i.test(value);
 
+function coerceNumber(
+  value: unknown,
+  existing: number | null | undefined,
+  fallback: number,
+): { value: number; error?: string } {
+  if (value === undefined || value === null || value === "") {
+    return { value: existing ?? fallback };
+  }
+  if (typeof value === "number" && Number.isFinite(value)) return { value };
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return { value: parsed };
+  }
+  return { value: Number.NaN, error: "harus berupa angka" };
+}
+
+function coerceNullableNumber(
+  value: unknown,
+  existing: number | null | undefined,
+): { value: number | null; error?: string } {
+  if (value === undefined || value === null || value === "") {
+    return { value: existing ?? null };
+  }
+  if (typeof value === "number" && Number.isFinite(value)) return { value };
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return { value: parsed };
+  }
+  return { value: null, error: "harus berupa angka" };
+}
+
 export function parseProductInput(
   body: Record<string, unknown>,
   existing?: ProductRow,
@@ -42,28 +73,29 @@ export function parseProductInput(
   const name = typeof body.name === "string" ? body.name.trim() : existing?.name ?? "";
   const category = typeof body.category === "string" ? body.category.trim() : existing?.category ?? "";
   const description = typeof body.description === "string" ? body.description.trim() : existing?.description ?? "";
-  const price = body.price === undefined ? existing?.price ?? Number.NaN : Number(body.price);
-  const currentStockValue = body.currentStock ?? body.stock;
-  const currentStock = currentStockValue === undefined
-    ? existing?.currentStock ?? Number.NaN
-    : Number(currentStockValue);
+  const parsedPrice = coerceNumber(body.price, existing?.price, Number.NaN);
+  if (parsedPrice.error) return { error: `Harga harus berupa angka` };
+  const price = parsedPrice.value;
+  const parsedStock = coerceNumber(body.currentStock ?? body.stock, existing?.currentStock, Number.NaN);
+  if (parsedStock.error) return { error: `Stok harus berupa angka` };
+  const currentStock = parsedStock.value;
   const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim() : existing?.imageUrl ?? "";
   const isActive = typeof body.isActive === "boolean" ? body.isActive : existing?.isActive ?? true;
   const slug = typeof body.slug === "string" ? body.slug.trim() || null : existing?.slug ?? null;
   const shortDescription = typeof body.shortDescription === "string" ? body.shortDescription.trim() : existing?.shortDescription ?? "";
-  const compareAtPrice = body.compareAtPrice === undefined || body.compareAtPrice === null || body.compareAtPrice === ""
-    ? existing?.compareAtPrice ?? null
-    : Number(body.compareAtPrice);
-  const weightValue = body.weightValue === undefined || body.weightValue === null || body.weightValue === ""
-    ? existing?.weightValue ?? null
-    : Number(body.weightValue);
+  const parsedCompareAtPrice = coerceNullableNumber(body.compareAtPrice, existing?.compareAtPrice);
+  if (parsedCompareAtPrice.error) return { error: `Harga coret harus berupa angka` };
+  const compareAtPrice = parsedCompareAtPrice.value;
+  const parsedWeight = coerceNullableNumber(body.weightValue, existing?.weightValue);
+  if (parsedWeight.error) return { error: `Berat harus berupa angka` };
+  const weightValue = parsedWeight.value;
   const weightUnit = typeof body.weightUnit === "string" ? body.weightUnit.trim() || "g" : existing?.weightUnit ?? "g";
-  const piecesMin = body.piecesMin === undefined || body.piecesMin === null || body.piecesMin === ""
-    ? existing?.piecesMin ?? null
-    : Number(body.piecesMin);
-  const piecesMax = body.piecesMax === undefined || body.piecesMax === null || body.piecesMax === ""
-    ? existing?.piecesMax ?? null
-    : Number(body.piecesMax);
+  const parsedPiecesMin = coerceNullableNumber(body.piecesMin, existing?.piecesMin);
+  if (parsedPiecesMin.error) return { error: `Jumlah minimum harus berupa angka` };
+  const piecesMin = parsedPiecesMin.value;
+  const parsedPiecesMax = coerceNullableNumber(body.piecesMax, existing?.piecesMax);
+  if (parsedPiecesMax.error) return { error: `Jumlah maksimum harus berupa angka` };
+  const piecesMax = parsedPiecesMax.value;
   const isFeatured = typeof body.isFeatured === "boolean" ? body.isFeatured : existing?.isFeatured ?? false;
   const isBestSeller = typeof body.isBestSeller === "boolean" ? body.isBestSeller : existing?.isBestSeller ?? false;
   const isNew = typeof body.isNew === "boolean" ? body.isNew : existing?.isNew ?? false;
@@ -79,10 +111,27 @@ export function parseProductInput(
   }
   if (name.length < 2 || name.length > 120) return { error: "Nama produk harus 2-120 karakter" };
   if (category.length < 2 || category.length > 80) return { error: "Kategori harus 2-80 karakter" };
+  if (slug !== null && slug.length > 200) return { error: "Slug maksimal 200 karakter" };
+  if (shortDescription.length > 300) return { error: "Deskripsi singkat maksimal 300 karakter" };
   if (description.length > 2_000) return { error: "Deskripsi maksimal 2.000 karakter" };
   if (!Number.isSafeInteger(price) || price < 0) return { error: "Harga harus bilangan bulat non-negatif" };
   if (!Number.isSafeInteger(currentStock) || currentStock < 0 || currentStock > 10_000_000) {
     return { error: "Stok harus bilangan bulat antara 0 dan 10.000.000" };
+  }
+  if (compareAtPrice !== null && (!Number.isSafeInteger(compareAtPrice) || compareAtPrice < 0)) {
+    return { error: "Harga coret harus bilangan bulat non-negatif" };
+  }
+  if (weightValue !== null && (!Number.isFinite(weightValue) || weightValue < 0)) {
+    return { error: "Berat harus angka non-negatif" };
+  }
+  if (piecesMin !== null && (!Number.isSafeInteger(piecesMin) || piecesMin < 0)) {
+    return { error: "Jumlah minimum harus bilangan bulat non-negatif" };
+  }
+  if (piecesMax !== null && (!Number.isSafeInteger(piecesMax) || piecesMax < 0)) {
+    return { error: "Jumlah maksimum harus bilangan bulat non-negatif" };
+  }
+  if (piecesMin !== null && piecesMax !== null && piecesMax < piecesMin) {
+    return { error: "Jumlah maksimum tidak boleh kurang dari jumlah minimum" };
   }
   if (!imageUrl || imageUrl.length > 2_048 || !validImageUrl(imageUrl)) {
     return { error: "URL gambar produk tidak valid" };

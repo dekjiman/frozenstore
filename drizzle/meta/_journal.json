@@ -8,6 +8,62 @@
       "when": 1788981536467,
       "tag": "0000_next_korath",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789052833289,
+      "tag": "0001_qris_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789091893386,
+      "tag": "0002_shipping_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789113549786,
+      "tag": "0003_steep_doctor_octopus",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789117639549,
+      "tag": "0004_goofy_lyja",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789128063133,
+      "tag": "0005_remove_kirimaja",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789170798855,
+      "tag": "0006_shipping_default_method",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789171373304,
+      "tag": "0007_sharp_sugar_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789350552979,
+      "tag": "0008_unknown_vermin",
+      "breakpoints": true
     }
   ]
 }

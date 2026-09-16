@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "@/components/cart-provider";
 import { AuthProvider } from "@/components/auth-provider";
+import { AdSenseProvider } from "@/components/ads/adsense-provider";
+import { AdsBottomBanner } from "@/components/ads/ads-bottom-banner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,6 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
+const adClientId = process.env.NEXT_PUBLIC_AD_CLIENT_ID;
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -31,6 +34,7 @@ export const metadata: Metadata = {
     locale: "id_ID",
     siteName: "Jasmine Shop Premium Product",
   },
+  ...(adClientId ? { other: { "google-adsense-account": adClientId } } : {}),
 };
 
 export default function RootLayout({
@@ -42,8 +46,12 @@ export default function RootLayout({
     <html lang="id" data-scroll-behavior="smooth">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AuthProvider>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            {children}
+            <AdsBottomBanner slot={process.env.NEXT_PUBLIC_AD_SLOT_BOTTOM ?? ""} />
+          </CartProvider>
         </AuthProvider>
+        <AdSenseProvider />
       </body>
     </html>
   );

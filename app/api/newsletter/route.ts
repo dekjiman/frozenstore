@@ -3,11 +3,20 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db/client";
 import { newsletterSubscribers } from "@/db/schema";
+import { clientIp, isRateLimited } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
+    const key = `newsletter:${clientIp(request)}`;
+    if (isRateLimited(key, 10, 60 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: { code: "TOO_MANY_ATTEMPTS", message: "Terlalu banyak permintaan, coba lagi nanti" } },
+        { status: 429 },
+      );
+    }
+
     const body = (await request.json()) as Record<string, unknown>;
     const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
     const source = typeof body.source === "string" ? body.source.trim() : null;

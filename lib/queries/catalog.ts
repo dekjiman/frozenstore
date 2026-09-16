@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, isNull, sql, gte, lte, or, max } from "drizzle-orm";
+import { and, asc, desc, eq, gt, isNull, sql, gte, lte, or, max } from "drizzle-orm";
 import { db } from "@/db/client";
 import { products, productMedia, categories } from "@/db/schema";
 
@@ -61,6 +61,10 @@ const SORT_OPTIONS: Record<string, ReturnType<typeof asc>> = {
   "rating": desc(products.ratingAverage),
 };
 
+function escapeLike(value: string): string {
+  return value.replace(/[\\%_]/g, "\\$&");
+}
+
 export async function getCatalogProducts(
   params: CatalogParams,
 ): Promise<CatalogResult> {
@@ -74,12 +78,12 @@ export async function getCatalogProducts(
   ];
 
   if (params.q) {
-    const query = params.q.trim();
+    const pattern = `%${escapeLike(params.q.trim().toLowerCase())}%`;
     conditions.push(
       or(
-        sql`lower(${products.name}) LIKE ${`%${query.toLowerCase()}%`}`,
-        sql`lower(${products.description}) LIKE ${`%${query.toLowerCase()}%`}`,
-        sql`lower(${products.sku}) LIKE ${`%${query.toLowerCase()}%`}`,
+        sql`lower(${products.name}) LIKE ${pattern} ESCAPE '\\'`,
+        sql`lower(${products.description}) LIKE ${pattern} ESCAPE '\\'`,
+        sql`lower(${products.sku}) LIKE ${pattern} ESCAPE '\\'`,
       )!,
     );
   }
@@ -230,4 +234,73 @@ export async function getCatalogProducts(
     limit,
     totalPages: Math.ceil(total / limit),
   };
+}
+
+export type CatalogExportProductDTO = {
+  id: string;
+  sku: string;
+  name: string;
+  category: string;
+  categoryName: string | null;
+  shortDescription: string;
+  price: number;
+  currentStock: number;
+  imageUrl: string;
+};
+
+export async function getCatalogExportProducts(): Promise<CatalogExportProductDTO[]> {
+  const primaryMedia = db
+    .select({
+      productId: productMedia.productId,
+      url: max(productMedia.url).as("url"),
+    })
+    .from(productMedia)
+    .where(eq(productMedia.isPrimary, true))
+    .groupBy(productMedia.productId)
+    .as("primary_media");
+
+  const categoryNameSubq = db
+    .select({
+      id: categories.id,
+      name: categories.name,
+    })
+    .from(categories)
+    .as("category_name");
+
+  const rows = await db
+    .select({
+      id: products.id,
+      sku: products.sku,
+      name: products.name,
+      category: products.category,
+      shortDescription: products.shortDescription,
+      price: products.price,
+      currentStock: products.currentStock,
+      fallbackImageUrl: products.imageUrl,
+      primaryMediaUrl: primaryMedia.url,
+      categoryName: categoryNameSubq.name,
+    })
+    .from(products)
+    .leftJoin(primaryMedia, eq(products.id, primaryMedia.productId))
+    .leftJoin(categoryNameSubq, eq(products.categoryId, categoryNameSubq.id))
+    .where(
+      and(
+        eq(products.isActive, true),
+        isNull(products.deletedAt),
+        gt(products.currentStock, 0),
+      ),
+    )
+    .orderBy(asc(products.name));
+
+  return rows.map((r) => ({
+    id: r.id,
+    sku: r.sku,
+    name: r.name,
+    category: r.category,
+    categoryName: r.categoryName,
+    shortDescription: r.shortDescription,
+    price: r.price,
+    currentStock: r.currentStock,
+    imageUrl: r.primaryMediaUrl ?? r.fallbackImageUrl,
+  }));
 }

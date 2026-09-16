@@ -57,11 +57,11 @@ const FAQ_ITEMS = [
       },
       {
         q: "Berapa lama pengiriman dilakukan?",
-        a: "Untuk wilayah Jawa: 1-2 hari. Luar Jawa: 2-5 hari kerja. Estimasi dapat berbeda tergantung lokasi dan kurir yang digunakan.",
+        a: "Untuk wilayah Pulau Jawa: estimasi 1-2 hari kerja. Estimasi dapat berbeda tergantung lokasi dan kurir yang digunakan.",
       },
       {
         q: "Area pengiriman mana saja yang terjangkau?",
-        a: "Kami melayani pengiriman ke seluruh Indonesia. Untuk area tertentu, silakan hubungi kami untuk cek ketersediaan pengiriman.",
+        a: "Pengiriman kami hanya melayani wilayah Pulau Jawa. Untuk area tertentu, silakan hubungi kami via WhatsApp untuk cek ketersediaan pengiriman.",
       },
     ],
   },

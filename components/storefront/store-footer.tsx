@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Phone, Mail, Clock, MapPin, Send } from "lucide-react";
+import { Phone, Mail, Clock, MapPin, ExternalLink, Send } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import type { SiteSettingsDTO } from "@/lib/queries/site-settings";
 
@@ -74,7 +74,7 @@ export function StoreFooter({
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
               <span className="inline-flex h-9 w-auto overflow-hidden rounded-xl bg-white">
-                <img src="/images/logo/logo_jusmine.png" alt={settings?.brandName || "Jasmine Shop Premium Product"} className="h-9 w-auto object-contain" />
+                <img src="/images/logo/logo_jusmine-mark.png" alt={settings?.brandName || "Jasmine Shop Premium Product"} className="h-9 w-auto object-contain" />
               </span>
             </Link>
             <p className="text-xs leading-relaxed text-white/70">
@@ -124,6 +124,7 @@ export function StoreFooter({
             <h3 className="mb-4 text-sm font-bold text-white">Bantuan</h3>
             <ul className="space-y-2.5 text-xs">
               <li><Link href="/bantuan" className="text-white/70 hover:text-white transition-colors">FAQ</Link></li>
+              <li><Link href="/kontak" className="text-white/70 hover:text-white transition-colors">Hubungi Kami</Link></li>
               <li><Link href="/kebijakan-pengembalian" className="text-white/70 hover:text-white transition-colors">Kebijakan Pengembalian</Link></li>
               <li><Link href="/syarat-ketentuan" className="text-white/70 hover:text-white transition-colors">Syarat &amp; Ketentuan</Link></li>
               <li><Link href="/kebijakan-privasi" className="text-white/70 hover:text-white transition-colors">Kebijakan Privasi</Link></li>
@@ -173,6 +174,15 @@ export function StoreFooter({
                   <div>
                     <p className="text-[10px] text-white/50">Alamat</p>
                     <p className="font-medium text-white">{addressVal}</p>
+                    <a
+                      href="https://www.google.com/maps/place/Jasmine+Shop/@-6.2769792,106.7899634,17z"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold text-white/80 hover:text-white transition-colors"
+                    >
+                      <ExternalLink size={10} />
+                      Buka di Google Maps
+                    </a>
                   </div>
                 </li>
               )}

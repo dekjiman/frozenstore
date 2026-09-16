@@ -11,6 +11,18 @@ services:
       DATABASE_URL: postgresql://frozenstore:frozenstore@db:5432/frozenstore
       CART_SESSION_SECRET: dev-secret
       NODE_ENV: development
+      EVOLUTION_BASE_URL: ${EVOLUTION_BASE_URL:-}
+      EVOLUTION_INSTANCE_NAME: ${EVOLUTION_INSTANCE_NAME:-store}
+      EVOLUTION_API_KEY: ${EVOLUTION_API_KEY:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-}
+      NEXT_PUBLIC_AD_CLIENT_ID: ${NEXT_PUBLIC_AD_CLIENT_ID:-}
+      NEXT_PUBLIC_AD_SLOT_BOTTOM: ${NEXT_PUBLIC_AD_SLOT_BOTTOM:-}
+      NEXT_PUBLIC_AD_SLOT_ARTICLE: ${NEXT_PUBLIC_AD_SLOT_ARTICLE:-}
+      NEXT_PUBLIC_AD_SLOT_HOME: ${NEXT_PUBLIC_AD_SLOT_HOME:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy
@@ -27,7 +39,7 @@ services:
       POSTGRES_USER: frozenstore
       POSTGRES_PASSWORD: frozenstore
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:

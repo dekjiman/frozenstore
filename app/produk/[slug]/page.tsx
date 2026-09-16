@@ -9,6 +9,7 @@ import { MediaGallery } from "@/components/storefront/media-gallery";
 import { StickyPurchase } from "@/components/storefront/sticky-purchase";
 import { RelatedProducts } from "@/components/storefront/related-products";
 import { ShareButton } from "@/components/storefront/share-button";
+import { jsonLdScript } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -67,7 +68,7 @@ type ProductDetail = {
     height: number | null;
   }>;
   badges: Array<{ id: string; label: string; badgeType: string }>;
-  related: Array<{ id: string; name: string; slug: string; price: number; imageUrl: string }>;
+  related: Array<{ id: string; name: string; slug: string | null; price: number; imageUrl: string }>;
 };
 
 const rupiah = new Intl.NumberFormat("id-ID", {
@@ -164,7 +165,7 @@ function ProductJsonLd({ product }: { product: ProductDetail }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
     />
   );
 }
@@ -223,7 +224,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 {product.name}
               </h1>
 
-              <StarRating average={product.ratingAverage} count={product.ratingCount} />
+              <div className="flex items-center justify-between gap-3">
+                <StarRating average={product.ratingAverage} count={product.ratingCount} />
+                <ShareButton title={product.name} url={`${BASE}/produk/${product.slug}`} image={product.imageUrl} iconOnly />
+              </div>
 
               {product.soldCount > 0 && (
                 <p className="text-sm text-stone-400">Terjual {product.soldCount.toLocaleString("id-ID")}</p>
@@ -254,8 +258,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
               {product.shortDescription && (
                 <p className="text-[var(--ink-700)] leading-relaxed">{product.shortDescription}</p>
               )}
-
-              <ShareButton title={product.name} url={`${BASE}/produk/${product.slug}`} image={product.imageUrl} />
 
               <div className="grid grid-cols-2 gap-3 rounded-xl border border-[var(--border)] bg-white p-4 text-sm">
                 {product.weightValue && (

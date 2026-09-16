@@ -7,11 +7,19 @@ services:
       - "${APP_PORT:-8080}:3000"
     environment:
       DATABASE_URL: postgresql://frozenstore:frozenstore@db:5432/frozenstore
-      CART_SESSION_SECRET: ${CART_SESSION_SECRET:-super-secret-change-me-in-production}
+      CART_SESSION_SECRET: ${CART_SESSION_SECRET:?CART_SESSION_SECRET wajib di-set di .env}
       NODE_ENV: production
-      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:8080}
-      BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:8080}
+      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:?NEXT_PUBLIC_BASE_URL wajib di-set di .env}
+      BASE_URL: ${NEXT_PUBLIC_BASE_URL:?NEXT_PUBLIC_BASE_URL wajib di-set di .env}
       API_URL: http://localhost:3000
+      EVOLUTION_BASE_URL: ${EVOLUTION_BASE_URL:-}
+      EVOLUTION_INSTANCE_NAME: ${EVOLUTION_INSTANCE_NAME:-store}
+      EVOLUTION_API_KEY: ${EVOLUTION_API_KEY:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy
@@ -26,7 +34,7 @@ services:
       POSTGRES_USER: frozenstore
       POSTGRES_PASSWORD: frozenstore
     ports:
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:

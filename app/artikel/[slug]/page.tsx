@@ -10,11 +10,11 @@ import { eq, and } from "drizzle-orm";
 import { Container } from "@/components/ui/container";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
+import { AdUnit } from "@/components/ads/ad-unit";
 import { ShareButton } from "@/components/storefront/share-button";
+import { SEO_BASE, SITE_NAME, absoluteUrl, jsonLdScript } from "@/lib/seo";
 
-export const revalidate = 60;
-
-const BASE = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -34,18 +34,57 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Artikel Tidak Ditemukan" };
   }
 
+  const url = `${SEO_BASE}/artikel/${article.slug}`;
+  const coverImage = absoluteUrl(article.coverImage || "");
+
   return {
     title: `${article.title} — Jasmine Shop Premium Product`,
     description: article.excerpt,
+    alternates: { canonical: url },
     openGraph: {
       title: article.title,
       description: article.excerpt,
       type: "article",
+      siteName: SITE_NAME,
+      locale: "id_ID",
+      url,
       publishedTime: article.publishedAt ? new Date(article.publishedAt).toISOString() : undefined,
+      modifiedTime: new Date(article.updatedAt).toISOString(),
       authors: [article.authorName],
-      images: article.coverImage ? [article.coverImage] : undefined,
+      images: coverImage ? [{ url: coverImage, alt: article.title, width: 1200, height: 630 }] : undefined,
+    },
+    twitter: {
+      card: coverImage ? "summary_large_image" : "summary",
+      title: article.title,
+      description: article.excerpt,
+      images: coverImage ? [coverImage] : undefined,
     },
   };
+}
+
+function ArticleJsonLd({ article }: { article: NonNullable<Awaited<ReturnType<typeof getArticle>>> }) {
+  const url = `${SEO_BASE}/artikel/${article.slug}`;
+  const coverImage = absoluteUrl(article.coverImage || "");
+  const jsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.excerpt || undefined,
+    image: coverImage || undefined,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    author: { "@type": "Person", name: article.authorName || "Admin" },
+    publisher: { "@type": "Organization", name: SITE_NAME, url: SEO_BASE },
+    datePublished: article.publishedAt ? new Date(article.publishedAt).toISOString() : undefined,
+    dateModified: new Date(article.updatedAt).toISOString(),
+    inLanguage: "id-ID",
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
+    />
+  );
 }
 
 export default async function ArticleDetailPage({ params }: Props) {
@@ -90,7 +129,7 @@ export default async function ArticleDetailPage({ params }: Props) {
               <div className="mt-6 flex justify-center">
                 <ShareButton
                   title={article.title}
-                  url={`${BASE}/artikel/${article.slug}`}
+                  url={`${SEO_BASE}/artikel/${article.slug}`}
                   image={article.coverImage ?? undefined}
                 />
               </div>
@@ -111,7 +150,11 @@ export default async function ArticleDetailPage({ params }: Props) {
                 {article.content}
               </ReactMarkdown>
             </div>
-            
+
+            <div className="mt-10">
+              <AdUnit slot={process.env.NEXT_PUBLIC_AD_SLOT_ARTICLE ?? ""} />
+            </div>
+
             <div className="mt-16 pt-8 border-t border-stone-200">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-6 bg-white p-6 rounded-3xl border border-stone-200">
                 <div>
@@ -128,6 +171,7 @@ export default async function ArticleDetailPage({ params }: Props) {
       </main>
 
       <StoreFooter />
+      <ArticleJsonLd article={article} />
     </div>
   );
 }

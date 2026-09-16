@@ -61,8 +61,8 @@ export function StoreHeader() {
           </button>
 
           {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0" aria-label="Jasmine Shop Premium Product">
-            <img src="/images/logo/logo_jusmine.png" alt="Jasmine Shop Premium Product" className="h-10 w-auto object-contain" />
+          <Link href="/" className="group flex items-center shrink-0 transition-opacity hover:opacity-90" aria-label="Jasmine Shop Premium Product">
+            <img src="/images/logo/logo_jusmine-mark.png" alt="Jasmine Shop Premium Product" className="h-11 w-auto object-contain md:h-12" />
           </Link>
 
 
@@ -108,9 +108,7 @@ export function StoreHeader() {
               className="hidden sm:flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-stone-500 hover:text-[var(--brand-600)] transition-colors"
             >
               {user ? (
-                <div className="grid size-7 place-items-center rounded-full bg-[var(--brand-600)] text-xs font-bold text-white">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
+                user.image ? <img src={user.image} alt={`Foto ${user.name}`} className="size-7 rounded-full object-cover" /> : <div className="grid size-7 place-items-center rounded-full bg-[var(--brand-600)] text-xs font-bold text-white">{user.name.charAt(0).toUpperCase()}</div>
               ) : (
                 <User size={20} strokeWidth={1.5} />
               )}
@@ -186,7 +184,7 @@ export function StoreHeader() {
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-600 hover:bg-[var(--brand-50)]"
               onClick={() => setMobileOpen(false)}
             >
-              <User size={16} />
+              {user?.image ? <img src={user.image} alt={`Foto ${user.name}`} className="size-7 rounded-full object-cover" /> : <User size={16} />}
               {user ? "Akun Saya" : "Masuk / Daftar"}
             </Link>
           </div>

@@ -1,0 +1,1 @@
+ALTER TABLE "shipping_settings" ADD COLUMN "enable_regular" boolean DEFAULT true NOT NULL;

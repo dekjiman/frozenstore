@@ -13,10 +13,16 @@ function hashToken(token: string) {
 
 function readCookie(request: Request, name: string) {
   const cookieHeader = request.headers.get("cookie") ?? "";
-  return cookieHeader
+  const value = cookieHeader
     .split(";")
     .map((part) => part.trim().split("="))
     .find(([cookieName]) => cookieName === name)?.[1];
+  if (!value) return undefined;
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return undefined;
+  }
 }
 
 export async function createAuthSession(userId: string) {
@@ -50,14 +56,14 @@ export async function getAuthenticatedUser(request: Request) {
     .select({ session: authSessions, user: users })
     .from(authSessions)
     .innerJoin(users, eq(authSessions.userId, users.id))
-    .where(and(eq(authSessions.tokenHash, hashToken(decodeURIComponent(token))), gt(authSessions.expiresAt, new Date())))
+    .where(and(eq(authSessions.tokenHash, hashToken(token)), gt(authSessions.expiresAt, new Date())))
     .limit(1);
   return result[0] ?? null;
 }
 
 export async function deleteAuthSession(request: Request) {
   const token = readCookie(request, AUTH_SESSION_COOKIE);
-  if (token) await db.delete(authSessions).where(eq(authSessions.tokenHash, hashToken(decodeURIComponent(token))));
+  if (token) await db.delete(authSessions).where(eq(authSessions.tokenHash, hashToken(token)));
 }
 
 export function clearAuthCookie(response: NextResponse) {

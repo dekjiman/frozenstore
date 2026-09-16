@@ -4,6 +4,7 @@ import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/queries/site-settings";
+import { normalizeWaNumber } from "@/lib/wa";
 import { FileCheck2, ShoppingCart, Truck, RefreshCw, HelpCircle } from "lucide-react";
 
 export const revalidate = 300;
@@ -127,7 +128,7 @@ export default async function SyaratKetentuanPage() {
                 <div className="rounded-xl border border-stone-200/80 bg-stone-50 p-4">
                   <p className="text-xs text-stone-500">WhatsApp</p>
                   <a
-                    href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
+                    href={`https://wa.me/${normalizeWaNumber(whatsapp)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-semibold text-[var(--brand-600)] hover:underline"

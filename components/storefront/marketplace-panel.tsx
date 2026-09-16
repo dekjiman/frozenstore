@@ -4,6 +4,7 @@ import { MessageCircle, ExternalLink } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { TestimonialPanel } from "@/components/storefront/testimonial-panel";
+import { toWaLink } from "@/lib/wa";
 import type { HomepageDTO } from "@/lib/queries/homepage";
 
 type MarketplaceLink = HomepageDTO["marketplaceLinks"][number];
@@ -19,8 +20,9 @@ export function MarketplacePanel({
   siteSettings: SiteSettings;
   testimonials?: Testimonial[];
 }) {
-  const waNumber = siteSettings.whatsappNumber?.replace(/[^0-9]/g, "");
-  const waUrl = waNumber ? `https://wa.me/${waNumber}?text=Halo%20Jasmine%20Frozen%20Food%2C%20saya%20tertarik%20dengan%20produknya` : null;
+  const waUrl = siteSettings.whatsappNumber
+    ? toWaLink(siteSettings.whatsappNumber, "Halo Jasmine Frozen Food, saya tertarik dengan produknya")
+    : null;
 
   return (
     <section className="bg-[var(--cream-100)] py-8 sm:py-12">

@@ -35,10 +35,19 @@ type Category = {
   sortOrder: number;
 };
 
+import { ResellerPartnershipGuide } from "@/components/storefront/reseller-partnership-guide";
+
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const params = await searchParams;
   const q = typeof params.q === "string" ? params.q : undefined;
   const promo = typeof params.promo === "string" && params.promo === "true";
+  const reseller = typeof params.reseller === "string" && params.reseller === "true";
+  if (reseller) {
+    return {
+      title: "Panduan & Penawaran Kemitraan Reseller / Agen — Jasmine Shop Premium Product",
+      description: "Bergabunglah menjadi mitra bisnis (Reseller & Agen) frozen food berkualitas premium. Margin keuntungan tinggi, diskon HET hingga 35%, dan garansi produk.",
+    };
+  }
   if (q) {
     return {
       title: `Hasil pencarian "${q}" — Jasmine Shop Premium Product`,
@@ -103,6 +112,7 @@ export default async function CatalogPage({ searchParams }: PageProps) {
   const promo = typeof raw.promo === "string" ? raw.promo === "true" : false;
   const bestSeller = typeof raw.bestSeller === "string" ? raw.bestSeller === "true" : false;
   const featured = typeof raw.featured === "string" ? raw.featured === "true" : false;
+  const reseller = typeof raw.reseller === "string" ? raw.reseller === "true" : false;
 
   const [catalog, categories] = await Promise.all([
     getCatalog({ q: q || undefined, category: category || undefined, sort, page: String(page), promo: promo ? "true" : undefined, bestSeller: bestSeller ? "true" : undefined, featured: featured ? "true" : undefined }),
@@ -116,7 +126,7 @@ export default async function CatalogPage({ searchParams }: PageProps) {
 
   const buildHref = (overrides: Record<string, string>) => {
     const sp = new URLSearchParams();
-    const merged = { q, category, sort, promo: promo ? "true" : undefined, bestSeller: bestSeller ? "true" : undefined, featured: featured ? "true" : undefined, page: "1", ...overrides };
+    const merged = { q, category, sort, promo: promo ? "true" : undefined, reseller: reseller ? "true" : undefined, bestSeller: bestSeller ? "true" : undefined, featured: featured ? "true" : undefined, page: "1", ...overrides };
     for (const [k, v] of Object.entries(merged)) {
       if (v) sp.set(k, v);
     }
@@ -129,19 +139,38 @@ export default async function CatalogPage({ searchParams }: PageProps) {
 
       <main className="pb-16">
         <Container className="pt-6 pb-4">
-          <h1 className="mb-6 font-serif text-2xl font-bold text-[var(--ink-950)] sm:text-3xl">
-            {q
-              ? `Hasil pencarian "${q}"`
-              : currentCategory
-                ? `Kategori: ${currentCategory.name}`
-                : promo
-                  ? "Produk Promo"
-                  : bestSeller
-                    ? "Produk Terlaris"
-                    : featured
-                      ? "Produk Pilihan"
-                      : "Semua Produk"}
-          </h1>
+          {reseller && <ResellerPartnershipGuide />}
+
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+            <h1 className="font-serif text-2xl font-bold text-[var(--ink-950)] sm:text-3xl">
+              {reseller
+                ? "Katalog Produk & Paket Kemitraan"
+                : q
+                  ? `Hasil pencarian "${q}"`
+                  : currentCategory
+                    ? `Kategori: ${currentCategory.name}`
+                    : promo
+                      ? "Produk Promo"
+                      : bestSeller
+                        ? "Produk Terlaris"
+                        : featured
+                          ? "Produk Pilihan"
+                          : "Semua Produk"}
+            </h1>
+
+            <a
+              href="/api/produk/katalog"
+              download="katalog-produk-jasmine.pdf"
+              className="inline-flex h-10 items-center gap-2 rounded-lg border border-[var(--border)] bg-white px-4 text-sm font-medium text-[var(--ink-800)] transition-colors hover:bg-stone-100"
+            >
+              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" x2="12" y1="15" y2="3" />
+              </svg>
+              Unduh Katalog PDF
+            </a>
+          </div>
 
           <form className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative flex-1">

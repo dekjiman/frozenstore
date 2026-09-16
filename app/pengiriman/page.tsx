@@ -3,6 +3,7 @@ import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/queries/site-settings";
+import { normalizeWaNumber } from "@/lib/wa";
 import { Truck, ShieldCheck, Clock, HelpCircle } from "lucide-react";
 
 export const revalidate = 300;
@@ -86,7 +87,7 @@ export default async function PengirimanPage() {
               </p>
               <div className="mt-4">
                 <a
-                  href={`https://wa.me/${whatsapp.replace(/\D/g, "")}?text=Halo%20Jasmine%20Frozen%20Food%2C%20saya%20mau%20tanya%20pengiriman`}
+                  href={`https://wa.me/${normalizeWaNumber(whatsapp)}?text=Halo%20Jasmine%20Frozen%20Food%2C%20saya%20mau%20tanya%20pengiriman`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-600)] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[var(--brand-700)]"

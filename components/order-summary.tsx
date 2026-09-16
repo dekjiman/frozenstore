@@ -8,6 +8,8 @@ type OrderSummaryProps = {
   shipping: ShippingData;
   subtotal: number;
   order: { id: string; orderNumber: string; totalAmount: number; paymentStatus: string } | null;
+  shippingAmount: number;
+  courier: string | null;
 };
 
 const rupiahFormatter = new Intl.NumberFormat("id-ID", {
@@ -16,9 +18,7 @@ const rupiahFormatter = new Intl.NumberFormat("id-ID", {
   maximumFractionDigits: 0,
 });
 
-export function OrderSummary({ items, shipping, subtotal, order }: OrderSummaryProps) {
-  const shippingCost = 20_000;
-
+export function OrderSummary({ items, shipping, subtotal, order, shippingAmount, courier }: OrderSummaryProps) {
   return (
     <div className="mt-8">
       <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 sm:flex sm:items-center sm:gap-4">
@@ -57,7 +57,7 @@ export function OrderSummary({ items, shipping, subtotal, order }: OrderSummaryP
         <p className="mt-3 text-sm font-semibold text-stone-900">{shipping.recipientName}</p>
         <p className="mt-1 text-sm text-stone-600">{shipping.phone}</p>
         <p className="mt-2 text-sm leading-6 text-stone-600">
-          {shipping.address}, {shipping.city}, {shipping.province} {shipping.postalCode}
+          {shipping.address}, {shipping.city}, {shipping.province}{shipping.postalCode ? ` ${shipping.postalCode}` : ""}
         </p>
         {shipping.notes ? <p className="mt-2 text-xs italic text-stone-500">Catatan: {shipping.notes}</p> : null}
       </div>
@@ -81,8 +81,9 @@ export function OrderSummary({ items, shipping, subtotal, order }: OrderSummaryP
         </div>
         <dl className="mt-3 space-y-2 border-t border-stone-200 pt-4 text-sm">
           <div className="flex justify-between text-stone-600"><dt>Subtotal</dt><dd>{rupiahFormatter.format(subtotal)}</dd></div>
-          <div className="flex justify-between text-stone-600"><dt>Pengiriman</dt><dd>{rupiahFormatter.format(shippingCost)}</dd></div>
-          <div className="flex justify-between pt-2 font-bold text-stone-950"><dt>Total</dt><dd className="text-[var(--brand-600)]">{rupiahFormatter.format(subtotal + shippingCost)}</dd></div>
+          <div className="flex justify-between text-stone-600"><dt>Pengiriman</dt><dd>{rupiahFormatter.format(shippingAmount)}</dd></div>
+          {courier ? <div className="flex justify-between text-xs text-stone-500"><dt>Kurir</dt><dd>{courier}</dd></div> : null}
+          <div className="flex justify-between pt-2 font-bold text-stone-950"><dt>Total</dt><dd className="text-[var(--brand-600)]">{rupiahFormatter.format(subtotal + shippingAmount)}</dd></div>
         </dl>
       </div>
 

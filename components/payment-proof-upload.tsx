@@ -10,9 +10,11 @@ const maxFileSize = 5 * 1024 * 1024;
 type PaymentProofUploadProps = {
   orderId: string;
   onConfirmed: () => void;
+  submitLabel?: string;
+  helperText?: string;
 };
 
-export function PaymentProofUpload({ orderId, onConfirmed }: PaymentProofUploadProps) {
+export function PaymentProofUpload({ orderId, onConfirmed, submitLabel, helperText }: PaymentProofUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -104,7 +106,7 @@ export function PaymentProofUpload({ orderId, onConfirmed }: PaymentProofUploadP
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold text-stone-900">Bukti pembayaran</h3>
-          <p className="mt-1 text-xs text-stone-500">Wajib diunggah untuk menyelesaikan checkout.</p>
+          <p className="mt-1 text-xs text-stone-500">{helperText ?? "Wajib diunggah untuk menyelesaikan checkout."}</p>
         </div>
         <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
           Wajib
@@ -191,7 +193,7 @@ export function PaymentProofUpload({ orderId, onConfirmed }: PaymentProofUploadP
           className="mt-0.5 size-4 accent-[var(--brand-600)]"
         />
         <span className="text-sm leading-6 text-stone-600">
-          Saya memastikan telah mentransfer sesuai total pembayaran ke rekening Jasmine Shop Premium Product yang dipilih.
+          Saya memastikan telah melakukan pembayaran sesuai total pembayaran ke Jasmine Shop Premium Product.
         </span>
       </label>
 
@@ -201,7 +203,7 @@ export function PaymentProofUpload({ orderId, onConfirmed }: PaymentProofUploadP
         disabled={!file || !confirmed || !orderId || isUploading}
         className="mt-6 w-full rounded-full bg-stone-900 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[var(--brand-700)] disabled:cursor-not-allowed disabled:bg-stone-300"
       >
-        {isUploading ? "Mengunggah..." : "Unggah bukti & selesaikan checkout"}
+        {isUploading ? "Mengunggah..." : (submitLabel ?? "Unggah bukti & selesaikan checkout")}
       </button>
     </div>
   );

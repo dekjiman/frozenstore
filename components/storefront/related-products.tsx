@@ -4,7 +4,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 type RelatedProduct = {
   id: string;
   name: string;
-  slug: string;
+  slug: string | null;
   price: number;
   imageUrl: string;
 };
@@ -25,7 +25,7 @@ export function RelatedProducts({ products }: { products: RelatedProduct[] }) {
         {products.map((p) => (
           <Link
             key={p.id}
-            href={`/produk/${p.slug}`}
+            href={p.slug ? `/produk/${p.slug}` : `/produk/${p.id}`}
             className="group flex flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-white transition hover:shadow-md"
           >
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">

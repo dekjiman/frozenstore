@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/container";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { ProductCard } from "@/components/storefront/product-card";
+import { CategoryIcon } from "@/lib/category-icons";
 import { getCatalogProducts } from "@/lib/queries/catalog";
 import { db } from "@/db/client";
 import { categories as categoriesTable } from "@/db/schema";
@@ -117,11 +118,16 @@ export default async function CategoryPage({ params }: PageProps) {
             </ol>
           </nav>
 
-          <div className="mb-8">
-            <h1 className="font-serif text-2xl font-bold text-[var(--ink-950)] sm:text-3xl">{cat.name}</h1>
-            {cat.description && (
-              <p className="mt-2 max-w-2xl text-[var(--ink-700)]">{cat.description}</p>
-            )}
+          <div className="mb-8 flex items-center gap-4">
+            <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[var(--brand-50)] to-[var(--cream-100)] text-[var(--brand-600)] ring-1 ring-stone-200/60 sm:size-16">
+              <CategoryIcon iconKey={cat.iconKey} className="size-7 sm:size-8" />
+            </span>
+            <div>
+              <h1 className="font-serif text-2xl font-bold text-[var(--ink-950)] sm:text-3xl">{cat.name}</h1>
+              {cat.description && (
+                <p className="mt-1 max-w-2xl text-sm text-[var(--ink-700)] sm:text-base">{cat.description}</p>
+              )}
+            </div>
           </div>
         </Container>
 

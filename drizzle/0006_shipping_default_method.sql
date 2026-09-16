@@ -1,0 +1,2 @@
+ALTER TABLE "shipping_settings" ADD COLUMN "default_method" text DEFAULT 'regular' NOT NULL;--> statement-breakpoint
+ALTER TABLE "shipping_settings" ADD CONSTRAINT "shipping_settings_default_method_valid" CHECK ("shipping_settings"."default_method" in ('regular', 'same_day', 'instant'));

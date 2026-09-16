@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/ui/container";
+import { CategoryIcon } from "@/lib/category-icons";
 import type { HomepageDTO } from "@/lib/queries/homepage";
 
 type Category = HomepageDTO["categories"][number];
@@ -20,8 +21,12 @@ export function CategoryRail({ categories }: { categories: Category[] }) {
               href={`/produk?category=${cat.slug}`}
               className="category-item group flex min-w-[88px] snap-center flex-col items-center gap-3 rounded-2xl bg-white px-3 py-4 shadow-sm sm:min-w-[100px] sm:px-4 sm:py-5 hover:shadow-md"
             >
-              <div className="relative size-20 shrink-0 overflow-hidden rounded-full bg-stone-100 ring-1 ring-stone-200/60 group-hover:ring-[var(--brand-300)] transition-all sm:size-24">
-                {cat.imageUrl ? (
+              <div className="relative size-20 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-[var(--brand-50)] to-[var(--cream-100)] ring-1 ring-stone-200/60 transition-all group-hover:ring-[var(--brand-500)] group-hover:shadow-lg group-hover:shadow-[var(--brand-600)]/10 sm:size-24">
+                {cat.iconKey ? (
+                  <span className="grid size-full place-items-center text-[var(--brand-600)] transition-colors group-hover:text-[var(--brand-700)]">
+                    <CategoryIcon iconKey={cat.iconKey} className="size-9 sm:size-11" />
+                  </span>
+                ) : cat.imageUrl ? (
                   <Image
                     src={cat.imageUrl}
                     alt={cat.name}
@@ -30,8 +35,8 @@ export function CategoryRail({ categories }: { categories: Category[] }) {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <span className="grid size-full place-items-center text-3xl text-stone-300 sm:text-4xl">
-                    {cat.iconKey ?? cat.name.charAt(0)}
+                  <span className="grid size-full place-items-center text-3xl font-semibold text-[var(--brand-600)] sm:text-4xl">
+                    {cat.name.charAt(0)}
                   </span>
                 )}
               </div>

@@ -3,10 +3,14 @@ import { asc } from "drizzle-orm";
 import { db } from "@/db/client";
 import { articles } from "@/db/schema";
 import { randomBytes } from "crypto";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const unauthorized = await requireAdmin(request);
+  if (unauthorized) return unauthorized;
+
   try {
     const list = await db
       .select()
@@ -24,6 +28,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const unauthorized = await requireAdmin(request);
+  if (unauthorized) return unauthorized;
+
   try {
     const body = await request.json();
 

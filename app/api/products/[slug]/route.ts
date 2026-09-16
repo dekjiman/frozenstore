@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, isNull, or, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db/client";
 import { products, productMedia, productBadges, categories, articles } from "@/db/schema";
@@ -14,7 +14,7 @@ export async function GET(
   try {
     const product = await db.query.products.findFirst({
       where: and(
-        eq(products.slug, slug),
+        or(eq(products.slug, slug), eq(products.id, slug)),
         eq(products.isActive, true),
         isNull(products.deletedAt),
       ),

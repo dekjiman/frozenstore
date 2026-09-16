@@ -15,6 +15,46 @@ export async function GET(request: Request) {
       );
     }
 
+    const rawMin = searchParams.get("minPrice");
+    const rawMax = searchParams.get("maxPrice");
+    const minPrice = rawMin === null ? undefined : Number(rawMin);
+    const maxPrice = rawMax === null ? undefined : Number(rawMax);
+    if (minPrice !== undefined && (!Number.isFinite(minPrice) || minPrice < 0)) {
+      return NextResponse.json(
+        { error: { code: "INVALID_PRICE_FILTER", message: "Harga minimum tidak valid" } },
+        { status: 400 },
+      );
+    }
+    if (maxPrice !== undefined && (!Number.isFinite(maxPrice) || maxPrice < 0)) {
+      return NextResponse.json(
+        { error: { code: "INVALID_PRICE_FILTER", message: "Harga maksimum tidak valid" } },
+        { status: 400 },
+      );
+    }
+    if (minPrice !== undefined && maxPrice !== undefined && maxPrice < minPrice) {
+      return NextResponse.json(
+        { error: { code: "INVALID_PRICE_FILTER", message: "Harga maksimum tidak boleh kurang dari harga minimum" } },
+        { status: 400 },
+      );
+    }
+
+    const rawPage = searchParams.get("page");
+    const rawLimit = searchParams.get("limit");
+    const page = rawPage === null ? undefined : Number(rawPage);
+    const limit = rawLimit === null ? undefined : Number(rawLimit);
+    if (page !== undefined && (!Number.isInteger(page) || page < 1)) {
+      return NextResponse.json(
+        { error: { code: "INVALID_PAGINATION", message: "Parameter halaman tidak valid" } },
+        { status: 400 },
+      );
+    }
+    if (limit !== undefined && (!Number.isInteger(limit) || limit < 1 || limit > 48)) {
+      return NextResponse.json(
+        { error: { code: "INVALID_PAGINATION", message: "Parameter limit harus antara 1 dan 48" } },
+        { status: 400 },
+      );
+    }
+
     const params: CatalogParams = {
       q: query || undefined,
       category: searchParams.get("category") ?? undefined,
@@ -22,11 +62,11 @@ export async function GET(request: Request) {
       bestSeller: searchParams.get("bestSeller") === "true" || searchParams.get("best-seller") === "true",
       promo: searchParams.get("promo") === "true",
       sort: searchParams.get("sort") ?? undefined,
-      minPrice: searchParams.has("minPrice") ? Number(searchParams.get("minPrice")) : undefined,
-      maxPrice: searchParams.has("maxPrice") ? Number(searchParams.get("maxPrice")) : undefined,
+      minPrice,
+      maxPrice,
       inStock: searchParams.get("inStock") === "true",
-      page: searchParams.has("page") ? Number(searchParams.get("page")) : undefined,
-      limit: searchParams.has("limit") ? Number(searchParams.get("limit")) : undefined,
+      page,
+      limit,
     };
 
     const result = await getCatalogProducts(params);

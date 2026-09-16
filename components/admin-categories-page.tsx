@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUp, Edit3, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ApiError, apiFetch } from "@/lib/client-api";
 import { AdminImageUpload } from "@/components/admin-image-upload";
+import { CategoryIconPicker } from "@/components/category-icon-picker";
 
 type Category = {
   id: string;
@@ -230,8 +231,8 @@ export function AdminCategoriesPage() {
               </FormField>
               <AdminImageUpload value={form.imageUrl} onChange={(url) => setForm((f) => ({ ...f, imageUrl: url }))} folder="categories" accept="image/jpeg,image/png,image/webp,image/avif" maxSizeMB={5} error={fieldErrors.imageUrl} />
               <div className="grid gap-5 sm:grid-cols-2">
-                <FormField label="Ikon Key" error={fieldErrors.iconKey}>
-                  <input value={form.iconKey} onChange={(e) => setForm((f) => ({ ...f, iconKey: e.target.value }))} placeholder="e.g. snowflake" className="mt-1 h-10 w-full rounded-xl border border-stone-300 bg-white px-4 text-sm" />
+                <FormField label="Ikon" error={fieldErrors.iconKey}>
+                  <CategoryIconPicker value={form.iconKey} onChange={(key) => setForm((f) => ({ ...f, iconKey: key }))} />
                 </FormField>
                 <FormField label="Urutan" error={fieldErrors.sortOrder}>
                   <input type="number" min="0" value={form.sortOrder} onChange={(e) => setForm((f) => ({ ...f, sortOrder: e.target.value }))} className="mt-1 h-10 w-full rounded-xl border border-stone-300 bg-white px-4 text-sm" />

@@ -19,6 +19,7 @@ const paymentStatusLabels = {
 } as const;
 
 const orderStatusLabels = {
+  waiting_shipping_fee: "Menunggu Konfirmasi Ongkir",
   waiting_payment: "Menunggu Pembayaran",
   processing: "Diproses",
   shipped: "Dikirim",

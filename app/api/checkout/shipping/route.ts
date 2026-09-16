@@ -1,13 +1,20 @@
 import { randomUUID } from "node:crypto";
-import { eq } from "drizzle-orm";
+import { and, desc, eq, gte, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db/client";
-import { cartItems, carts, orderItems, orders, siteSettings } from "@/db/schema";
+import { cartItems, carts, orderItems, orders } from "@/db/schema";
 import { getCartPayload } from "@/lib/cart-service";
 import { getCartSession } from "@/lib/cart-session";
 import { createOrderNumber } from "@/lib/order-number";
 import { getAuthenticatedUser } from "@/lib/auth-session";
+import {
+  decideShipping,
+  readShippingSettings,
+  type ShippingMethod,
+} from "@/lib/shipping-service";
 import { deductStockForOrder, StockUnavailableError } from "@/lib/stock-service";
+import { buildOrderWhatsAppMessage } from "@/lib/order-message";
+import { sendWhatsAppToAdmin } from "@/lib/whatsapp-notify";
 
 export const runtime = "nodejs";
 
@@ -19,7 +26,24 @@ type ShippingRequest = {
   province?: unknown;
   postalCode?: unknown;
   notes?: unknown;
+  method?: unknown;
 };
+
+const METHOD_LABELS: Record<ShippingMethod, string> = {
+  regular: "Reguler",
+  same_day: "Same Day (Grab / GoSend)",
+  instant: "Instan (Grab/GoSend)",
+};
+
+const ACTIVE_ORDER_STATUSES = [
+  "waiting_payment",
+  "waiting_shipping_fee",
+  "processing",
+  "shipped",
+  "delivered",
+] as const;
+
+const DUPLICATE_CHECK_WINDOW_MS = 15 * 60_000;
 
 function stringValue(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -52,8 +76,25 @@ export async function POST(request: Request) {
     if (shipping.address.length < 15) errors.address = "Alamat minimal 15 karakter";
     if (shipping.city.length < 3) errors.city = "Kota wajib diisi";
     if (shipping.province.length < 3) errors.province = "Provinsi wajib diisi";
-    if (!/^\d{5}$/.test(shipping.postalCode)) errors.postalCode = "Kode pos harus 5 digit";
+    if (shipping.postalCode && !/^\d{5}$/.test(shipping.postalCode)) errors.postalCode = "Kode pos harus 5 digit";
     if (shipping.notes.length > 250) errors.notes = "Catatan maksimal 250 karakter";
+
+    let method: ShippingMethod | undefined;
+    if (body.method === "regular" || body.method === "same_day" || body.method === "instant") {
+      method = body.method;
+    }
+    if (!method) {
+      return NextResponse.json(
+        {
+          error: {
+            code: "INVALID_SHIPPING_DATA",
+            message: "Data pengiriman tidak valid",
+            fields: { method: "Pilih metode pengiriman terlebih dahulu" },
+          },
+        },
+        { status: 400 },
+      );
+    }
 
     if (Object.keys(errors).length > 0) {
       return NextResponse.json(
@@ -82,13 +123,60 @@ export async function POST(request: Request) {
     }
 
     const now = new Date();
+    const shippingSettings = await readShippingSettings();
 
-    const settings = await db.query.siteSettings.findFirst({
-      where: eq(siteSettings.id, "default"),
+    if (method === "regular" && !shippingSettings.enableRegular) {
+      return NextResponse.json(
+        { error: { code: "METHOD_UNAVAILABLE", message: "Metode Reguler sedang tidak tersedia." } },
+        { status: 400 },
+      );
+    }
+    if (method === "same_day" && !shippingSettings.enableSameDay) {
+      return NextResponse.json(
+        { error: { code: "METHOD_UNAVAILABLE", message: "Metode Same Day sedang tidak tersedia." } },
+        { status: 400 },
+      );
+    }
+    if (method === "instant" && !shippingSettings.enableInstant) {
+      return NextResponse.json(
+        { error: { code: "METHOD_UNAVAILABLE", message: "Metode Instan sedang tidak tersedia." } },
+        { status: 400 },
+      );
+    }
+
+    const decision = decideShipping({
+      method,
+      settings: shippingSettings,
     });
-    const freeShippingThreshold = settings?.freeShippingThreshold ?? 0;
-    const shippingAmount = cartPayload.subtotal >= freeShippingThreshold ? 0 : 20_000;
+
     const authenticated = await getAuthenticatedUser(request);
+
+    const existingOpenOrder = await db.query.orders.findFirst({
+      where: and(
+        eq(
+          orders.customerId,
+          authenticated?.user.id ?? `guest:${session.key}`,
+        ),
+        inArray(orders.orderStatus, [...ACTIVE_ORDER_STATUSES]),
+        gte(orders.createdAt, new Date(now.getTime() - DUPLICATE_CHECK_WINDOW_MS)),
+      ),
+      orderBy: [desc(orders.createdAt)],
+    });
+
+    if (existingOpenOrder) {
+      return NextResponse.json(
+        {
+          error: {
+            code: "ORDER_ALREADY_STARTED",
+            message: `Pesanan ${existingOpenOrder.orderNumber} masih aktif dan menunggu proses lebih lanjut. Lanjutkan pesanan tersebut alih-alih membuat pesanan baru.`,
+            orderId: existingOpenOrder.id,
+            orderNumber: existingOpenOrder.orderNumber,
+          },
+        },
+        { status: 409 },
+      );
+    }
+
     const order = {
       id: randomUUID(),
       orderNumber: createOrderNumber(now),
@@ -101,11 +189,22 @@ export async function POST(request: Request) {
       shippingProvince: shipping.province,
       shippingPostalCode: shipping.postalCode,
       shippingNotes: shipping.notes || null,
+      shippingMethod: decision.method,
       subtotalAmount: cartPayload.subtotal,
-      shippingAmount,
-      totalAmount: cartPayload.subtotal + shippingAmount,
+      shippingAmount: decision.shippingAmount,
+      totalAmount: cartPayload.subtotal + decision.shippingAmount,
       paymentStatus: "pending" as const,
-      orderStatus: "waiting_payment" as const,
+      orderStatus: decision.orderStatus,
+      courierCode: decision.method,
+      courierName: METHOD_LABELS[decision.method],
+      courierServiceType: null,
+      shippingEtd: null,
+      shippingOriginSubdistrictId: null,
+      shippingOriginSubdistrictName: null,
+      shippingDestinationSubdistrictId: null,
+      shippingDestinationSubdistrictName: null,
+      shippingDestinationLatitude: null,
+      shippingDestinationLongitude: null,
       createdAt: now,
       updatedAt: now,
     };
@@ -132,6 +231,26 @@ export async function POST(request: Request) {
       await transaction.delete(cartItems).where(eq(cartItems.cartId, cart.id)).execute();
     });
 
+    if (decision.method === "instant") {
+      void sendWhatsAppToAdmin({
+        text: buildOrderWhatsAppMessage({
+          orderNumber: order.orderNumber,
+          recipientName: order.recipientName,
+          recipientPhone: order.recipientPhone,
+          address: order.shippingAddress,
+          city: order.shippingCity,
+          province: order.shippingProvince,
+          postalCode: order.shippingPostalCode,
+          notes: order.shippingNotes,
+          methodLabel: METHOD_LABELS[decision.method],
+          items: itemRows.map((item) => ({ productName: item.productName, quantity: item.quantity })),
+          subtotal: order.subtotalAmount,
+          shippingAmount: null,
+          totalAmount: order.totalAmount,
+        }),
+      });
+    }
+
     return NextResponse.json(
       {
         order: {
@@ -140,6 +259,7 @@ export async function POST(request: Request) {
           totalAmount: order.totalAmount,
           paymentStatus: order.paymentStatus,
           orderStatus: order.orderStatus,
+          shippingMethod: order.shippingMethod,
           shipping,
         },
       },
