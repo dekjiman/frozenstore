@@ -113,6 +113,7 @@ export function StoreFooter({
             <h3 className="mb-4 text-sm font-bold text-white">Informasi</h3>
             <ul className="space-y-2.5 text-xs">
               <li><Link href="/tentang-kami" className="text-white/70 hover:text-white transition-colors">Tentang Kami</Link></li>
+              <li><Link href="/kontak" className="text-white/70 hover:text-white transition-colors">Kontak</Link></li>
               <li><Link href="/cara-order" className="text-white/70 hover:text-white transition-colors">Cara Order</Link></li>
               <li><Link href="/cara-penyimpanan" className="text-white/70 hover:text-white transition-colors">Cara Penyimpanan</Link></li>
               <li><Link href="/pengiriman" className="text-white/70 hover:text-white transition-colors">Pengiriman</Link></li>

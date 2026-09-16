@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { href: "/artikel", label: "Artikel & Tips" },
   { href: "/produk?reseller=true", label: "Reseller" },
   { href: "/tentang-kami", label: "Tentang Kami" },
+  { href: "/kontak", label: "Kontak" },
 ];
 
 export function StoreHeader() {
