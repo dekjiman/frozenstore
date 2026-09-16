@@ -176,7 +176,7 @@ export function StoreFooter({
                     <p className="text-[10px] text-white/50">Alamat</p>
                     <p className="font-medium text-white">{addressVal}</p>
                     <a
-                      href="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3965.8992208135946!2d106.7899634!3d-6.2769792!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1be4b7191a5%3A0xd38f047b953c37d!2sJasmine%20Shop!5e0!3m2!1sen!2sid!4v1789597587346!5m2!1sen!2sid"
+                      href="https://www.google.com/maps?cid=952775512031478653"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold text-white/80 hover:text-white transition-colors"
