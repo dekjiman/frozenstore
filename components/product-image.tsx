@@ -3,6 +3,7 @@
 import { ImageOff } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { isOptimizableImageSrc } from "@/lib/optimizable-image";
 
 type ProductImageProps = {
   src: string;
@@ -11,8 +12,6 @@ type ProductImageProps = {
   loading?: "eager" | "lazy";
   badge?: string;
 };
-
-const OPTIMIZABLE_SOURCE = /^\/(uploads|images)\/.*\.(webp|jpe?g|png|avif)$/i;
 
 const variantStyles = {
   card: {
@@ -48,8 +47,7 @@ export function ProductImage({
   const [failed, setFailed] = useState(false);
   // Hanya gambar lokal (raster, same-origin) yang bisa lewat optimizer next/image
   // sehingga dapat srcset + format modern otomatis. URL eksternal tetap <img>.
-  const canOptimize =
-    OPTIMIZABLE_SOURCE.test(src) && !/\.(gif|svg)$/i.test(src);
+  const canOptimize = isOptimizableImageSrc(src);
   const isPriority = variant === "detail" && loading === "eager";
 
   return (

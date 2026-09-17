@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { isOptimizableImageSrc } from "@/lib/optimizable-image";
 
 type RelatedProduct = {
   id: string;
@@ -29,13 +31,24 @@ export function RelatedProducts({ products }: { products: RelatedProduct[] }) {
             className="group flex flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-white transition hover:shadow-md"
           >
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={p.imageUrl}
-                alt={p.name}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.03]"
-              />
+              {isOptimizableImageSrc(p.imageUrl) ? (
+                <Image
+                  src={p.imageUrl}
+                  alt={p.name}
+                  fill
+                  sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                  className="object-cover transition-transform duration-200 group-hover:scale-[1.03]"
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={p.imageUrl}
+                  alt={p.name}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.03]"
+                />
+              )}
             </div>
             <div className="flex flex-col p-3">
               <h3 className="line-clamp-2 text-sm font-semibold text-[var(--ink-950)] group-hover:text-[var(--brand-600)]">

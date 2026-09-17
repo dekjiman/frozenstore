@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Image from "next/image";
 import { X, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { isOptimizableImageSrc } from "@/lib/optimizable-image";
 
 type MediaItem = {
   id: string;
@@ -114,12 +116,24 @@ export function MediaGallery({ media }: MediaGalleryProps) {
               : "border-transparent hover:border-stone-300"
           }`}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={getThumbSrc(item)}
-            alt={getAlt(item)}
-            className="h-full w-full object-cover"
-          />
+          {isOptimizableImageSrc(getThumbSrc(item)) ? (
+            <Image
+              src={getThumbSrc(item)}
+              alt={getAlt(item)}
+              fill
+              sizes="(max-width: 639px) 64px, 80px"
+              className="object-cover"
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={getThumbSrc(item)}
+              alt={getAlt(item)}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+          )}
           {isVideo(item) && (
             <span className="absolute inset-0 grid place-items-center bg-black/20">
               <Play size={14} className="ml-0.5 text-white" fill="currentColor" />
@@ -156,12 +170,25 @@ export function MediaGallery({ media }: MediaGalleryProps) {
         className="relative aspect-[4/5] w-full cursor-pointer overflow-hidden rounded-2xl bg-stone-100"
         onClick={onClick}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={item.url}
-          alt={getAlt(item)}
-          className="h-full w-full object-cover"
-        />
+        {isOptimizableImageSrc(item.url) ? (
+          <Image
+            src={item.url}
+            alt={getAlt(item)}
+            fill
+            sizes="(max-width: 1023px) 100vw, 50vw"
+            priority
+            className="object-cover"
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={item.url}
+            alt={getAlt(item)}
+            decoding="async"
+            fetchPriority="high"
+            className="h-full w-full object-cover"
+          />
+        )}
       </div>
     );
   }
