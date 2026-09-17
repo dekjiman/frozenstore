@@ -11,6 +11,7 @@ import { buildOrderWhatsAppMessage } from "@/lib/order-message";
 import { sendWhatsAppToAdmin } from "@/lib/whatsapp-notify";
 import { issueAdminMagicLink } from "@/lib/magic-link";
 import { isFileContentMatchingMimeType } from "@/lib/media-storage";
+import { optimizeImageBuffer } from "@/lib/image-optimize";
 
 export const runtime = "nodejs";
 
@@ -131,10 +132,11 @@ export async function POST(request: Request, { params }: PaymentProofContext) {
       );
     }
 
-    const fileName = `${randomUUID()}.${extension}`;
+    const optimized = await optimizeImageBuffer(buffer, proof.type);
+    const fileName = `${randomUUID()}.${optimized.extension}`;
     const uploadDirectory = path.join(process.cwd(), "public", "uploads", "payment-proofs");
     await mkdir(uploadDirectory, { recursive: true });
-    await writeFile(path.join(uploadDirectory, fileName), buffer);
+    await writeFile(path.join(uploadDirectory, fileName), optimized.buffer);
 
     const paymentProofUrl = `/uploads/payment-proofs/${fileName}`;
     await db

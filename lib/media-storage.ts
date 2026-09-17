@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { mkdir, writeFile, unlink } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { optimizeImageBuffer } from "@/lib/image-optimize";
 
 export interface UploadInput {
   buffer: Buffer;
@@ -169,17 +170,20 @@ export const localMediaStorage: MediaStorage = {
     const dir = join(UPLOAD_ROOT, folder);
     await mkdir(dir, { recursive: true });
 
-    const normalized = normalizeFilename(mimeType);
+    const optimized = await optimizeImageBuffer(buffer, mimeType);
+    const normalized = normalizeFilename(optimized.mimeType);
     const key = `${folder}/${normalized}`;
     const filePath = join(dir, normalized);
 
-    await writeFile(filePath, buffer);
+    await writeFile(filePath, optimized.buffer);
 
     return {
       key,
       url: `/uploads/${key}`,
-      fileSizeBytes: buffer.length,
-      mimeType,
+      width: optimized.width ?? undefined,
+      height: optimized.height ?? undefined,
+      fileSizeBytes: optimized.buffer.length,
+      mimeType: optimized.mimeType,
     };
   },
 
