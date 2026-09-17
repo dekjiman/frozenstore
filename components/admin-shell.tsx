@@ -65,7 +65,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && user?.role !== "admin") router.replace("/masuk");
+    if (!isLoading && user?.role !== "admin") router.replace("/masuk?admin=1");
   }, [isLoading, router, user]);
 
   if (isLoading || user?.role !== "admin") {
@@ -151,7 +151,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                   type="button"
                   onClick={async () => {
                     await logout();
-                    router.push("/masuk");
+                    router.push("/masuk?admin=1");
                   }}
                   className="block text-xs text-[var(--ink-700)] hover:text-[var(--error)]"
                 >
