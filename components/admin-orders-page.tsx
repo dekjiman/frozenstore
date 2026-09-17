@@ -126,6 +126,7 @@ export function AdminOrdersPage() {
   const [appliedTo, setAppliedTo] = useState(initialTo);
   const [appliedPayment, setAppliedPayment] = useState<PaymentStatus | "">("");
   const [appliedProgress, setAppliedProgress] = useState<OrderStatus | "">("");
+  const [highlightedOrderId, setHighlightedOrderId] = useState<string | null>(null);
 
   const loadOrders = useCallback(
     (from: string, to: string, payment: PaymentStatus | "", status: OrderStatus | "") => {
@@ -168,6 +169,34 @@ export function AdminOrdersPage() {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [selectedProof, detailOrder]);
+
+  useEffect(() => {
+    const orderParam = new URLSearchParams(window.location.search).get("order");
+    if (!orderParam) return;
+    apiFetch<{ order: Order; items: OrderItem[] }>(`/api/admin/orders/${orderParam}`, { cache: "no-store" })
+      .then((payload) => {
+        setOrders((items) =>
+          items.some((item) => item.id === payload.order.id)
+            ? items
+            : [payload.order, ...items],
+        );
+        setDetailOrder(payload.order);
+        setDetailItems(payload.items);
+        setHighlightedOrderId(payload.order.id);
+        requestAnimationFrame(() => {
+          document.getElementById(`order-row-${payload.order.id}`)?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        });
+      })
+      .catch((caught) =>
+        setError(caught instanceof Error ? caught.message : "Gagal memuat pesanan dari tautan"),
+      )
+      .finally(() => setLoadingOrders(false));
+    const timer = setTimeout(() => setHighlightedOrderId(null), 8000);
+    return () => clearTimeout(timer);
+  }, []);
 
   function openFeeModal(order: Order) {
     setFeeOrder(order);
@@ -231,6 +260,7 @@ export function AdminOrdersPage() {
       setOrders((items) =>
         items.map((item) => (item.id === id ? payload.order : item)),
       );
+      if (detailOrder?.id === id) setDetailOrder(payload.order);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Gagal memperbarui pesanan");
     }
@@ -409,7 +439,11 @@ export function AdminOrdersPage() {
           </thead>
           <tbody className="divide-y">
             {orders.map((order) => (
-              <tr key={order.id} className="align-top">
+              <tr
+                key={order.id}
+                id={`order-row-${order.id}`}
+                className={highlightedOrderId === order.id ? "align-top bg-[var(--brand-50)]" : "align-top"}
+              >
                 <td className="p-4">
                   <button
                     type="button"
@@ -655,6 +689,53 @@ export function AdminOrdersPage() {
                   Atur ongkir
                 </button>
               ) : null}
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+                    Status pembayaran
+                  </p>
+                  <select
+                    value={detailOrder.paymentStatus}
+                    onChange={(event) =>
+                      void updateOrder(detailOrder.id, {
+                        paymentStatus: event.target.value as Order["paymentStatus"],
+                      })
+                    }
+                    aria-label={`Status pembayaran ${detailOrder.orderNumber}`}
+                    className="mt-2 w-full rounded-lg border p-2 text-xs"
+                  >
+                    <option value="pending">Menunggu</option>
+                    <option value="awaiting_verification">Verifikasi</option>
+                    <option value="paid">Lunas</option>
+                    <option value="failed">Ditolak</option>
+                  </select>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+                    Status proses
+                  </p>
+                  <select
+                    value={detailOrder.orderStatus}
+                    onChange={(event) =>
+                      void updateOrder(detailOrder.id, {
+                        orderStatus: event.target.value as Order["orderStatus"],
+                      })
+                    }
+                    aria-label={`Status proses ${detailOrder.orderNumber}`}
+                    className="mt-2 w-full rounded-lg border p-2 text-xs"
+                  >
+                    {detailOrder.shippingMethod === "instant" ? (
+                      <option value="waiting_shipping_fee">Menunggu ongkir</option>
+                    ) : null}
+                    <option value="waiting_payment">Menunggu bayar</option>
+                    <option value="processing">Diproses</option>
+                    <option value="shipped">Dikirim</option>
+                    <option value="delivered">Selesai</option>
+                    <option value="cancelled">Dibatalkan</option>
+                  </select>
+                </div>
+              </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl bg-stone-50 p-4">

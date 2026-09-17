@@ -9,6 +9,7 @@ import { getCartSession } from "@/lib/cart-session";
 import { getAuthenticatedUser } from "@/lib/auth-session";
 import { buildOrderWhatsAppMessage } from "@/lib/order-message";
 import { sendWhatsAppToAdmin } from "@/lib/whatsapp-notify";
+import { buildAdminOrderLink } from "@/lib/magic-link";
 import { isFileContentMatchingMimeType } from "@/lib/media-storage";
 
 export const runtime = "nodejs";
@@ -29,6 +30,7 @@ const METHOD_LABELS: Record<string, string> = {
 async function notifyAdminPaymentProof(order: typeof orders.$inferSelect): Promise<void> {
   try {
     const items = await db.select().from(orderItems).where(eq(orderItems.orderId, order.id));
+    const adminOrderUrl = await buildAdminOrderLink(order.id);
     await sendWhatsAppToAdmin({
       text: buildOrderWhatsAppMessage(
         {
@@ -45,6 +47,7 @@ async function notifyAdminPaymentProof(order: typeof orders.$inferSelect): Promi
           subtotal: order.subtotalAmount,
           shippingAmount: order.shippingAmount,
           totalAmount: order.totalAmount,
+          adminOrderUrl,
         },
         "payment_received",
       ),

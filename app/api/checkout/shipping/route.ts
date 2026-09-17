@@ -15,6 +15,7 @@ import {
 import { deductStockForOrder, StockUnavailableError } from "@/lib/stock-service";
 import { buildOrderWhatsAppMessage } from "@/lib/order-message";
 import { sendWhatsAppToAdmin } from "@/lib/whatsapp-notify";
+import { buildAdminOrderLink } from "@/lib/magic-link";
 
 export const runtime = "nodejs";
 
@@ -232,23 +233,27 @@ export async function POST(request: Request) {
     });
 
     if (decision.method === "instant") {
-      void sendWhatsAppToAdmin({
-        text: buildOrderWhatsAppMessage({
-          orderNumber: order.orderNumber,
-          recipientName: order.recipientName,
-          recipientPhone: order.recipientPhone,
-          address: order.shippingAddress,
-          city: order.shippingCity,
-          province: order.shippingProvince,
-          postalCode: order.shippingPostalCode,
-          notes: order.shippingNotes,
-          methodLabel: METHOD_LABELS[decision.method],
-          items: itemRows.map((item) => ({ productName: item.productName, quantity: item.quantity })),
-          subtotal: order.subtotalAmount,
-          shippingAmount: null,
-          totalAmount: order.totalAmount,
-        }),
-      });
+      void (async () => {
+        const adminOrderUrl = await buildAdminOrderLink(order.id);
+        await sendWhatsAppToAdmin({
+          text: buildOrderWhatsAppMessage({
+            orderNumber: order.orderNumber,
+            recipientName: order.recipientName,
+            recipientPhone: order.recipientPhone,
+            address: order.shippingAddress,
+            city: order.shippingCity,
+            province: order.shippingProvince,
+            postalCode: order.shippingPostalCode,
+            notes: order.shippingNotes,
+            methodLabel: METHOD_LABELS[decision.method],
+            items: itemRows.map((item) => ({ productName: item.productName, quantity: item.quantity })),
+            subtotal: order.subtotalAmount,
+            shippingAmount: null,
+            totalAmount: order.totalAmount,
+            adminOrderUrl,
+          }),
+        });
+      })();
     }
 
     return NextResponse.json(

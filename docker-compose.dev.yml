@@ -10,6 +10,7 @@ services:
     environment:
       DATABASE_URL: postgresql://frozenstore:frozenstore@db:5432/frozenstore
       CART_SESSION_SECRET: dev-secret
+      AUTO_LOGIN_SECRET: ${AUTO_LOGIN_SECRET:-}
       NODE_ENV: development
       EVOLUTION_BASE_URL: ${EVOLUTION_BASE_URL:-}
       EVOLUTION_INSTANCE_NAME: ${EVOLUTION_INSTANCE_NAME:-store}

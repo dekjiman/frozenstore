@@ -23,6 +23,7 @@ type BuildOrderWhatsAppMessageInput = {
   subtotal: number;
   shippingAmount: number | null;
   totalAmount: number;
+  adminOrderUrl?: string;
 };
 
 export function buildOrderWhatsAppMessage(
@@ -61,5 +62,6 @@ export function buildOrderWhatsAppMessage(
     `*Total: ${rupiahFormatter.format(input.totalAmount)}*`,
   );
   if (isPaymentReceived) lines.push("", "Status: Menunggu Verifikasi.");
+  if (input.adminOrderUrl) lines.push("", `Kelola pesanan: ${input.adminOrderUrl}`);
   return lines.join("\n");
 }
