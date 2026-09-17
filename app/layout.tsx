@@ -4,6 +4,7 @@ import { CartProvider } from "@/components/cart-provider";
 import { AuthProvider } from "@/components/auth-provider";
 import { AdSenseProvider } from "@/components/ads/adsense-provider";
 import { AdsBottomBanner } from "@/components/ads/ads-bottom-banner";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import {
   DEFAULT_OG_IMAGE,
   SEO_BASE,
@@ -76,6 +77,7 @@ export default function RootLayout({
           </CartProvider>
         </AuthProvider>
         <AdSenseProvider />
+        <GoogleAnalytics />
       </body>
     </html>
   );

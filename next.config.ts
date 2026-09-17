@@ -35,6 +35,10 @@ const nextConfig: NextConfig = {
       ? " https://*.googlesyndication.com https://googleads.g.doubleclick.net"
       : "";
     const devEvalSrc = isProduction ? "" : " 'unsafe-eval'";
+    const gaScriptSrc = " https://www.googletagmanager.com";
+    const gaImgSrc = " https://www.google-analytics.com https://www.googletagmanager.com";
+    const gaConnectSrc =
+      " https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net";
     const frameSrc = [
       "https://www.google.com",
       "https://www.google.co.id",
@@ -50,11 +54,11 @@ const nextConfig: NextConfig = {
     ];
     const cspDirectives = [
       "default-src 'self'",
-      `script-src 'self' 'unsafe-inline'${devEvalSrc}${adScriptSrc}`,
+      `script-src 'self' 'unsafe-inline'${devEvalSrc}${adScriptSrc}${gaScriptSrc}`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      `img-src 'self' data: blob: https://images.unsplash.com https://lh3.googleusercontent.com https://pps.whatsapp.net${adImgSrc}`,
+      `img-src 'self' data: blob: https://images.unsplash.com https://lh3.googleusercontent.com https://pps.whatsapp.net${adImgSrc}${gaImgSrc}`,
       "font-src 'self' data: https://fonts.gstatic.com",
-      `connect-src 'self'${adConnectSrc}`,
+      `connect-src 'self'${adConnectSrc}${gaConnectSrc}`,
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
