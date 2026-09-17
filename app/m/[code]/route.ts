@@ -21,7 +21,7 @@ export async function GET(_request: Request, { params }: MagicLinkContext) {
       {
         error: {
           code: "MAGIC_LINK_INVALID",
-          message: "Tautan tidak valid, sudah dipakai, atau kedaluwarsa. Silakan masuk dengan email dan password.",
+          message: "Tautan tidak valid atau sudah kedaluwarsa. Silakan masuk dengan email dan password.",
         },
       },
       { status: 401 },

@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { and, eq, gt, isNull, lt } from "drizzle-orm";
+import { and, eq, gt, lt } from "drizzle-orm";
 import { db } from "@/db/client";
 import { magicLinks } from "@/db/schema";
 import { SEO_BASE } from "@/lib/seo";
@@ -58,7 +58,6 @@ export async function consumeAdminMagicLink(
     .where(
       and(
         eq(magicLinks.id, code),
-        isNull(magicLinks.usedAt),
         gt(magicLinks.expiresAt, new Date()),
       ),
     )
