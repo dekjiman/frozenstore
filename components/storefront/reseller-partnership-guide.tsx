@@ -148,9 +148,9 @@ export function ResellerPartnershipGuide({ initialWhatsapp }: ResellerPartnershi
   const waPackagesText = displayPackages.map((p) => shortName(p.title)).join(" / ");
 
   const getWaFormatted = () => {
-    const raw = waNumber || "081234567890";
+    const raw = waNumber || "62817771020";
     const digits = raw.replace(/\D/g, "");
-    return digits.startsWith("0") ? `62${digits.slice(1)}` : digits || "6281234567890";
+    return digits.startsWith("0") ? `62${digits.slice(1)}` : digits || "62817771020";
   };
 
 const handleRegisterWA = (paketName?: string) => {

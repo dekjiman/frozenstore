@@ -24,7 +24,7 @@ export default async function KontakPage() {
   const settings = await getSiteSettings();
   const brand = settings?.brandName || "Jasmine Shop Premium Product";
   const whatsapp = settings?.whatsappNumber || "0812-3456-7890";
-  const email = settings?.email || "info@jasminefrozenfood.id";
+  const email = settings?.email || "info@jasmineshop.id";
   const address = settings?.address || "Jl. Raya Utama No. 88, Jakarta Selatan, Indonesia";
   const hours = settings?.operatingHours || "Senin – Sabtu: 08.00 – 17.00 WIB";
 

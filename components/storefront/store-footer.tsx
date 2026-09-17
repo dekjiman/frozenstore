@@ -33,12 +33,12 @@ export function StoreFooter({
     };
   }, [initialSettings]);
 
-  const rawWhatsapp = settings?.whatsappNumber || "0812-3456-7890";
+  const rawWhatsapp = settings?.whatsappNumber || "62817771020";
   const waDigits = rawWhatsapp.replace(/\D/g, "");
   const waFormatted = waDigits.startsWith("0") ? `62${waDigits.slice(1)}` : waDigits;
-  const waHref = waDigits ? `https://wa.me/${waFormatted}` : "https://wa.me/6281234567890";
+  const waHref = waDigits ? `https://wa.me/${waFormatted}` : "https://wa.me/62817771020";
 
-  const emailVal = settings?.email || "info@jasminefrozenfood.id";
+  const emailVal = settings?.email || "info@jasmineshop.id";
   const hoursVal = settings?.operatingHours || "08.00 - 20.00 WIB";
   const addressVal = settings?.address;
 

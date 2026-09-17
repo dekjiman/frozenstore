@@ -119,7 +119,7 @@ const heroes = [
     primaryCtaLabel: "Lihat Katalog",
     primaryCtaUrl: "/produk",
     secondaryCtaLabel: "Hubungi Kami",
-    secondaryCtaUrl: "https://wa.me/6281234567890",
+    secondaryCtaUrl: "https://wa.me/62817771020",
     sortOrder: 0,
   },
 ];
@@ -137,7 +137,7 @@ const promos = [
   {
     id: "promo-002", title: "Reseller Harga Spesial", subtitle: "Diskon hingga 25% untuk pembelian grosir",
     badgeText: "RESELLER", imageUrl: "/images/promo/reseller.jpg",
-    backgroundVariant: "cream", ctaLabel: "Daftar Reseller", ctaUrl: "https://wa.me/6281234567890?text=Halo,%20saya%20mau%20daftar%20reseller",
+    backgroundVariant: "cream", ctaLabel: "Daftar Reseller", ctaUrl: "https://wa.me/62817771020?text=Halo,%20saya%20mau%20daftar%20reseller",
     placement: "homepage", sortOrder: 1,
   },
   {
@@ -171,9 +171,9 @@ const testimonials = [
 // MARKETPLACE LINKS
 // ============================================================
 const marketplaces = [
-  { id: "mp-001", marketplace: "tokopedia", label: "Tokopedia", url: "https://tokopedia.com/jasminefrozenfood", logoUrl: "/images/marketplace/tokopedia.svg", sortOrder: 0 },
-  { id: "mp-002", marketplace: "shopee", label: "Shopee", url: "https://shopee.co.id/jasminefrozenfood", logoUrl: "/images/marketplace/shopee.svg", sortOrder: 1 },
-  { id: "mp-003", marketplace: "whatsapp", label: "WhatsApp", url: "https://wa.me/6281234567890", logoUrl: "/images/marketplace/whatsapp.svg", sortOrder: 2 },
+  { id: "mp-001", marketplace: "tokopedia", label: "Tokopedia", url: "https://tokopedia.com/jasmineshop", logoUrl: "/images/marketplace/tokopedia.svg", sortOrder: 0 },
+  { id: "mp-002", marketplace: "shopee", label: "Shopee", url: "https://shopee.co.id/jasmineshop", logoUrl: "/images/marketplace/shopee.svg", sortOrder: 1 },
+  { id: "mp-003", marketplace: "whatsapp", label: "WhatsApp", url: "https://wa.me/62817771020", logoUrl: "/images/marketplace/whatsapp.svg", sortOrder: 2 },
 ];
 
 // ============================================================
@@ -333,10 +333,10 @@ try {
         free_shipping_threshold, instagram_url, tiktok_url, youtube_url, facebook_url, updated_at
       ) VALUES (
         'default', 'Jasmine Shop Premium Product', 'Frozen Food Premium untuk keluarga Indonesia.',
-        '/images/logo/logo_jusmine.png', '6281234567890', 'info@jasminefrozenfood.id',
+        '/images/logo/logo_jusmine.png', '62817771020', 'info@jasmineshop.id',
         'Jl. Contoh No. 123, Jakarta Selatan', 'Senin–Sabtu 08:00–17:00 WIB',
-        50000, 'https://instagram.com/jasminefrozenfood',
-        'https://tiktok.com/@jasminefrozenfood', null, null, ${now}
+        50000, 'https://instagram.com/jasmineshop.id',
+        'https://tiktok.com/@jasmineshop.id', null, null, ${now}
       )
       ON CONFLICT (id) DO UPDATE SET
         brand_name = EXCLUDED.brand_name, tagline = EXCLUDED.tagline, logo_url = EXCLUDED.logo_url,
@@ -410,7 +410,7 @@ try {
     // Users
     await tx`
       INSERT INTO users (id, role, name, email, email_verified, phone, password_hash, created_at, updated_at)
-      VALUES ('admin-jasmine', 'admin', 'Admin Jasmine', 'admin@jasminefrozenfood.id', true, '081111111111', ${passwordHash("Admin#Jasmine2026")}, ${now}, ${now})
+      VALUES ('admin-jasmine', 'admin', 'Admin Jasmine', 'admin@jasmineshop.id', true, '081111111111', ${passwordHash("Admin#Jasmine2026")}, ${now}, ${now})
       ON CONFLICT (id) DO UPDATE SET
         role = EXCLUDED.role, name = EXCLUDED.name, email = EXCLUDED.email,
         email_verified = EXCLUDED.email_verified, phone = EXCLUDED.phone,

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default async function KebijakanPrivasiPage() {
   const settings = await getSiteSettings();
   const brand = settings?.brandName || "Jasmine Shop Premium Product";
-  const email = settings?.email || "info@jasminefrozenfood.id";
+  const email = settings?.email || "info@jasmineshop.id";
   const whatsapp = settings?.whatsappNumber || "0812-3456-7890";
 
   return (
