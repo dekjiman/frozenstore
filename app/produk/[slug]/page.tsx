@@ -191,6 +191,44 @@ function ProductJsonLd({ product }: { product: ProductDetail }) {
     };
   }
 
+  // Shipping & return policy untuk Merchant Center
+  productNode.shippingDetails = {
+    "@type": "OfferShippingDetails",
+    shippingRate: {
+      "@type": "MonetaryAmount",
+      value: "0",
+      currency: "IDR",
+    },
+    shippingDestination: {
+      "@type": "DefinedRegion",
+      addressCountry: "ID",
+    },
+    deliveryTime: {
+      "@type": "ShippingDeliveryTime",
+      handlingTime: {
+        "@type": "QuantitativeValue",
+        minValue: 0,
+        maxValue: 1,
+        unitCode: "DAY",
+      },
+      transitTime: {
+        "@type": "QuantitativeValue",
+        minValue: 1,
+        maxValue: 3,
+        unitCode: "DAY",
+      },
+    },
+  };
+
+  productNode.hasMerchantReturnPolicy = {
+    "@type": "MerchantReturnPolicy",
+    applicableCountry: "ID",
+    returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+    merchantReturnDays: 1,
+    returnMethod: "https://schema.org/ReturnByMail",
+    returnFees: "https://schema.org/FreeReturn",
+  };
+
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@graph": [
