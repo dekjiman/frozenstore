@@ -439,7 +439,7 @@ export function CheckoutFlow() {
             </div>
             <div className="flex justify-between gap-4 text-[var(--cream-100)]">
               <dt>Pengiriman</dt>
-              <dd className="text-white">{instanBelumAdaOrder || (order && feePending) ? "Menyusul" : delivery === null ? "—" : rupiahFormatter.format(delivery)}</dd>
+              <dd className="text-white">{instanBelumAdaOrder || (order && feePending) ? "Dikonfirmasi admin" : delivery === null ? "—" : rupiahFormatter.format(delivery)}</dd>
             </div>
             <div className="flex justify-between gap-4 pt-2 text-base font-semibold">
               <dt>Total</dt>

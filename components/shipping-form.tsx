@@ -1,6 +1,6 @@
 "use client";
 
-import { Truck, Zap } from "lucide-react";
+import { Info, Truck, Zap } from "lucide-react";
 
 export type ShippingData = {
   recipientName: string;
@@ -70,7 +70,7 @@ export function ShippingForm({
   if (enableSameDay) {
     options.push({
       value: "same_day",
-      label: "Same Day (Grab / GoSend)",
+      label: "Same Day (Grab Express / GoSend)",
       hint: "Dikirim kurir instan, diterima di hari yang sama.",
       cost: rupiah.format(sameDayFixedCost),
       icon: <Truck aria-hidden="true" size={18} className="mt-0.5 shrink-0 text-[var(--brand-600)]" />,
@@ -80,9 +80,9 @@ export function ShippingForm({
   if (enableInstant) {
     options.push({
       value: "instant",
-      label: "Instan (Grab / GoSend)",
+      label: "Instan (Grab Express / GoSend)",
       hint: "Ongkir dikonfirmasi admin via WhatsApp setelah pesanan dibuat.",
-      cost: "Menyusul",
+      cost: "Dikonfirmasi admin",
       icon: <Zap aria-hidden="true" size={18} className="mt-0.5 shrink-0 text-[var(--brand-600)]" />,
     });
   }
@@ -198,6 +198,12 @@ export function ShippingForm({
 
       <div className="sm:col-span-2">
         <p className="text-sm font-semibold text-stone-800">Metode pengiriman</p>
+        <p className="mt-2 flex items-start gap-2 rounded-xl bg-amber-50 px-3.5 py-2.5 text-xs leading-5 text-amber-800">
+          <Info aria-hidden="true" size={15} className="mt-0.5 shrink-0" />
+          <span>
+            Saat ini kami hanya melayani wilayah <strong>Jabodetabek</strong> dengan <strong>Grab Express</strong> dan <strong>GoSend</strong>. Untuk pengiriman ke luar kota, silakan hubungi Admin langsung.
+          </span>
+        </p>
         {errors.method ? (
           <p className="mt-1.5 text-xs font-medium text-red-600">{errors.method}</p>
         ) : null}

@@ -57,7 +57,7 @@ export function buildOrderWhatsAppMessage(
     "",
     `Subtotal: ${rupiahFormatter.format(input.subtotal)}`,
     input.shippingAmount === null
-      ? "Pengiriman: Menyusul (dikonfirmasi admin)"
+      ? "Pengiriman: Dikonfirmasi admin"
       : `Pengiriman: ${rupiahFormatter.format(input.shippingAmount)}`,
     `*Total: ${rupiahFormatter.format(input.totalAmount)}*`,
   );

@@ -195,7 +195,7 @@ export function AccountOrderDetail({ orderId }: { orderId: string }) {
             </dt>
             <dd>
               {order.status === "waiting_shipping_fee"
-                ? "Menyusul (dikonfirmasi admin)"
+                ? "Dikonfirmasi admin"
                 : rupiahFormatter.format(order.totals.shipping)}
             </dd>
           </div>
