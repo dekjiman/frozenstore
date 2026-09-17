@@ -64,6 +64,13 @@
       "when": 1789350552979,
       "tag": "0008_unknown_vermin",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1789615538693,
+      "tag": "0009_modern_blazing_skull",
+      "breakpoints": true
     }
   ]
 }

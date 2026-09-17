@@ -1,91 +1,68 @@
-import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { randomBytes } from "node:crypto";
+import { and, eq, gt, isNull, lt } from "drizzle-orm";
+import { db } from "@/db/client";
+import { magicLinks } from "@/db/schema";
 import { SEO_BASE } from "@/lib/seo";
 import { getSiteSettings } from "@/lib/queries/site-settings";
 
-const devSecret = "raf-store-auto-login-development-key";
-const lifetimeMs = 15 * 60_000;
-const usedNonces = new Set<string>();
+const lifetimeMs = 24 * 60 * 60 * 1_000;
+const codeAlphabet = "23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ";
+const codeLength = 10;
+const codePattern = new RegExp(`^[${codeAlphabet}]{${codeLength}}$`);
 
-function magicSecret(): string | null {
-  const value = process.env.AUTO_LOGIN_SECRET?.trim();
-  if (value) return value;
-  return process.env.NODE_ENV === "production" ? null : devSecret;
+function baseUrl(): string {
+  return SEO_BASE.replace(/\/+$/, "");
 }
 
-function encodePart(value: string): string {
-  return Buffer.from(value).toString("base64url");
+function fallbackLink(orderId: string): string {
+  return `${baseUrl()}/admin/pesanan?order=${encodeURIComponent(orderId)}`;
 }
 
-function decodePart(value: string): string | null {
+function generateCode(): string {
+  const bytes = randomBytes(codeLength);
+  let code = "";
+  for (let index = 0; index < codeLength; index += 1) {
+    code += codeAlphabet[bytes[index] % codeAlphabet.length];
+  }
+  return code;
+}
+
+export async function issueAdminMagicLink(orderId: string): Promise<string> {
   try {
-    return Buffer.from(value, "base64url").toString("utf8");
-  } catch {
-    return null;
+    const settings = await getSiteSettings();
+    const phone = settings?.whatsappNumber?.trim() ?? "";
+    const code = generateCode();
+    const now = new Date();
+    await db.delete(magicLinks).where(lt(magicLinks.expiresAt, new Date(now.getTime() - lifetimeMs)));
+    await db.insert(magicLinks).values({
+      id: code,
+      phone,
+      orderId,
+      expiresAt: new Date(now.getTime() + lifetimeMs),
+    });
+    return `${baseUrl()}/m/${code}`;
+  } catch (error) {
+    console.error("Failed to issue admin magic link", error);
+    return fallbackLink(orderId);
   }
 }
 
-function buildSignature(secret: string, material: string): string {
-  return createHmac("sha256", secret).update(material).digest("base64url");
-}
+export async function consumeAdminMagicLink(
+  code: string,
+): Promise<{ orderId: string; phone: string } | null> {
+  if (!codePattern.test(code)) return null;
 
-export function issueAdminMagicToken(input: { phone: string; orderId: string }): string | null {
-  const secret = magicSecret();
-  if (!secret || !input.phone) return null;
+  const rows = await db
+    .update(magicLinks)
+    .set({ usedAt: new Date() })
+    .where(
+      and(
+        eq(magicLinks.id, code),
+        isNull(magicLinks.usedAt),
+        gt(magicLinks.expiresAt, new Date()),
+      ),
+    )
+    .returning({ orderId: magicLinks.orderId, phone: magicLinks.phone });
 
-  const payload = JSON.stringify({ phone: input.phone, orderId: input.orderId });
-  const payloadB64 = encodePart(payload);
-  const exp = Date.now() + lifetimeMs;
-  const nonceB64 = randomBytes(16).toString("base64url");
-  const material = `${payloadB64}.${exp}.${nonceB64}`;
-
-  return `${material}.${buildSignature(secret, material)}`;
-}
-
-export function verifyAdminMagicToken(token: string): { phone: string; orderId: string } | null {
-  const secret = magicSecret();
-  if (!secret) return null;
-
-  const match = /^([A-Za-z0-9_-]+)\.(\d+)\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)$/.exec(token);
-  if (!match) return null;
-
-  const [, payloadB64, rawExp, nonceB64, sig] = match;
-  const material = `${payloadB64}.${rawExp}.${nonceB64}`;
-
-  const expected = buildSignature(secret, material);
-  const actual = Buffer.from(sig);
-  const expectedBuffer = Buffer.from(expected);
-  if (actual.length !== expectedBuffer.length || !timingSafeEqual(actual, expectedBuffer)) {
-    return null;
-  }
-
-  if (usedNonces.has(nonceB64)) return null;
-  const exp = Number(rawExp);
-  if (!Number.isFinite(exp) || exp <= Date.now()) return null;
-
-  const rawPayload = decodePart(payloadB64);
-  if (!rawPayload) return null;
-  let payload: { phone?: unknown; orderId?: unknown };
-  try {
-    payload = JSON.parse(rawPayload) as { phone?: unknown; orderId?: unknown };
-  } catch {
-    return null;
-  }
-  if (typeof payload.phone !== "string" || typeof payload.orderId !== "string") return null;
-  if (!payload.phone || !payload.orderId) return null;
-
-  usedNonces.add(nonceB64);
-  if (usedNonces.size > 1000) {
-    for (const id of [...usedNonces].slice(0, 500)) usedNonces.delete(id);
-  }
-
-  return { phone: payload.phone, orderId: payload.orderId };
-}
-
-export async function buildAdminOrderLink(orderId: string): Promise<string> {
-  const base = SEO_BASE.replace(/\/+$/, "");
-  const settings = await getSiteSettings();
-  const phone = settings?.whatsappNumber ?? "";
-  const token = issueAdminMagicToken({ phone, orderId });
-  if (token) return `${base}/api/auth/magic?token=${encodeURIComponent(token)}`;
-  return `${base}/admin/pesanan?order=${encodeURIComponent(orderId)}`;
+  return rows[0] ?? null;
 }

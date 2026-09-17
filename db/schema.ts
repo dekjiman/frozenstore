@@ -206,6 +206,27 @@ export const authSessions = pgTable(
 
 export type AuthSessionRow = typeof authSessions.$inferSelect;
 
+export const magicLinks = pgTable(
+  "magic_links",
+  {
+    id: text("id").primaryKey(),
+    phone: text("phone").notNull().default(""),
+    orderId: text("order_id").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    usedAt: timestamp("used_at"),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .$defaultFn(() => new Date()),
+  },
+  (table) => [
+    index("magic_links_expires_at_index").on(table.expiresAt),
+    index("magic_links_order_id_index").on(table.orderId),
+  ],
+);
+
+export type MagicLinkRow = typeof magicLinks.$inferSelect;
+export type NewMagicLinkRow = typeof magicLinks.$inferInsert;
+
 export const orders = pgTable(
   "orders",
   {

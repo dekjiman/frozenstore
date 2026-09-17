@@ -15,7 +15,7 @@ import {
 import { deductStockForOrder, StockUnavailableError } from "@/lib/stock-service";
 import { buildOrderWhatsAppMessage } from "@/lib/order-message";
 import { sendWhatsAppToAdmin } from "@/lib/whatsapp-notify";
-import { buildAdminOrderLink } from "@/lib/magic-link";
+import { issueAdminMagicLink } from "@/lib/magic-link";
 
 export const runtime = "nodejs";
 
@@ -234,7 +234,7 @@ export async function POST(request: Request) {
 
     if (decision.method === "instant") {
       void (async () => {
-        const adminOrderUrl = await buildAdminOrderLink(order.id);
+        const adminOrderUrl = await issueAdminMagicLink(order.id);
         await sendWhatsAppToAdmin({
           text: buildOrderWhatsAppMessage({
             orderNumber: order.orderNumber,

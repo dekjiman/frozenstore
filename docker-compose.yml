@@ -11,7 +11,6 @@ services:
     environment:
       DATABASE_URL: postgresql://frozenstore:frozenstore@db:5432/frozenstore
       CART_SESSION_SECRET: ${CART_SESSION_SECRET:?CART_SESSION_SECRET wajib di-set di .env}
-      AUTO_LOGIN_SECRET: ${AUTO_LOGIN_SECRET:-}
       NODE_ENV: production
       NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:?NEXT_PUBLIC_BASE_URL wajib di-set di .env}
       BASE_URL: ${NEXT_PUBLIC_BASE_URL:?NEXT_PUBLIC_BASE_URL wajib di-set di .env}
