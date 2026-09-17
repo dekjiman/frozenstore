@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageOff } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 type ProductImageProps = {
@@ -10,6 +11,8 @@ type ProductImageProps = {
   loading?: "eager" | "lazy";
   badge?: string;
 };
+
+const OPTIMIZABLE_SOURCE = /^\/(uploads|images)\/.*\.(webp|jpe?g|png|avif)$/i;
 
 const variantStyles = {
   card: {
@@ -43,6 +46,11 @@ export function ProductImage({
 }: ProductImageProps) {
   const styles = variantStyles[variant];
   const [failed, setFailed] = useState(false);
+  // Hanya gambar lokal (raster, same-origin) yang bisa lewat optimizer next/image
+  // sehingga dapat srcset + format modern otomatis. URL eksternal tetap <img>.
+  const canOptimize =
+    OPTIMIZABLE_SOURCE.test(src) && !/\.(gif|svg)$/i.test(src);
+  const isPriority = variant === "detail" && loading === "eager";
 
   return (
     <div className={styles.container}>
@@ -50,6 +58,17 @@ export function ProductImage({
         <span className="absolute inset-0 grid place-items-center bg-stone-100 text-stone-400" role="img" aria-label={`Gambar ${alt} tidak tersedia`}>
           <ImageOff aria-hidden="true" size={variant === "detail" ? 32 : 18} />
         </span>
+      ) : canOptimize ? (
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={styles.sizes}
+          loading={loading}
+          priority={isPriority}
+          onError={() => setFailed(true)}
+          className={styles.image}
+        />
       ) : (
         // URL gambar dikelola admin dan host-nya dinamis, sehingga tidak dapat memakai allowlist build-time next/image.
         // eslint-disable-next-line @next/next/no-img-element
@@ -57,6 +76,8 @@ export function ProductImage({
           src={src}
           alt={alt}
           loading={loading}
+          decoding="async"
+          fetchPriority={isPriority ? "high" : undefined}
           sizes={styles.sizes}
           onError={() => setFailed(true)}
           className={`absolute inset-0 h-full w-full ${styles.image}`}
