@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { ArrowLeft, User } from "lucide-react";
 import { db } from "@/db/client";
 import { articles } from "@/db/schema";
@@ -28,6 +30,10 @@ async function getArticle(slug: string) {
       lte(articles.publishedAt, now),
     ),
   });
+}
+
+function isHtmlContent(content: string) {
+  return /^\s*<(p|h[1-6]|ul|ol|blockquote|pre|figure|table|div|hr)\b/i.test(content);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -168,7 +174,38 @@ export default async function ArticleDetailPage({ params }: Props) {
             )}
 
             <div className="prose prose-stone prose-lg max-w-none mx-auto prose-headings:font-serif prose-a:text-[var(--brand-600)] hover:prose-a:text-[var(--brand-700)] prose-img:rounded-2xl [&_img]:rounded-2xl [&_img]:my-6">
-              <div dangerouslySetInnerHTML={{ __html: article.content }} />
+              {isHtmlContent(article.content) ? (
+                <div dangerouslySetInnerHTML={{ __html: article.content }} />
+              ) : (
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h1: ({ children }) => (
+                      <h2 className="font-serif text-2xl font-bold text-[var(--ink-950)]">{children}</h2>
+                    ),
+                    a: ({ href, children }) => {
+                      const external =
+                        typeof href === "string" &&
+                        /^https?:\/\//i.test(href) &&
+                        !href.includes("jasmineshop.id");
+                      return (
+                        <a
+                          href={href}
+                          {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        >
+                          {children}
+                        </a>
+                      );
+                    },
+                    img: ({ src, alt }) => (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={typeof src === "string" ? src : undefined} alt={alt ?? ""} loading="lazy" />
+                    ),
+                  }}
+                >
+                  {article.content}
+                </ReactMarkdown>
+              )}
             </div>
 
             <div className="mt-10">
