@@ -5,6 +5,7 @@ import { db } from "@/db/client";
 import { users } from "@/db/schema";
 import { attachAuthCookie, createAuthSession } from "@/lib/auth-session";
 import { COOKIE_SECURE } from "@/lib/cookie-security";
+import { SEO_BASE } from "@/lib/seo";
 
 export const runtime = "nodejs";
 
@@ -32,7 +33,7 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const state = searchParams.get("state");
 
-  const clearState = NextResponse.redirect(new URL("/masuk?error=google_failed", request.url));
+  const clearState = NextResponse.redirect(new URL("/masuk?error=google_failed", SEO_BASE));
   clearState.cookies.set(STATE_COOKIE, "", { httpOnly: true, sameSite: "lax", secure: COOKIE_SECURE, expires: new Date(0), path: "/" });
 
   if (!code || !state) return clearState;
@@ -103,7 +104,7 @@ export async function GET(request: Request) {
     await db.insert(users).values(user);
   }
   const session = await createAuthSession(user.id);
-  const response = NextResponse.redirect(new URL(user.role === "admin" ? "/admin" : "/akun", request.url));
+  const response = NextResponse.redirect(new URL(user.role === "admin" ? "/admin" : "/akun", SEO_BASE));
   attachAuthCookie(response, session);
   return response;
 }

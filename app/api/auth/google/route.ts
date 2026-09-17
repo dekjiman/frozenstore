@@ -1,17 +1,18 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { COOKIE_SECURE } from "@/lib/cookie-security";
+import { SEO_BASE } from "@/lib/seo";
 
 export const runtime = "nodejs";
 
 const STATE_COOKIE = "google_oauth_state";
 const STATE_MAX_AGE = 10 * 60;
 
-export async function GET(request: Request) {
+export async function GET() {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const redirectUri = process.env.GOOGLE_REDIRECT_URI;
   if (!clientId || !redirectUri) {
-    const url = new URL("/masuk", request.url);
+    const url = new URL("/masuk", SEO_BASE);
     url.searchParams.set("error", "google_misconfigured");
     return NextResponse.redirect(url);
   }
