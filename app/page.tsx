@@ -1,5 +1,15 @@
-import { getHomepageData } from "@/lib/queries/homepage";
-import { jsonLdScript } from "@/lib/seo";
+import type { Metadata } from "next";
+import { getHomepageData, type HomepageDTO } from "@/lib/queries/homepage";
+import {
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TAGLINE,
+  canonical,
+  jsonLdScript,
+  organizationJsonLd,
+  storeJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo";
 import { AdUnit } from "@/components/ads/ad-unit";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
@@ -13,25 +23,35 @@ import { MarketplacePanel } from "@/components/storefront/marketplace-panel";
 
 export const dynamic = "force-dynamic";
 
-const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
+export const metadata: Metadata = {
+  title: {
+    absolute: `${SITE_NAME} — ${SITE_TAGLINE}`,
+  },
+  description: SITE_DESCRIPTION,
+  ...canonical("/"),
+};
 
-function HomeJsonLd() {
+function HomeJsonLd({ settings, marketplaceUrls }: { settings: HomepageDTO["siteSettings"]; marketplaceUrls: string[] }) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "Jasmine Shop Premium Product",
-    url: BASE_URL,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${BASE_URL}/produk?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
-    organization: {
-      "@type": "Organization",
-      name: "Jasmine Shop Premium Product",
-      url: BASE_URL,
-      logo: `${BASE_URL}/images/logo/logo_jusmine.png`,
-    },
+    "@graph": [
+      organizationJsonLd(),
+      websiteJsonLd(),
+      storeJsonLd({
+        brandName: settings?.brandName ?? SITE_NAME,
+        tagline: settings?.tagline,
+        logoUrl: settings?.logoUrl,
+        email: settings?.email,
+        whatsappNumber: settings?.whatsappNumber,
+        address: settings?.address,
+        operatingHours: settings?.operatingHours,
+        instagramUrl: settings?.instagramUrl,
+        tiktokUrl: settings?.tiktokUrl,
+        facebookUrl: settings?.facebookUrl,
+        youtubeUrl: settings?.youtubeUrl,
+        marketplaceUrls,
+      }),
+    ],
   };
 
   return (
@@ -47,11 +67,20 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-[var(--cream-50)]">
-      <HomeJsonLd />
+      <HomeJsonLd
+        settings={data.siteSettings}
+        marketplaceUrls={data.marketplaceLinks.map((m) => m.url)}
+      />
       <StoreHeader />
 
       <main>
-        {data.hero && <HeroCampaign hero={data.hero} />}
+        {data.hero ? (
+          <HeroCampaign hero={data.hero} />
+        ) : (
+          <h1 className="sr-only">
+            {SITE_NAME} — {SITE_TAGLINE}
+          </h1>
+        )}
         <CategoryRail categories={data.categories} />
         <PromoBannerGrid promos={data.promoBanners} />
         <BestSellerSection products={data.bestSellers} />

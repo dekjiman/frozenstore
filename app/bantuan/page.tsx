@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
+import { SITE_NAME, canonical } from "@/lib/seo";
 import { HelpCircle, MessageCircle, Phone, Mail, Clock, ChevronRight, Package, CreditCard, Truck, RotateCcw } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Bantuan",
-  description:
-    "Pusat bantuan Jasmine Shop Premium Product — temukan jawaban atas pertanyaan Anda seputar pemesanan, pengiriman, pembayaran, dan lainnya.",
+  description: `Pusat bantuan ${SITE_NAME} — temukan jawaban atas pertanyaan Anda seputar pemesanan, pengiriman, pembayaran, dan lainnya.`,
+  ...canonical("/bantuan"),
 };
 
 const FAQ_ITEMS = [

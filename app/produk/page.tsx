@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/storefront/product-card";
 import { getCatalogProducts } from "@/lib/queries/catalog";
 import { db } from "@/db/client";
 import { categories as categoriesTable } from "@/db/schema";
+import { canonical, noIndex, SITE_NAME, absoluteUrl, breadcrumbJsonLd, jsonLdScript } from "@/lib/seo";
 import { eq, asc } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -39,32 +40,48 @@ import { ResellerPartnershipGuide } from "@/components/storefront/reseller-partn
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const params = await searchParams;
-  const q = typeof params.q === "string" ? params.q : undefined;
+  const q = typeof params.q === "string" ? params.q.trim() : undefined;
   const promo = typeof params.promo === "string" && params.promo === "true";
   const reseller = typeof params.reseller === "string" && params.reseller === "true";
+  const page = typeof params.page === "string" ? Number(params.page) : 1;
+
   if (reseller) {
     return {
-      title: "Panduan & Penawaran Kemitraan Reseller / Agen — Jasmine Shop Premium Product",
-      description: "Bergabunglah menjadi mitra bisnis (Reseller & Agen) frozen food berkualitas premium. Margin keuntungan tinggi, diskon HET hingga 35%, dan garansi produk.",
+      title: "Panduan & Penawaran Kemitraan Reseller / Agen",
+      description:
+        "Bergabunglah menjadi mitra bisnis (Reseller & Agen) frozen food berkualitas premium. Margin keuntungan tinggi, diskon HET hingga 35%, dan garansi produk.",
+      ...canonical("/produk?reseller=true"),
     };
   }
   if (q) {
     return {
-      title: `Hasil pencarian "${q}" — Jasmine Shop Premium Product`,
-      description: `Hasil pencarian "${q}" di Jasmine Shop Premium Product. Temukan frozen food berkualitas, halal, dan bergizi.`,
+      title: `Hasil pencarian "${q}"`,
+      description: `Hasil pencarian "${q}" di ${SITE_NAME}. Temukan frozen food berkualitas, halal, dan bergizi.`,
+      ...noIndex(),
     };
   }
   if (promo) {
     return {
-      title: "Produk Promo — Jasmine Shop Premium Product",
-      description: "Temukan produk-produk promo spesial Jasmine Shop Premium Product. Harga menarik untuk produk favorit.",
+      title: "Produk Promo",
+      description:
+        "Temukan produk-produk promo spesial Jasmine Frozen Food. Harga menarik untuk produk favorit keluarga.",
+      ...canonical("/produk?promo=true"),
+    };
+  }
+  if (Number.isFinite(page) && page > 1) {
+    return {
+      title: `Semua Produk — Halaman ${page}`,
+      description:
+        "Jelajahi koleksi frozen food Jasmine Frozen Food. Ayam katsu, nugget, sosis, dan produk siap masak lainnya. Halal, bergizi, harga terjangkau.",
+      ...canonical(`/produk?page=${page}`),
     };
   }
 
   return {
-    title: "Semua Produk — Jasmine Shop Premium Product",
+    title: "Semua Produk",
     description:
-      "Jelajahi koleksi frozen food Jasmine Shop Premium Product. Ayam katsu, nugget, sosis, dan produk siap masak lainnya. Halal, bergizi, harga terjangkau.",
+      "Jelajahi koleksi frozen food Jasmine Frozen Food. Ayam katsu, nugget, sosis, dan produk siap masak lainnya. Halal, bergizi, harga terjangkau.",
+    ...canonical("/produk"),
   };
 }
 
@@ -288,6 +305,64 @@ export default async function CatalogPage({ searchParams }: PageProps) {
       </main>
 
       <StoreFooter />
+      <CatalogJsonLd
+        name={currentCategory ? currentCategory.name : "Semua Produk"}
+        description={`Katalog produk ${SITE_NAME}`}
+        path={currentCategory ? `/kategori/${currentCategory.slug}` : "/produk"}
+        items={products.map((p) => ({ name: p.name, slug: p.slug }))}
+      />
     </div>
+  );
+}
+
+function CatalogJsonLd({
+  name,
+  description,
+  path,
+  items,
+}: {
+  name: string;
+  description: string;
+  path: string;
+  items: { name: string; slug: string | null }[];
+}) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      breadcrumbJsonLd([
+        { name: "Beranda", path: "/" },
+        ...(path === "/produk"
+          ? [{ name: "Produk", path: "/produk" }]
+          : [
+              { name: "Produk", path: "/produk" },
+              { name, path },
+            ]),
+      ]),
+      {
+        "@type": "CollectionPage",
+        name,
+        description,
+        url: absoluteUrl(path),
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: items.length,
+          itemListElement: items
+            .filter((item) => item.slug)
+            .map((item, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              url: absoluteUrl(`/produk/${item.slug}`),
+              name: item.name,
+            })),
+        },
+      },
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
+    />
   );
 }

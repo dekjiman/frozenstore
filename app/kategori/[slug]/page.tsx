@@ -9,6 +9,7 @@ import { CategoryIcon } from "@/lib/category-icons";
 import { getCatalogProducts } from "@/lib/queries/catalog";
 import { db } from "@/db/client";
 import { categories as categoriesTable } from "@/db/schema";
+import { breadcrumbJsonLd, absoluteUrl, canonical, jsonLdScript, noIndex, SITE_NAME } from "@/lib/seo";
 import { eq, asc } from "drizzle-orm";
 
 export const revalidate = 300;
@@ -82,11 +83,54 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const categories = await getCategories();
   const cat = categories.find((c) => c.slug === slug);
-  if (!cat) return { title: "Kategori tidak ditemukan" };
+  if (!cat) return { title: "Kategori tidak ditemukan", ...noIndex() };
   return {
-    title: `${cat.name} — Jasmine Shop Premium Product`,
-    description: cat.description || `Belanja produk ${cat.name} di Jasmine Shop Premium Product`,
+    title: cat.name,
+    description: cat.description || `Belanja produk ${cat.name} di ${SITE_NAME}`,
+    ...canonical(`/kategori/${cat.slug}`),
   };
+}
+
+function CategoryJsonLd({
+  category,
+  products,
+}: {
+  category: Category;
+  products: CatalogProduct[];
+}) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      breadcrumbJsonLd([
+        { name: "Beranda", path: "/" },
+        { name: "Produk", path: "/produk" },
+        { name: category.name, path: `/kategori/${category.slug}` },
+      ]),
+      {
+        "@type": "CollectionPage",
+        name: category.name,
+        description: category.description || undefined,
+        url: absoluteUrl(`/kategori/${category.slug}`),
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: products.length,
+          itemListElement: products.map((product, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: product.slug ? absoluteUrl(`/produk/${product.slug}`) : undefined,
+            name: product.name,
+          })),
+        },
+      },
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
+    />
+  );
 }
 
 export default async function CategoryPage({ params }: PageProps) {
@@ -157,6 +201,7 @@ export default async function CategoryPage({ params }: PageProps) {
       </main>
 
       <StoreFooter />
+      <CategoryJsonLd category={cat} products={products} />
     </div>
   );
 }

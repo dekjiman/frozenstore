@@ -4,14 +4,15 @@ import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/queries/site-settings";
 import { normalizeWaNumber } from "@/lib/wa";
+import { SITE_NAME, canonical } from "@/lib/seo";
 import { RotateCcw, AlertTriangle, Video, CheckCircle2, HelpCircle } from "lucide-react";
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Kebijakan Pengembalian — Jasmine Shop Premium Product",
-  description:
-    "Ketentuan garansi, klaim produk rusak, dan pengembalian produk Jasmine Shop Premium Product.",
+  title: "Kebijakan Pengembalian",
+  description: `Ketentuan garansi, klaim produk rusak, dan pengembalian produk ${SITE_NAME}.`,
+  ...canonical("/kebijakan-pengembalian"),
 };
 
 export default async function KebijakanPengembalianPage() {

@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
+import { SEO_BASE } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -8,9 +7,10 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/akun", "/keranjang", "/checkout", "/api/"],
+        disallow: ["/admin", "/api/"],
       },
     ],
-    sitemap: `${BASE_URL}/sitemap.xml`,
+    sitemap: `${SEO_BASE}/sitemap.xml`,
+    host: SEO_BASE,
   };
 }

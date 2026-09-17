@@ -12,7 +12,8 @@ import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { AdUnit } from "@/components/ads/ad-unit";
 import { ShareButton } from "@/components/storefront/share-button";
-import { SEO_BASE, SITE_NAME, absoluteUrl, jsonLdScript } from "@/lib/seo";
+import { SEO_BASE, SITE_NAME, absoluteUrl, breadcrumbJsonLd, jsonLdScript } from "@/lib/seo";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -35,10 +36,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const url = `${SEO_BASE}/artikel/${article.slug}`;
-  const coverImage = absoluteUrl(article.coverImage || "");
+  const coverImage = absoluteUrl(article.coverImage || "") || DEFAULT_OG_IMAGE;
 
   return {
-    title: `${article.title} — Jasmine Shop Premium Product`,
+    title: article.title,
     description: article.excerpt,
     alternates: { canonical: url },
     openGraph: {
@@ -51,33 +52,51 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: article.publishedAt ? new Date(article.publishedAt).toISOString() : undefined,
       modifiedTime: new Date(article.updatedAt).toISOString(),
       authors: [article.authorName],
-      images: coverImage ? [{ url: coverImage, alt: article.title, width: 1200, height: 630 }] : undefined,
+      images: [{ url: coverImage, alt: article.title }],
     },
     twitter: {
-      card: coverImage ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title: article.title,
       description: article.excerpt,
-      images: coverImage ? [coverImage] : undefined,
+      images: [coverImage],
     },
   };
 }
 
 function ArticleJsonLd({ article }: { article: NonNullable<Awaited<ReturnType<typeof getArticle>>> }) {
   const url = `${SEO_BASE}/artikel/${article.slug}`;
-  const coverImage = absoluteUrl(article.coverImage || "");
-  const jsonLd: Record<string, unknown> = {
+  const coverImage = absoluteUrl(article.coverImage || "") || DEFAULT_OG_IMAGE;
+  const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    headline: article.title,
-    description: article.excerpt || undefined,
-    image: coverImage || undefined,
-    mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    url,
-    author: { "@type": "Person", name: article.authorName || "Admin" },
-    publisher: { "@type": "Organization", name: SITE_NAME, url: SEO_BASE },
-    datePublished: article.publishedAt ? new Date(article.publishedAt).toISOString() : undefined,
-    dateModified: new Date(article.updatedAt).toISOString(),
-    inLanguage: "id-ID",
+    "@graph": [
+      breadcrumbJsonLd([
+        { name: "Beranda", path: "/" },
+        { name: "Artikel", path: "/artikel" },
+        { name: article.title, path: `/artikel/${article.slug}` },
+      ]),
+      {
+        "@type": "Article",
+        headline: article.title,
+        description: article.excerpt || undefined,
+        image: [coverImage],
+        mainEntityOfPage: { "@type": "WebPage", "@id": url },
+        url,
+        author: { "@type": "Person", name: article.authorName || SITE_NAME },
+        publisher: {
+          "@type": "Organization",
+          name: SITE_NAME,
+          url: SEO_BASE,
+          logo: {
+            "@type": "ImageObject",
+            url: absoluteUrl("/images/logo/logo_jusmine.png"),
+          },
+        },
+        datePublished: article.publishedAt ? new Date(article.publishedAt).toISOString() : undefined,
+        dateModified: new Date(article.updatedAt).toISOString(),
+        inLanguage: "id-ID",
+        isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SEO_BASE },
+      },
+    ],
   };
   return (
     <script
@@ -146,7 +165,32 @@ export default async function ArticleDetailPage({ params }: Props) {
             )}
 
             <div className="prose prose-stone prose-lg max-w-none mx-auto prose-headings:font-serif prose-a:text-[var(--brand-600)] hover:prose-a:text-[var(--brand-700)] prose-img:rounded-2xl">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  h1: ({ children }) => (
+                    <h2 className="font-serif text-2xl font-bold text-[var(--ink-950)]">{children}</h2>
+                  ),
+                  a: ({ href, children }) => {
+                    const external =
+                      typeof href === "string" &&
+                      /^https?:\/\//i.test(href) &&
+                      !href.includes("jasmineshop.id");
+                    return (
+                      <a
+                        href={href}
+                        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                      >
+                        {children}
+                      </a>
+                    );
+                  },
+                  img: ({ src, alt }) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={typeof src === "string" ? src : undefined} alt={alt ?? ""} loading="lazy" />
+                  ),
+                }}
+              >
                 {article.content}
               </ReactMarkdown>
             </div>

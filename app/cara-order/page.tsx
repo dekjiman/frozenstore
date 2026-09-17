@@ -4,13 +4,15 @@ import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/queries/site-settings";
+import { SITE_NAME, canonical } from "@/lib/seo";
 import { ShoppingBag, Search, CreditCard, Upload, PackageCheck, ArrowRight } from "lucide-react";
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Cara Order — Jasmine Shop Premium Product",
-  description: "Panduan langkah mudah berbelanja frozen food berkualitas di Jasmine Shop Premium Product.",
+  title: "Cara Order",
+  description: `Panduan langkah mudah berbelanja frozen food berkualitas di ${SITE_NAME}.`,
+  ...canonical("/cara-order"),
 };
 
 const STEPS = [

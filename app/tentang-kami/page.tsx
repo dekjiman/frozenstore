@@ -3,12 +3,13 @@ import Link from "next/link";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
+import { SITE_NAME, canonical } from "@/lib/seo";
 import { ShieldCheck, Snowflake, Truck, BadgeCheck, Heart, Users, Award } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Tentang Kami",
-  description:
-    "Kenali lebih dekat Jasmine Shop Premium Product — penyedia frozen food premium berkualitas, halal, dan bergizi untuk keluarga Indonesia.",
+  description: `Kenali lebih dekat ${SITE_NAME} — penyedia frozen food premium berkualitas, halal, dan bergizi untuk keluarga Indonesia.`,
+  ...canonical("/tentang-kami"),
 };
 
 const VALUES = [

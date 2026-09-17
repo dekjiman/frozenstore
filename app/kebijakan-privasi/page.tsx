@@ -5,14 +5,15 @@ import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/queries/site-settings";
 import { normalizeWaNumber } from "@/lib/wa";
+import { SITE_NAME, canonical } from "@/lib/seo";
 import { ShieldCheck, Lock, Eye, FileText, UserCheck, HelpCircle, Cookie } from "lucide-react";
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Kebijakan Privasi — Jasmine Shop Premium Product",
-  description:
-    "Kebijakan Privasi Jasmine Shop Premium Product. Pelajari bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi Anda saat berbelanja produk frozen food kami.",
+  title: "Kebijakan Privasi",
+  description: `Kebijakan Privasi ${SITE_NAME}. Pelajari bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi Anda saat berbelanja produk frozen food kami.`,
+  ...canonical("/kebijakan-privasi"),
 };
 
 export default async function KebijakanPrivasiPage() {

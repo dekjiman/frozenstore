@@ -4,6 +4,7 @@ import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/queries/site-settings";
 import { normalizeWaNumber } from "@/lib/wa";
+import { SITE_NAME, canonical } from "@/lib/seo";
 import { MapPin, Phone, Mail, Clock, MessageCircle, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
@@ -14,9 +15,9 @@ const MAPS_EMBED_SRC =
   "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3965.8992208135946!2d106.7899634!3d-6.2769792!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1be4b7191a5%3A0xd38f047b953c37d!2sJasmine%20Shop!5e0!3m2!1sen!2sid!4v1789597587346!5m2!1sen!2sid";
 
 export const metadata: Metadata = {
-  title: "Hubungi Kami — Jasmine Shop Premium Product",
-  description:
-    "Hubungi Jasmine Shop Premium Product untuk pertanyaan, pemesanan, atau kemitraan reseller. Tim kami siap membantu melalui WhatsApp, email, dan media sosial.",
+  title: "Hubungi Kami",
+  description: `Hubungi ${SITE_NAME} untuk pertanyaan, pemesanan, atau kemitraan reseller. Tim kami siap membantu melalui WhatsApp, email, dan media sosial.`,
+  ...canonical("/kontak"),
 };
 
 export default async function KontakPage() {

@@ -5,14 +5,15 @@ import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/queries/site-settings";
 import { normalizeWaNumber } from "@/lib/wa";
+import { SITE_NAME, canonical } from "@/lib/seo";
 import { FileCheck2, ShoppingCart, Truck, RefreshCw, HelpCircle } from "lucide-react";
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Syarat & Ketentuan — Jasmine Shop Premium Product",
-  description:
-    "Syarat & Ketentuan penggunaan layanan dan transaksi pemesanan produk di Jasmine Shop Premium Product.",
+  title: "Syarat & Ketentuan",
+  description: `Syarat & Ketentuan penggunaan layanan dan transaksi pemesanan produk di ${SITE_NAME}.`,
+  ...canonical("/syarat-ketentuan"),
 };
 
 export default async function SyaratKetentuanPage() {

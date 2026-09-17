@@ -3,14 +3,16 @@ import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/queries/site-settings";
+import { canonical } from "@/lib/seo";
 import { Snowflake, ThermometerSnowflake, Clock, AlertOctagon, Flame } from "lucide-react";
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Cara Penyimpanan — Jasmine Shop Premium Product",
+  title: "Cara Penyimpanan",
   description:
     "Panduan menjaga kesegaran, kehigienisan, dan kelezatan frozen food dengan suhu penyimpanan yang tepat.",
+  ...canonical("/cara-penyimpanan"),
 };
 
 const TIPS = [

@@ -9,7 +9,14 @@ import { MediaGallery } from "@/components/storefront/media-gallery";
 import { StickyPurchase } from "@/components/storefront/sticky-purchase";
 import { RelatedProducts } from "@/components/storefront/related-products";
 import { ShareButton } from "@/components/storefront/share-button";
-import { jsonLdScript } from "@/lib/seo";
+import {
+  DEFAULT_OG_IMAGE,
+  SEO_BASE,
+  SITE_NAME,
+  absoluteUrl,
+  breadcrumbJsonLd,
+  jsonLdScript,
+} from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -17,7 +24,7 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-const BASE = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+const BASE = SEO_BASE;
 const API_BASE = process.env.API_URL ?? "http://localhost:3000";
 
 type ProductDetail = {
@@ -32,6 +39,7 @@ type ProductDetail = {
   category: string;
   categoryId: string | null;
   categoryName: string | null;
+  categorySlug: string | null;
   imageUrl: string;
   weightValue: number | null;
   weightUnit: string;
@@ -95,27 +103,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const product = await getProduct(slug);
   if (!product) return { title: "Produk tidak ditemukan" };
 
-  const title = product.seoTitle ?? `${product.name} — Jasmine Shop Premium Product`;
   const description = product.seoDescription ?? product.shortDescription ?? product.description;
   const url = `${BASE}/produk/${product.slug}`;
+  const image = absoluteUrl(product.imageUrl) || absoluteUrl(DEFAULT_OG_IMAGE);
 
   return {
-    title,
+    title: product.seoTitle ? { absolute: product.seoTitle } : product.name,
     description,
     alternates: { canonical: url },
     openGraph: {
-      title,
+      title: product.seoTitle ?? product.name,
       description,
       type: "website",
+      siteName: SITE_NAME,
+      locale: "id_ID",
       url,
-      images: [
-        {
-          url: product.imageUrl,
-          alt: product.name,
-          width: 1200,
-          height: 630,
-        },
-      ],
+      images: [{ url: image, alt: product.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.seoTitle ?? product.name,
+      description,
+      images: [image],
     },
   };
 }
@@ -134,33 +143,68 @@ function StarRating({ average, count }: { average: number; count: number }) {
 
 function ProductJsonLd({ product }: { product: ProductDetail }) {
   const url = `${BASE}/produk/${product.slug}`;
-  const jsonLd: Record<string, unknown> = {
-    "@context": "https://schema.org",
+  const images = [
+    product.imageUrl,
+    ...product.media
+      .filter((m) => m.mediaType === "image" && m.url)
+      .map((m) => m.url),
+  ]
+    .map((src) => absoluteUrl(src))
+    .filter((src, index, all) => src && all.indexOf(src) === index);
+
+  const productNode: Record<string, unknown> = {
     "@type": "Product",
+    "@id": `${url}#product`,
     name: product.name,
     description: product.description || product.shortDescription,
-    image: product.imageUrl,
+    image: images,
     sku: product.sku,
-    brand: { "@type": "Brand", name: "Jasmine Shop Premium Product" },
+    category: product.categoryName ?? product.category ?? undefined,
+    brand: { "@type": "Brand", name: SITE_NAME },
     offers: {
       "@type": "Offer",
+      url,
       price: product.price,
       priceCurrency: "IDR",
+      itemCondition: "https://schema.org/NewCondition",
       availability:
         product.currentStock > 0
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
-      url,
+      seller: { "@type": "Organization", name: SITE_NAME, url: BASE },
     },
   };
 
+  if (product.weightValue) {
+    productNode.weight = {
+      "@type": "QuantitativeValue",
+      value: product.weightValue,
+      unitCode: product.weightUnit === "kg" ? "KGM" : "GRM",
+    };
+  }
+
   if (product.ratingCount > 0) {
-    jsonLd.aggregateRating = {
+    productNode.aggregateRating = {
       "@type": "AggregateRating",
       ratingValue: product.ratingAverage,
       reviewCount: product.ratingCount,
     };
   }
+
+  const jsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@graph": [
+      breadcrumbJsonLd([
+        { name: "Beranda", path: "/" },
+        { name: "Produk", path: "/produk" },
+        ...(product.categoryName && product.categorySlug
+          ? [{ name: product.categoryName, path: `/kategori/${product.categorySlug}` }]
+          : []),
+        { name: product.name, path: `/produk/${product.slug}` },
+      ]),
+      productNode,
+    ],
+  };
 
   return (
     <script

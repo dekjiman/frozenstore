@@ -4,6 +4,13 @@ import { CartProvider } from "@/components/cart-provider";
 import { AuthProvider } from "@/components/auth-provider";
 import { AdSenseProvider } from "@/components/ads/adsense-provider";
 import { AdsBottomBanner } from "@/components/ads/ads-bottom-banner";
+import {
+  DEFAULT_OG_IMAGE,
+  SEO_BASE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TAGLINE,
+} from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,23 +23,40 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
 const adClientId = process.env.NEXT_PUBLIC_AD_CLIENT_ID;
+const defaultTitle = `${SITE_NAME} — ${SITE_TAGLINE}`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(BASE_URL),
+  metadataBase: new URL(SEO_BASE),
+  applicationName: SITE_NAME,
   title: {
-    default: "Jasmine Shop Premium Product — Frozen Food Premium, Halal & Bergizi",
-    template: "%s | Jasmine Shop Premium Product",
+    default: defaultTitle,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "Temukan frozen food premium dari Jasmine Shop Premium Product. Ayam katsu, nugget, sosis, dan produk siap masak lainnya. Halal, bergizi, dan harga terjangkau.",
-  keywords: ["frozen food", "ayam katsu", "nugget", "sosis", "halal", "Jasmine"],
+  description: SITE_DESCRIPTION,
+  keywords: ["frozen food", "ayam katsu", "nugget", "sosis", "halal", "Jasmine Frozen Food"],
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     locale: "id_ID",
-    siteName: "Jasmine Shop Premium Product",
+    siteName: SITE_NAME,
+    url: SEO_BASE,
+    title: defaultTitle,
+    description: SITE_DESCRIPTION,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} — ${SITE_TAGLINE}`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: defaultTitle,
+    description: SITE_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
   ...(adClientId ? { other: { "google-adsense-account": adClientId } } : {}),
 };

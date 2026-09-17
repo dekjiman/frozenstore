@@ -87,6 +87,7 @@ export async function GET(
         category: product.category,
         categoryId: product.categoryId,
         categoryName: category?.name ?? null,
+        categorySlug: category?.slug ?? null,
         imageUrl: product.imageUrl,
         weightValue: product.weightValue,
         weightUnit: product.weightUnit,

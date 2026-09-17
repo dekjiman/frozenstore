@@ -8,28 +8,38 @@ import { Container } from "@/components/ui/container";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
 import { AdUnit } from "@/components/ads/ad-unit";
-import { SEO_BASE, SITE_NAME, jsonLdScript } from "@/lib/seo";
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+  absoluteUrl,
+  breadcrumbJsonLd,
+  canonical,
+  jsonLdScript,
+} from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
+const ARTIKEL_DESCRIPTION =
+  "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Frozen Food.";
+
 export const metadata: Metadata = {
-  title: "Artikel & Tips Memasak — Jasmine Shop Premium Product",
-  description: "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Shop Premium Product.",
-  alternates: {
-    canonical: `${SEO_BASE}/artikel`,
-  },
+  title: "Artikel & Tips Memasak",
+  description: ARTIKEL_DESCRIPTION,
+  ...canonical("/artikel"),
   openGraph: {
-    title: "Artikel & Tips Memasak — Jasmine Shop Premium Product",
-    description: "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Shop Premium Product.",
+    title: `Artikel & Tips Memasak | ${SITE_NAME}`,
+    description: ARTIKEL_DESCRIPTION,
     type: "website",
-    url: `${SEO_BASE}/artikel`,
+    url: absoluteUrl("/artikel"),
     siteName: SITE_NAME,
     locale: "id_ID",
+    images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: `Artikel & Tips Memasak | ${SITE_NAME}` }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Artikel & Tips Memasak — Jasmine Shop Premium Product",
-    description: "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Shop Premium Product.",
+    title: `Artikel & Tips Memasak | ${SITE_NAME}`,
+    description: ARTIKEL_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 
@@ -41,32 +51,32 @@ async function getArticles() {
 }
 
 function ArticlesJsonLd({ items }: { items: { title: string; slug: string; excerpt: string }[] }) {
-  const listUrl = `${SEO_BASE}/artikel`;
+  const listUrl = absoluteUrl("/artikel");
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: "Artikel & Tips Memasak — Jasmine Shop Premium Product",
-    description:
-      "Temukan berbagai artikel menarik, tips memasak, dan inspirasi resep hidangan keluarga dari Jasmine Shop Premium Product.",
-    url: listUrl,
-    isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SEO_BASE },
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Beranda", item: SEO_BASE },
-        { "@type": "ListItem", position: 2, name: "Artikel", item: listUrl },
-      ],
-    },
-    mainEntity: {
-      "@type": "ItemList",
-      itemListElement: items.map((article, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        url: `${SEO_BASE}/artikel/${article.slug}`,
-        name: article.title,
-        description: article.excerpt,
-      })),
-    },
+    "@graph": [
+      breadcrumbJsonLd([
+        { name: "Beranda", path: "/" },
+        { name: "Artikel", path: "/artikel" },
+      ]),
+      {
+        "@type": "CollectionPage",
+        name: `Artikel & Tips Memasak | ${SITE_NAME}`,
+        description: ARTIKEL_DESCRIPTION,
+        url: listUrl,
+        isPartOf: { "@type": "WebSite", name: SITE_NAME, url: absoluteUrl("/") },
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: items.map((article, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: absoluteUrl(`/artikel/${article.slug}`),
+            name: article.title,
+            description: article.excerpt,
+          })),
+        },
+      },
+    ],
   };
   return (
     <script

@@ -9,6 +9,18 @@ import { requireAdmin } from "@/lib/admin-auth";
 const protectedMethods = new Set(["POST", "PATCH", "PUT", "DELETE"]);
 
 export async function proxy(request: NextRequest) {
+  const { nextUrl } = request;
+
+  if (nextUrl.pathname === "/produk" || nextUrl.pathname === "/produk/") {
+    const legacyCategory = nextUrl.searchParams.get("category");
+    if (legacyCategory) {
+      const target = nextUrl.clone();
+      target.pathname = `/kategori/${encodeURIComponent(legacyCategory)}`;
+      target.searchParams.delete("category");
+      return NextResponse.redirect(target, 301);
+    }
+  }
+
   if (request.nextUrl.pathname.startsWith("/api/admin/payment-settings")) {
     return (await requireAdmin(request)) ?? NextResponse.next();
   }
@@ -36,6 +48,8 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/produk",
+    "/produk/",
     "/api/admin/payment-settings/:path*",
     "/api/cart/:path*",
     "/api/checkout/:path*",

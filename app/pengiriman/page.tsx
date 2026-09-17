@@ -4,14 +4,15 @@ import { StoreFooter } from "@/components/storefront/store-footer";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/queries/site-settings";
 import { normalizeWaNumber } from "@/lib/wa";
+import { SITE_NAME, canonical } from "@/lib/seo";
 import { Truck, ShieldCheck, Clock, HelpCircle } from "lucide-react";
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Informasi Pengiriman — Jasmine Shop Premium Product",
-  description:
-    "Jadwal, area jangkauan, dan standar pengemasan rantai dingin pengiriman Jasmine Shop Premium Product.",
+  title: "Informasi Pengiriman",
+  description: `Jadwal, area jangkauan, dan standar pengemasan rantai dingin pengiriman ${SITE_NAME}.`,
+  ...canonical("/pengiriman"),
 };
 
 export default async function PengirimanPage() {
