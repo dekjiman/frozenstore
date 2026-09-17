@@ -87,7 +87,9 @@ export function LoginForm({ forAdmin = false }: { forAdmin?: boolean }) {
       </div>
 
       <button type="submit" disabled={isSubmitting} className="mt-7 w-full rounded-full bg-[var(--brand-600)] px-6 py-3.5 text-sm font-semibold text-white hover:bg-[var(--brand-900)] disabled:bg-[var(--border)]">{isSubmitting ? "Memproses..." : "Masuk"}</button>
-      <p className="mt-5 text-center text-sm text-[var(--ink-700)]">Belum punya akun? <Link href="/daftar" className="font-semibold text-[var(--brand-600)] hover:text-[var(--brand-700)]">Daftar sekarang</Link></p>
+      {forAdmin ? null : (
+        <p className="mt-5 text-center text-sm text-[var(--ink-700)]">Belum punya akun? <Link href="/daftar" className="font-semibold text-[var(--brand-600)] hover:text-[var(--brand-700)]">Daftar sekarang</Link></p>
+      )}
     </form>
   );
 }
