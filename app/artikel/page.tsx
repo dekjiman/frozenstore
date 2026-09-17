@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { db } from "@/db/client";
 import { articles } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, lte } from "drizzle-orm";
 import { Container } from "@/components/ui/container";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
@@ -44,8 +44,12 @@ export const metadata: Metadata = {
 };
 
 async function getArticles() {
+  const now = new Date();
   return await db.query.articles.findMany({
-    where: eq(articles.isPublished, true),
+    where: and(
+      eq(articles.isPublished, true),
+      lte(articles.publishedAt, now),
+    ),
     orderBy: [desc(articles.publishedAt)],
   });
 }

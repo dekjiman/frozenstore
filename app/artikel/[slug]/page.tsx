@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { ArrowLeft, User } from "lucide-react";
 import { db } from "@/db/client";
 import { articles } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, lte } from "drizzle-orm";
 import { Container } from "@/components/ui/container";
 import { StoreHeader } from "@/components/storefront/store-header";
 import { StoreFooter } from "@/components/storefront/store-footer";
@@ -22,8 +20,13 @@ type Props = {
 };
 
 async function getArticle(slug: string) {
+  const now = new Date();
   return await db.query.articles.findFirst({
-    where: and(eq(articles.slug, slug), eq(articles.isPublished, true)),
+    where: and(
+      eq(articles.slug, slug),
+      eq(articles.isPublished, true),
+      lte(articles.publishedAt, now),
+    ),
   });
 }
 
@@ -164,35 +167,8 @@ export default async function ArticleDetailPage({ params }: Props) {
               </div>
             )}
 
-            <div className="prose prose-stone prose-lg max-w-none mx-auto prose-headings:font-serif prose-a:text-[var(--brand-600)] hover:prose-a:text-[var(--brand-700)] prose-img:rounded-2xl">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  h1: ({ children }) => (
-                    <h2 className="font-serif text-2xl font-bold text-[var(--ink-950)]">{children}</h2>
-                  ),
-                  a: ({ href, children }) => {
-                    const external =
-                      typeof href === "string" &&
-                      /^https?:\/\//i.test(href) &&
-                      !href.includes("jasmineshop.id");
-                    return (
-                      <a
-                        href={href}
-                        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                      >
-                        {children}
-                      </a>
-                    );
-                  },
-                  img: ({ src, alt }) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={typeof src === "string" ? src : undefined} alt={alt ?? ""} loading="lazy" />
-                  ),
-                }}
-              >
-                {article.content}
-              </ReactMarkdown>
+            <div className="prose prose-stone prose-lg max-w-none mx-auto prose-headings:font-serif prose-a:text-[var(--brand-600)] hover:prose-a:text-[var(--brand-700)] prose-img:rounded-2xl [&_img]:rounded-2xl [&_img]:my-6">
+              <div dangerouslySetInnerHTML={{ __html: article.content }} />
             </div>
 
             <div className="mt-10">

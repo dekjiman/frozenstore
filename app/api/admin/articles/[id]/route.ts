@@ -55,6 +55,7 @@ export async function PATCH(
     const authorName = typeof body.authorName === "string" ? body.authorName.trim() : undefined;
     const coverImage = typeof body.coverImage === "string" ? body.coverImage.trim() : body.coverImage === null ? null : undefined;
     const isPublished = typeof body.isPublished === "boolean" ? body.isPublished : undefined;
+    const publishedAt = body.publishedAt !== undefined ? (body.publishedAt ? new Date(body.publishedAt) : null) : undefined;
 
     const updates: Partial<typeof articles.$inferInsert> = {};
     if (title !== undefined) updates.title = title;
@@ -63,6 +64,7 @@ export async function PATCH(
     if (authorName !== undefined) updates.authorName = authorName;
     if (coverImage !== undefined) updates.coverImage = coverImage;
     if (isPublished !== undefined) updates.isPublished = isPublished;
+    if (publishedAt !== undefined) updates.publishedAt = publishedAt;
 
     await db.update(articles).set(updates).where(eq(articles.id, id));
 

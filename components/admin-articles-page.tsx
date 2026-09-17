@@ -1,9 +1,15 @@
 "use client";
 
-import { Edit3, Plus, Trash2, X } from "lucide-react";
+import { Edit3, Plus, Trash2, X, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ApiError, apiFetch } from "@/lib/client-api";
 import { AdminImageUpload } from "@/components/admin-image-upload";
+import dynamic from "next/dynamic";
+
+const RichTextEditor = dynamic(
+  () => import("@/components/rich-text-editor").then((mod) => mod.RichTextEditor),
+  { ssr: false, loading: () => <div className="min-h-[200px] animate-pulse rounded-xl border border-stone-200 bg-stone-50" /> },
+);
 
 type Article = {
   id: string;
@@ -25,9 +31,25 @@ type ArticleFormData = {
   coverImage: string;
   authorName: string;
   isPublished: boolean;
+  scheduledAt: string;
 };
 
-const emptyForm: ArticleFormData = { title: "", content: "", excerpt: "", coverImage: "", authorName: "Admin", isPublished: true };
+const emptyForm: ArticleFormData = {
+  title: "",
+  content: "",
+  excerpt: "",
+  coverImage: "",
+  authorName: "Admin",
+  isPublished: true,
+  scheduledAt: "",
+};
+
+function toLocalDatetimeString(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 
 export function AdminArticlesPage() {
   const [items, setItems] = useState<Article[]>([]);
@@ -63,6 +85,7 @@ export function AdminArticlesPage() {
       coverImage: item.coverImage ?? "",
       authorName: item.authorName,
       isPublished: item.isPublished,
+      scheduledAt: toLocalDatetimeString(item.publishedAt),
     });
     setFormError(null);
     setFieldErrors({});
@@ -74,6 +97,21 @@ export function AdminArticlesPage() {
     const title = form.title.trim();
     if (!title) { setFormError("Judul wajib diisi."); return; }
     if (!form.content.trim()) { setFormError("Konten wajib diisi."); return; }
+
+    let publishedAt: string | null = null;
+    if (form.isPublished) {
+      if (form.scheduledAt) {
+        const scheduled = new Date(form.scheduledAt);
+        if (scheduled > new Date()) {
+          publishedAt = scheduled.toISOString();
+        } else {
+          publishedAt = new Date().toISOString();
+        }
+      } else {
+        publishedAt = new Date().toISOString();
+      }
+    }
+
     try {
       const body = {
         title,
@@ -82,27 +120,20 @@ export function AdminArticlesPage() {
         coverImage: form.coverImage.trim() || null,
         authorName: form.authorName.trim(),
         isPublished: form.isPublished,
+        publishedAt,
       };
-      
+
       if (editingId) {
         await apiFetch(`/api/admin/articles/${editingId}`, { method: "PATCH", body: JSON.stringify(body) });
         setItems((prev) => prev.map((i) => i.id === editingId ? { ...i, ...body } : i));
         setNotice(`Artikel "${title}" berhasil diperbarui.`);
       } else {
-        const payload = await apiFetch<{ id: string }>("/api/admin/articles", { method: "POST", body: JSON.stringify(body) });
-        const saved: Article = {
-          id: payload.id,
-          slug: "", // akan di-generate di server
-          ...body,
-          publishedAt: body.isPublished ? new Date().toISOString() : null,
-          createdAt: new Date().toISOString(),
-        };
-        // reload to get exact slug
+        await apiFetch<{ id: string }>("/api/admin/articles", { method: "POST", body: JSON.stringify(body) });
         apiFetch<{ data: Article[] }>("/api/admin/articles", { cache: "no-store" })
           .then((payload) => setItems(payload.data));
         setNotice(`Artikel "${title}" berhasil ditambahkan.`);
       }
-      
+
       setEditingId(undefined);
     } catch (caught) {
       if (caught instanceof ApiError && caught.fields) {
@@ -126,12 +157,22 @@ export function AdminArticlesPage() {
   }
 
   async function togglePublished(item: Article) {
+    const newIsPublished = !item.isPublished;
+    const publishedAt = newIsPublished ? new Date().toISOString() : null;
     try {
-      await apiFetch(`/api/admin/articles/${item.id}`, { method: "PATCH", body: JSON.stringify({ isPublished: !item.isPublished }) });
-      setItems((prev) => prev.map((i) => i.id === item.id ? { ...i, isPublished: !i.isPublished } : i));
+      await apiFetch(`/api/admin/articles/${item.id}`, { method: "PATCH", body: JSON.stringify({ isPublished: newIsPublished, publishedAt }) });
+      setItems((prev) => prev.map((i) => i.id === item.id ? { ...i, isPublished: newIsPublished, publishedAt } : i));
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Gagal mengubah status");
     }
+  }
+
+  function getStatusLabel(item: Article): { text: string; className: string } {
+    if (!item.isPublished) return { text: "Draft", className: "bg-stone-100 text-stone-500" };
+    if (item.publishedAt && new Date(item.publishedAt) > new Date()) {
+      return { text: "Terjadwal", className: "bg-amber-100 text-amber-800" };
+    }
+    return { text: "Published", className: "bg-emerald-100 text-emerald-800" };
   }
 
   return (
@@ -166,23 +207,34 @@ export function AdminArticlesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100">
-              {items.map((item) => (
-                <tr key={item.id} className="hover:bg-stone-50/80">
-                  <td className="px-5 py-3 font-semibold text-stone-900">{item.title}</td>
-                  <td className="px-5 py-3 font-mono text-xs text-stone-600">{item.slug}</td>
-                  <td className="px-5 py-3">
-                    <button type="button" onClick={() => void togglePublished(item)} className={`rounded-full px-2.5 py-1 text-xs font-semibold ${item.isPublished ? "bg-emerald-100 text-emerald-800" : "bg-stone-100 text-stone-500"}`}>
-                      {item.isPublished ? "Published" : "Draft"}
-                    </button>
-                  </td>
-                  <td className="px-5 py-3">
-                    <div className="flex justify-end gap-1">
-                      <button type="button" onClick={() => openEdit(item)} aria-label={`Edit ${item.title}`} className="grid size-9 place-items-center rounded-full text-stone-500 hover:bg-stone-200"><Edit3 size={16} /></button>
-                      <button type="button" onClick={() => void handleDelete(item)} aria-label={`Hapus ${item.title}`} className="grid size-9 place-items-center rounded-full text-stone-400 hover:bg-red-50 hover:text-red-600"><Trash2 size={16} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {items.map((item) => {
+                const status = getStatusLabel(item);
+                return (
+                  <tr key={item.id} className="hover:bg-stone-50/80">
+                    <td className="px-5 py-3 font-semibold text-stone-900">{item.title}</td>
+                    <td className="px-5 py-3 font-mono text-xs text-stone-600">{item.slug}</td>
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-2">
+                        <button type="button" onClick={() => void togglePublished(item)} className={`rounded-full px-2.5 py-1 text-xs font-semibold ${status.className}`}>
+                          {status.text}
+                        </button>
+                        {item.publishedAt && new Date(item.publishedAt) > new Date() && (
+                          <span className="flex items-center gap-1 text-xs text-amber-600">
+                            <Calendar size={12} />
+                            {new Date(item.publishedAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-5 py-3">
+                      <div className="flex justify-end gap-1">
+                        <button type="button" onClick={() => openEdit(item)} aria-label={`Edit ${item.title}`} className="grid size-9 place-items-center rounded-full text-stone-500 hover:bg-stone-200"><Edit3 size={16} /></button>
+                        <button type="button" onClick={() => void handleDelete(item)} aria-label={`Hapus ${item.title}`} className="grid size-9 place-items-center rounded-full text-stone-400 hover:bg-red-50 hover:text-red-600"><Trash2 size={16} /></button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
               {!loading && items.length === 0 ? (
                 <tr><td colSpan={4} className="px-5 py-12 text-center text-sm text-stone-400">Belum ada artikel.</td></tr>
               ) : null}
@@ -211,14 +263,25 @@ export function AdminArticlesPage() {
               <FormField label="Excerpt (Singkat)" error={fieldErrors.excerpt}>
                 <input value={form.excerpt} onChange={(e) => setForm((f) => ({ ...f, excerpt: e.target.value }))} placeholder="Ringkasan singkat untuk list artikel..." className="mt-1 h-10 w-full rounded-xl border border-stone-300 bg-white px-4 text-sm" />
               </FormField>
-              <FormField label="Konten (Mendukung Markdown)" error={fieldErrors.content}>
-                <textarea rows={10} value={form.content} onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))} className="mt-1 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm font-mono" />
+              <FormField label="Konten" error={fieldErrors.content}>
+                <div className="mt-1">
+                  <RichTextEditor value={form.content} onChange={(content) => setForm((f) => ({ ...f, content }))} />
+                </div>
               </FormField>
               <AdminImageUpload value={form.coverImage} onChange={(url) => setForm((f) => ({ ...f, coverImage: url }))} folder="articles" accept="image/jpeg,image/png,image/webp,image/avif" maxSizeMB={5} error={fieldErrors.coverImage} />
-              
+
               <div className="grid gap-5 sm:grid-cols-2">
                 <FormField label="Nama Penulis" error={fieldErrors.authorName}>
                   <input value={form.authorName} onChange={(e) => setForm((f) => ({ ...f, authorName: e.target.value }))} className="mt-1 h-10 w-full rounded-xl border border-stone-300 bg-white px-4 text-sm" />
+                </FormField>
+                <FormField label="Jadwal Tayang" error={fieldErrors.publishedAt}>
+                  <input
+                    type="datetime-local"
+                    value={form.scheduledAt}
+                    onChange={(e) => setForm((f) => ({ ...f, scheduledAt: e.target.value }))}
+                    className="mt-1 h-10 w-full rounded-xl border border-stone-300 bg-white px-4 text-sm"
+                  />
+                  <p className="mt-1 text-xs text-stone-400">Kosongkan = publish sekarang. Isi = terjadwal.</p>
                 </FormField>
               </div>
               <label className="flex items-center gap-3">

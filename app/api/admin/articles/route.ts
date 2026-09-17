@@ -40,6 +40,7 @@ export async function POST(request: Request) {
     const authorName = typeof body.authorName === "string" ? body.authorName.trim() : "Admin";
     const coverImage = typeof body.coverImage === "string" ? body.coverImage.trim() : null;
     const isPublished = typeof body.isPublished === "boolean" ? body.isPublished : true;
+    const publishedAt = body.publishedAt ? new Date(body.publishedAt) : isPublished ? new Date() : null;
 
     if (!title || !content) {
       return NextResponse.json(
@@ -67,7 +68,7 @@ export async function POST(request: Request) {
       authorName,
       coverImage,
       isPublished,
-      publishedAt: isPublished ? new Date() : null,
+      publishedAt,
     });
 
     return NextResponse.json({ success: true, id: newId }, { status: 201 });

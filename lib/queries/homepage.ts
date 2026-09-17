@@ -177,7 +177,10 @@ export async function getHomepageData(): Promise<HomepageDTO> {
     }),
 
     db.query.articles.findMany({
-      where: eq(articles.isPublished, true),
+      where: and(
+        eq(articles.isPublished, true),
+        lte(articles.publishedAt, new Date()),
+      ),
       orderBy: [desc(articles.publishedAt)],
       limit: 3,
     }),
