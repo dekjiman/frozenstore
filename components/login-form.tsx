@@ -63,11 +63,6 @@ export function LoginForm() {
         <span className="h-px flex-1 bg-[var(--border)]" />
       </div>
 
-      <div className="mt-7 rounded-xl bg-[var(--cream-100)] p-4 text-xs leading-5 text-[var(--ink-700)]">
-        <p className="font-semibold text-[var(--ink-950)]">Akun demo</p>
-        <p className="mt-2">Admin: admin@jasminefrozenfood.id / Admin#Jasmine2026</p>
-      </div>
-
       {error ? <p role="alert" className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{error}</p> : null}
 
       <div className="mt-6 space-y-5">
