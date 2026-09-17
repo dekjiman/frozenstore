@@ -88,7 +88,6 @@ export function AdminPromoBannersPage() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!form.title.trim()) { setFormError("Judul wajib diisi."); return; }
-    if (!form.imageUrl.trim()) { setFormError("URL gambar wajib diisi."); return; }
     const sortOrder = Number(form.sortOrder);
     if (!Number.isInteger(sortOrder) || sortOrder < 0) { setFormError("Urutan harus bilangan bulat positif."); return; }
     try {
@@ -255,7 +254,7 @@ export function AdminPromoBannersPage() {
               <FormField label="Badge Text" error={fieldErrors.badgeText}>
                 <input value={form.badgeText} onChange={(e) => setForm((f) => ({ ...f, badgeText: e.target.value }))} placeholder="HOT" className="mt-1 h-10 w-full rounded-xl border border-stone-300 bg-white px-4 text-sm" />
               </FormField>
-              <AdminImageUpload value={form.imageUrl} onChange={(url) => setForm((f) => ({ ...f, imageUrl: url }))} folder="promos" accept="image/jpeg,image/png,image/webp,image/avif,video/mp4" error={fieldErrors.imageUrl} />
+              <AdminImageUpload label="Gambar (opsional)" value={form.imageUrl} onChange={(url) => setForm((f) => ({ ...f, imageUrl: url }))} folder="promos" accept="image/jpeg,image/png,image/webp,image/avif,video/mp4" error={fieldErrors.imageUrl} />
               <FormField label="Varian Background" error={fieldErrors.backgroundVariant}>
                 <select value={form.backgroundVariant} onChange={(e) => setForm((f) => ({ ...f, backgroundVariant: e.target.value }))} className="mt-1 h-10 w-full rounded-xl border border-stone-300 bg-white px-4 text-sm">
                   {variantOptions.map((v) => <option key={v} value={v}>{v}</option>)}
