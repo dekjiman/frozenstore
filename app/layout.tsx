@@ -69,6 +69,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" data-scroll-behavior="smooth">
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AuthProvider>
           <CartProvider>
@@ -77,7 +80,6 @@ export default function RootLayout({
           </CartProvider>
         </AuthProvider>
         <AdSenseProvider />
-        <GoogleAnalytics />
       </body>
     </html>
   );
