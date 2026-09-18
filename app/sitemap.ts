@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { db } from "@/db/client";
 import { products, categories, articles } from "@/db/schema";
-import { and, eq, isNull, asc } from "drizzle-orm";
+import { and, eq, isNull, asc, lte } from "drizzle-orm";
 import { SEO_BASE, absoluteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -35,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const publishedArticles = await db
       .select({ slug: articles.slug, coverImage: articles.coverImage, updatedAt: articles.updatedAt })
       .from(articles)
-      .where(eq(articles.isPublished, true))
+      .where(and(eq(articles.isPublished, true), lte(articles.publishedAt, now())))
       .orderBy(asc(articles.title));
 
     productUrls = activeProducts.map((p) => ({
